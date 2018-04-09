@@ -16,7 +16,8 @@
 import passport from 'passport';
 import LTIStrategy from 'passport-lti';
 import lti from 'ims-lti';
-// import { User, UserLogin, UserClaim, UserProfile } from './data/models';
+import { Op } from 'sequelize';
+import { LTISecret } from './data/models';
 // import config from './config';
 
 /**
@@ -27,8 +28,12 @@ passport.use(
     {
       createProvider: (req, done) => {
         const key = req.body.oauth_consumer_key;
-        const secret = 'FIXME';
-        return done(null, new lti.Provider(key, secret));
+        LTISecret.findOne({
+          attributes: ['secret'],
+          where: { key: { [Op.eq]: key } },
+        })
+          .then(secret => done(null, new lti.Provider(key, secret)))
+          .catch(err => done(err));
       },
     },
     (ltiContext, done) => done(null, ltiContext),

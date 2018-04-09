@@ -24,14 +24,6 @@ const routes = {
       load: () => import(/* webpackChunkName: 'contact' */ './contact'),
     },
     {
-      path: '/login',
-      load: () => import(/* webpackChunkName: 'login' */ './login'),
-    },
-    {
-      path: '/register',
-      load: () => import(/* webpackChunkName: 'register' */ './register'),
-    },
-    {
       path: '/about',
       load: () => import(/* webpackChunkName: 'about' */ './about'),
     },

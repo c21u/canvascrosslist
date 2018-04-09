@@ -16,7 +16,7 @@ const isAdmin = false;
 
 function action() {
   if (!isAdmin) {
-    return { redirect: '/login' };
+    return { redirect: '/' };
   }
 
   return {
