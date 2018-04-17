@@ -18,6 +18,7 @@ type Options = {
   cookie?: string,
   schema?: GraphQLSchema,
   graphql?: graphqType,
+  token?: string,
 };
 
 /**
@@ -28,7 +29,7 @@ type Options = {
  */
 function createFetch(
   fetch: Fetch,
-  { baseUrl, cookie, schema, graphql }: Options,
+  { baseUrl, cookie, schema, graphql, token }: Options,
 ) {
   // NOTE: Tweak the default options to suite your application needs
   const defaults = {
@@ -39,6 +40,7 @@ function createFetch(
       Accept: 'application/json',
       'Content-Type': 'application/json',
       ...(cookie ? { Cookie: cookie } : null),
+      ...(token ? { Authorization: `Bearer ${token}` } : null),
     },
   };
 

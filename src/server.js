@@ -63,6 +63,16 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+function getToken(req) {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.split(' ')[0] === 'Bearer'
+  )
+    return req.headers.authorization.split(' ')[1];
+  else if (req.query && req.query.token) return req.query.token;
+  return null;
+}
+
 //
 // Authentication
 // -----------------------------------------------------------------------------
@@ -70,15 +80,7 @@ app.use(
   expressJwt({
     secret: config.auth.jwt.secret,
     credentialsRequired: true,
-    getToken: req => {
-      if (
-        req.headers.authorization &&
-        req.headers.authorization.split(' ')[0] === 'Bearer'
-      )
-        return req.headers.authorization.split(' ')[1];
-      else if (req.query && req.query.token) return req.query.token;
-      return null;
-    },
+    getToken,
   }).unless({ path: { url: '/', methods: ['POST'] } }),
 );
 
@@ -128,12 +130,15 @@ app.get('*', async (req, res, next) => {
       styles.forEach(style => css.add(style._getCss()));
     };
 
+    const token = getToken(req);
+
     // Universal HTTP client
     const fetch = createFetch(nodeFetch, {
       baseUrl: config.api.serverUrl,
       cookie: req.headers.cookie,
       schema,
       graphql,
+      token,
     });
 
     const initialState = {

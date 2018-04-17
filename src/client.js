@@ -66,6 +66,13 @@ async function onLocationChange(location, action) {
     context.pathname = location.pathname;
     context.query = queryString.parse(location.search);
 
+    if (context.query.token) {
+      context.fetch = createFetch(fetch, {
+        baseUrl: window.App.apiUrl,
+        token: context.query.token,
+      });
+    }
+
     // Traverses the list of routes in the order they are defined until
     // it finds the first route that matches provided URL path string
     // and whose action method returns anything other than `undefined`.
