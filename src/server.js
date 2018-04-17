@@ -14,7 +14,7 @@ import bodyParser from 'body-parser';
 import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import { graphql } from 'graphql';
 import expressGraphQL from 'express-graphql';
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import nodeFetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
@@ -69,22 +69,37 @@ app.use(bodyParser.json());
 app.use(
   expressJwt({
     secret: config.auth.jwt.secret,
-    credentialsRequired: false,
-    getToken: req => req.cookies.id_token,
-  }),
+    credentialsRequired: true,
+    getToken: req => {
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.split(' ')[0] === 'Bearer'
+      )
+        return req.headers.authorization.split(' ')[1];
+      else if (req.query && req.query.token) return req.query.token;
+      return null;
+    },
+  }).unless({ path: { url: '/', methods: ['POST'] } }),
 );
+
 // Error handler for express-jwt
 app.use((err, req, res, next) => {
   // eslint-disable-line no-unused-vars
   if (err instanceof Jwt401Error) {
-    console.error('[express-jwt-error]', req.cookies.id_token);
-    // `clearCookie`, otherwise user can't use web-app until cookie expires
-    res.clearCookie('id_token');
+    console.error('[express-jwt-error]', req.headers.authorization);
+    // delete jwt header, otherwise user can't use web-app until token expires
+    res.removeHeader('Authorization');
   }
   next(err);
 });
 
 app.use(passport.initialize());
+
+app.post('/', passport.authenticate('lti', { session: false }), (req, res) => {
+  const expiresIn = 60 * 60 * 24 * 180; // 180 days
+  const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
+  res.redirect(`/?token=${token}`);
+});
 
 //
 // Register API middleware

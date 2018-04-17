@@ -16,12 +16,10 @@
 import passport from 'passport';
 import LTIStrategy from 'passport-lti';
 import lti from 'ims-lti';
-import { Op } from 'sequelize';
 import { LTISecret } from './data/models';
-// import config from './config';
 
 /**
- * Sign in with Facebook.
+ * Sign in with LTI.
  */
 passport.use(
   new LTIStrategy(
@@ -30,9 +28,14 @@ passport.use(
         const key = req.body.oauth_consumer_key;
         LTISecret.findOne({
           attributes: ['secret'],
-          where: { key: { [Op.eq]: key } },
+          where: { key },
         })
-          .then(secret => done(null, new lti.Provider(key, secret)))
+          .then(row => {
+            if (row) {
+              return done(null, new lti.Provider(key, row.get('secret')));
+            }
+            return done('Not authorized');
+          })
           .catch(err => done(err));
       },
     },
