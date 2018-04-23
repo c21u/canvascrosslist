@@ -14,11 +14,11 @@ import s from './Home.css';
 
 class Home extends React.Component {
   static propTypes = {
-    news: PropTypes.arrayOf(
+    courses: PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        link: PropTypes.string.isRequired,
-        content: PropTypes.string,
+        name: PropTypes.string.isRequired,
+        course_code: PropTypes.string.isRequired,
+        term: PropTypes.object,
       }),
     ).isRequired,
   };
@@ -27,17 +27,14 @@ class Home extends React.Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1>React.js News</h1>
-          {this.props.news.map(item => (
-            <article key={item.link} className={s.newsItem}>
+          <h1>Courses</h1>
+          {this.props.courses.map(item => (
+            <article key={item.id} className={s.newsItem}>
               <h1 className={s.newsTitle}>
-                <a href={item.link}>{item.title}</a>
+                <a href={item.link}>{item.name}</a>
               </h1>
-              <div
-                className={s.newsDesc}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: item.content }}
-              />
+              <div className={s.newsDesc}>{item.course_code}</div>
+              <div className={s.newsDesc}>{item.sis_id}</div>
             </article>
           ))}
         </div>

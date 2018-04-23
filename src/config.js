@@ -32,6 +32,11 @@ module.exports = {
       `http://localhost:${process.env.PORT || 3000}`,
   },
 
+  canvas: {
+    url: process.env.CANVAS_URL || 'gatech.test.instructure.com',
+    token: process.env.CANVAS_TOKEN,
+  },
+
   // Database
   databaseUrl: process.env.DATABASE_URL || 'sqlite:database.sqlite',
 
