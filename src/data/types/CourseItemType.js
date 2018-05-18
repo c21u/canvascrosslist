@@ -3,9 +3,11 @@ import {
   GraphQLString as StringType,
   GraphQLID as IDType,
   GraphQLInt as IntType,
+  GraphQLList as ListType,
   GraphQLNonNull as NonNull,
 } from 'graphql';
 import TermItemType from './TermItemType';
+import SectionItemType from './SectionItemType';
 
 const CourseItemType = new ObjectType({
   name: 'CourseItem',
@@ -17,6 +19,7 @@ const CourseItemType = new ObjectType({
     workflow_state: { type: new NonNull(StringType) },
     total_students: { type: new NonNull(IntType) },
     term: { type: TermItemType },
+    sections: { type: new ListType(SectionItemType) },
   },
 });
 

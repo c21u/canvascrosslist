@@ -112,6 +112,7 @@ app.use(
     schema,
     graphiql: __DEV__,
     rootValue: { request: req },
+    context: { user: req.user },
     pretty: __DEV__,
   })),
 );

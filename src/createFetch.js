@@ -53,7 +53,7 @@ function createFetch(
         schema,
         query.query,
         { request: {} }, // fill in request vars needed by graphql
-        null,
+        { token },
         query.variables,
       );
       return Promise.resolve({
