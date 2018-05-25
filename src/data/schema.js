@@ -14,11 +14,21 @@ import {
 
 import courses from './queries/courses';
 
+import crosslistCourses from './mutations/crosslistCourses';
+import deCrosslistCourses from './mutations/deCrosslistCourses';
+
 const schema = new Schema({
   query: new ObjectType({
     name: 'Query',
     fields: {
       courses,
+    },
+  }),
+  mutation: new ObjectType({
+    name: 'Mutation',
+    fields: {
+      crosslistCourses,
+      deCrosslistCourses,
     },
   }),
 });
