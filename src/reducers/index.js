@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import user from './user';
-import runtime from './runtime';
+import canvas from './canvas';
+import crosslist from './crosslist';
 
 export default combineReducers({
-  user,
-  runtime,
+  canvas,
+  crosslist,
 });
