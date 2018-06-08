@@ -18,6 +18,7 @@ const ContextType = {
   // Universal HTTP client
   fetch: PropTypes.func.isRequired,
   pathname: PropTypes.string.isRequired,
+  token: PropTypes.string,
   query: PropTypes.object,
   // Integrate Redux
   // http://redux.js.org/docs/basics/UsageWithReact.html
