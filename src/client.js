@@ -32,13 +32,14 @@ const context = {
       removeCss.forEach(f => f());
     };
   },
+  token: null,
   // Universal HTTP client
   fetch: createFetch(fetch, {
     baseUrl: window.App.apiUrl,
   }),
   // Initialize a new Redux store
   // http://redux.js.org/docs/basics/UsageWithReact.html
-  store: configureStore(window.App.state, { history }),
+  store: configureStore(window.App.state, { history, fetch }),
   storeSubscription: null,
 };
 
@@ -66,10 +67,15 @@ async function onLocationChange(location, action) {
     context.pathname = location.pathname;
     context.query = queryString.parse(location.search);
 
-    if (context.query.token) {
+    if (!context.token && context.query.token) {
+      context.token = context.query.token;
       context.fetch = createFetch(fetch, {
         baseUrl: window.App.apiUrl,
         token: context.query.token,
+      });
+      context.store = configureStore(window.App.state, {
+        history: context.history,
+        fetch: context.fetch,
       });
     }
 
