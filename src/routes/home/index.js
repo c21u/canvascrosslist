@@ -10,22 +10,16 @@
 import React from 'react';
 import Home from './Home';
 import Layout from '../../components/Layout';
+import { getCourses } from '../../actions/crosslist';
 
-async function action({ fetch }) {
-  const resp = await fetch('/graphql', {
-    body: JSON.stringify({
-      query: '{courses{id,name,sis_course_id,course_code,term{id, name}}}',
-    }),
-  });
-  const { data } = await resp.json();
-  if (!data || !data.courses)
-    throw new Error('Failed to load the course feed.');
+async function action({ store }) {
+  store.dispatch(getCourses());
   return {
     title: 'Crosslist',
     chunks: ['home'],
     component: (
       <Layout>
-        <Home courses={data.courses} />
+        <Home />
       </Layout>
     ),
   };

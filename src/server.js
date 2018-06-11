@@ -142,9 +142,7 @@ app.get('*', async (req, res, next) => {
       token,
     });
 
-    const initialState = {
-      user: req.user || null,
-    };
+    const initialState = {};
 
     const store = configureStore(initialState, {
       fetch,
