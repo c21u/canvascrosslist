@@ -29,44 +29,64 @@ class Home extends React.Component {
         ).isRequired,
       }),
     ).isRequired,
+    fetching: PropTypes.bool.isRequired,
+    setTarget: PropTypes.func.isRequired,
   };
 
   render() {
-    const courses =
-      this.props.courses.length === 0 ? (
-        <Spinner />
-      ) : (
-        <form onSubmit={setCrosslistTarget}>
-          {this.props.courses.map(term => (
-            <div key={term.term.id}>
-              <h1 className={s.termTitle}>{term.term.name}</h1>
-              {term.courses.map(course => (
-                <div key={course.id} className={s.course}>
-                  <input
-                    type="radio"
-                    name="xlist-target"
-                    value={course.id}
-                    id={course.id}
-                  />
-                  <label htmlFor={course.id} className={s.courseInfo}>
-                    <h2 className={s.courseTitle}>{course.name}</h2>
-                    <div className={s.courseDesc}>
-                      {course.course_code} - {course.sis_course_id}
-                    </div>
-                  </label>
-                </div>
-              ))}
-            </div>
-          ))}
-          <button type="submit">Next</button>
-        </form>
-      );
+    if (this.props.fetching) {
+      return <Spinner />;
+    }
 
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1>Select the course you would like to crosslist sections into</h1>
-          {courses}
+          {this.props.courses.length === 0 ? (
+            <h1>
+              You do not appear to be listed as instructor of any active
+              courses.
+            </h1>
+          ) : (
+            <>
+              {this.props.courses.map(term => (
+                <div key={term.term.id}>
+                  <h1 className={s.termTitle}>{term.term.name}</h1>
+                  {term.courses.map(course => (
+                    <div key={course.id} className={s.course}>
+                      <div className={s.courseInfo}>
+                        <h2 className={s.courseTitle}>{course.name}</h2>
+                        <div className={s.courseDesc}>
+                          {course.course_code} - {course.sis_course_id}
+                        </div>
+                        <button
+                          onClick={() =>
+                            this.props.setTarget(
+                              course.id,
+                              term.courses.reduce(
+                                (acc, curr) =>
+                                  acc.concat(
+                                    curr.sections.map(section => section.id),
+                                  ),
+                                [],
+                              ),
+                              course.sections,
+                            )
+                          }
+                        >
+                          Manage
+                        </button>
+                      </div>
+                      <ul>
+                        {course.sections.map(section => (
+                          <li key={section.id}>{section.name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     );
@@ -74,8 +94,18 @@ class Home extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { courses } = state.canvas;
-  return { courses };
+  const { courses, fetching } = state.canvas;
+  return { courses, fetching };
 }
 
-export default connect(mapStateToProps)(withStyles(s)(Home));
+function mapDispatchToProps(dispatch) {
+  return {
+    setTarget: (courseId, sectionIds, xlisted) => {
+      dispatch(setCrosslistTarget({ courseId, sectionIds, xlisted }));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withStyles(s)(Home),
+);
