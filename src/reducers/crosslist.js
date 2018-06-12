@@ -4,10 +4,20 @@ import {
   UNXLIST_SECTION,
   XLIST_SECTION_DONE,
   UNXLIST_SECTION_DONE,
+  GET_COURSES,
+  GET_COURSES_DONE,
 } from '../constants';
 
 export default function crosslist(
-  state = { target: null, available: [], xlisted: [], pending: [] },
+  state = {
+    target: null,
+    available: [],
+    pending: [],
+    terms: { byId: {}, allIds: [] },
+    courses: { byId: {}, allIds: [] },
+    sections: { byId: {}, allIds: [] },
+    fetching: true,
+  },
   action,
 ) {
   switch (action.type) {
@@ -15,9 +25,15 @@ export default function crosslist(
       return {
         ...state,
         target: action.payload.courseId,
-        available: action.payload.sectionIds,
-        xlisted: action.payload.xlisted,
-        pending: [],
+        // Get a flat array of all the sectionIds for the term that corresponds to the selected course
+        available: state.terms.byId[action.payload.termId].courses
+          .map(
+            courseId =>
+              courseId === action.payload.courseId
+                ? []
+                : state.courses.byId[courseId].sections,
+          )
+          .reduce((acc, cur) => acc.concat(cur)),
       };
     case XLIST_SECTION:
       return {
@@ -54,6 +70,22 @@ export default function crosslist(
           sectionId => action.payload.sectionId !== sectionId,
         ),
         available: [...state.available, action.payload.sectionId],
+      };
+    case GET_COURSES:
+      return {
+        ...state,
+        terms: { byId: {}, allIds: [] },
+        courses: { byId: {}, allIds: [] },
+        sections: { byId: {}, allIds: [] },
+        fetching: true,
+      };
+    case GET_COURSES_DONE:
+      return {
+        ...state,
+        terms: action.payload.terms,
+        courses: action.payload.courses,
+        sections: action.payload.sections,
+        fetching: false,
       };
     default:
       return state;

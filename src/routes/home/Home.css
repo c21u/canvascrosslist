@@ -27,10 +27,14 @@
 
 .courseInfo {
   width: 100%;
-  background-color: #eeb211;
+  background-color: #ccc;
   border-radius: 4px 4px 0 0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+}
+
+.active .courseInfo {
+  background-color: #eeb211;
 }
 
 .courseInfo h2 {

@@ -11,8 +11,8 @@ import {
   UNXLIST_SECTION_FAIL,
 } from '../constants';
 
-export function getCoursesDone(courses) {
-  return { type: GET_COURSES_DONE, payload: { courses } };
+export function getCoursesDone(terms, courses, sections) {
+  return { type: GET_COURSES_DONE, payload: { terms, courses, sections } };
 }
 
 export function getCoursesFail(errors) {
@@ -32,22 +32,33 @@ export function getCourses() {
             { key: 'general', message: 'Failed to load the course feed.' },
           ]),
         );
-      const coursesByTerm = {};
+      // Normalize the canvas data
+      const terms = { byId: {}, allIds: [] };
+      const courses = { byId: {}, allIds: [] };
+      const sections = { byId: {}, allIds: [] };
       data.courses.forEach(course => {
-        if (coursesByTerm[course.term.id]) {
-          coursesByTerm[course.term.id].push(course);
+        courses.byId[course.id] = {
+          name: course.name,
+          course_code: course.course_code,
+          sis_course_id: course.sis_course_id,
+          sections: course.sections.map(section => section.id),
+        };
+        courses.allIds.push(course.id);
+        course.sections.map(section => {
+          sections.byId[section.id] = section.name;
+          return sections.allIds.push(section.id);
+        });
+        if (terms.byId[course.term.id]) {
+          terms.byId[course.term.id].courses.push(course.id);
         } else {
-          coursesByTerm[course.term.id] = [course];
+          terms.byId[course.term.id] = {
+            name: course.term.name,
+            courses: [course.id],
+          };
+          terms.allIds.push(course.term.id);
         }
       });
-      dispatch(
-        getCoursesDone(
-          Object.values(coursesByTerm).map(courses => ({
-            term: courses[0].term,
-            courses,
-          })),
-        ),
-      );
+      dispatch(getCoursesDone(terms, courses, sections));
     } catch (e) {
       const errors = [
         {
@@ -61,13 +72,12 @@ export function getCourses() {
   };
 }
 
-export function setCrosslistTarget({ courseId, sectionIds, xlisted }) {
+export function setCrosslistTarget({ termId, courseId }) {
   return {
     type: SET_XLIST_TARGET,
     payload: {
+      termId,
       courseId,
-      sectionIds,
-      xlisted,
     },
   };
 }

@@ -11,26 +11,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import { setCrosslistTarget } from '../../actions/crosslist';
+import {
+  setCrosslistTarget,
+  crosslistSection,
+  uncrosslistSection,
+} from '../../actions/crosslist';
 import Spinner from '../../components/Spinner';
 import s from './Home.css';
 
 class Home extends React.Component {
   static propTypes = {
-    courses: PropTypes.arrayOf(
-      PropTypes.shape({
-        term: PropTypes.object.isRequired,
-        courses: PropTypes.arrayOf(
-          PropTypes.shape({
-            name: PropTypes.string.isRequired,
-            course_code: PropTypes.string.isRequired,
-            term: PropTypes.object,
-          }),
-        ).isRequired,
-      }),
-    ).isRequired,
+    terms: PropTypes.shape({
+      byId: PropTypes.object.isRequired,
+      allIds: PropTypes.arrayOf(PropTypes.string),
+    }).isRequired,
+    courses: PropTypes.shape({
+      byId: PropTypes.object.isRequired,
+      allIds: PropTypes.arrayOf(PropTypes.string),
+    }).isRequired,
+    sections: PropTypes.shape({
+      byId: PropTypes.object.isRequired,
+      allIds: PropTypes.arrayOf(PropTypes.string),
+    }).isRequired,
     fetching: PropTypes.bool.isRequired,
+    target: PropTypes.string.isRequired,
+    available: PropTypes.arrayOf(PropTypes.string).isRequired,
+    // pending: PropTypes.arrayOf(PropTypes.string).isRequired,
     setTarget: PropTypes.func.isRequired,
+    xlist: PropTypes.func.isRequired,
+    // unxlist: PropTypes.func.isRequired,
   };
 
   render() {
@@ -41,45 +50,57 @@ class Home extends React.Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          {this.props.courses.length === 0 ? (
+          {this.props.terms.allIds.length === 0 ? (
             <h1>
               You do not appear to be listed as instructor of any active
               courses.
             </h1>
           ) : (
             <>
-              {this.props.courses.map(term => (
-                <div key={term.term.id}>
-                  <h1 className={s.termTitle}>{term.term.name}</h1>
-                  {term.courses.map(course => (
-                    <div key={course.id} className={s.course}>
+              {this.props.terms.allIds.map(termId => (
+                <div key={termId}>
+                  <h1 className={s.termTitle}>
+                    {this.props.terms.byId[termId].name}
+                  </h1>
+                  {this.props.terms.byId[termId].courses.map(courseId => (
+                    <div
+                      key={courseId}
+                      className={`${s.course} ${this.props.target ===
+                        courseId && s.active}`}
+                    >
                       <div className={s.courseInfo}>
-                        <h2 className={s.courseTitle}>{course.name}</h2>
+                        <h2 className={s.courseTitle}>
+                          {this.props.courses.byId[courseId].name}
+                        </h2>
                         <div className={s.courseDesc}>
-                          {course.course_code} - {course.sis_course_id}
+                          {this.props.courses.byId[courseId].course_code} -{' '}
+                          {this.props.courses.byId[courseId].sis_course_id}
                         </div>
-                        <button
-                          onClick={() =>
-                            this.props.setTarget(
-                              course.id,
-                              term.courses.reduce(
-                                (acc, curr) =>
-                                  acc.concat(
-                                    curr.sections.map(section => section.id),
-                                  ),
-                                [],
-                              ),
-                              course.sections,
-                            )
-                          }
-                        >
-                          Manage
-                        </button>
+                        {this.props.target !== courseId && (
+                          <button
+                            onClick={() =>
+                              this.props.setTarget(termId, courseId)
+                            }
+                          >
+                            Manage
+                          </button>
+                        )}
                       </div>
                       <ul>
-                        {course.sections.map(section => (
-                          <li key={section.id}>{section.name}</li>
-                        ))}
+                        {this.props.courses.byId[courseId].sections.map(
+                          sectionId => (
+                            <li key={sectionId}>
+                              {this.props.sections.byId[sectionId]}
+                              {this.props.available.includes(sectionId) && (
+                                <button
+                                  onClick={() => this.props.xlist(sectionId)}
+                                >
+                                  Crosslist
+                                </button>
+                              )}
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </div>
                   ))}
@@ -94,14 +115,28 @@ class Home extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { courses, fetching } = state.canvas;
-  return { courses, fetching };
+  const {
+    terms,
+    courses,
+    sections,
+    target,
+    available,
+    pending,
+    fetching,
+  } = state.crosslist;
+  return { terms, courses, sections, target, available, pending, fetching };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setTarget: (courseId, sectionIds, xlisted) => {
-      dispatch(setCrosslistTarget({ courseId, sectionIds, xlisted }));
+    setTarget: (termId, courseId) => {
+      dispatch(setCrosslistTarget({ termId, courseId }));
+    },
+    xlist: sectionId => {
+      dispatch(crosslistSection(sectionId));
+    },
+    unxlist: sectionId => {
+      dispatch(uncrosslistSection(sectionId));
     },
   };
 }
