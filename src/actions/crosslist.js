@@ -26,12 +26,13 @@ export function getCourses() {
       const { data } = await graphqlRequest(
         '{courses{id,name,sis_course_id,course_code,term{id, name},sections{id,name}}}',
       );
-      if (!data || !data.courses)
+      if (!data || !data.courses) {
         dispatch(
           getCoursesFail([
             { key: 'general', message: 'Failed to load the course feed.' },
           ]),
         );
+      }
       // Normalize the canvas data
       const terms = { byId: {}, allIds: [] };
       const courses = { byId: {}, allIds: [] };
@@ -82,12 +83,12 @@ export function setCrosslistTarget({ termId, courseId }) {
   };
 }
 
-export function crosslistSectionDone({ courseId, sectionId }) {
+export function crosslistSectionDone(sectionId, courseId) {
   return {
     type: XLIST_SECTION_DONE,
     payload: {
-      courseId,
       sectionId,
+      courseId,
     },
   };
 }
@@ -96,21 +97,41 @@ export function crosslistSectionFail(errors) {
   return { type: XLIST_SECTION_FAIL, payload: errors };
 }
 
-export function crosslistSection({ courseId, sectionId }) {
-  return {
-    type: XLIST_SECTION,
-    payload: {
-      courseId,
-      sectionId,
-    },
+export function crosslistSection({ sectionId }) {
+  return async (dispatch, getState, { graphqlRequest }) => {
+    const courseId = getState().crosslist.target;
+    dispatch(() => ({ type: XLIST_SECTION, payload: { sectionId } }));
+    try {
+      const { data } = await graphqlRequest(
+        `mutation {crosslistCourse(sectionId: ${sectionId}, targetId: ${courseId})}`,
+      );
+      if (!data) {
+        dispatch(
+          crosslistSectionFail([
+            { key: 'general', message: 'Failed to crosslist.' },
+          ]),
+        );
+      }
+      dispatch(crosslistSectionDone(sectionId, courseId));
+    } catch (e) {
+      const errors = [
+        {
+          key: 'general',
+          message: e,
+        },
+      ];
+      dispatch(crosslistSectionFail(errors));
+      throw e;
+    }
   };
 }
 
-export function uncrosslistSectionDone({ sectionId }) {
+export function uncrosslistSectionDone(sectionId, courseId) {
   return {
     type: UNXLIST_SECTION_DONE,
     payload: {
       sectionId,
+      courseId,
     },
   };
 }
@@ -120,10 +141,39 @@ export function uncrosslistSectionFail(errors) {
 }
 
 export function uncrosslistSection({ sectionId }) {
-  return {
-    type: UNXLIST_SECTION,
-    payload: {
-      sectionId,
-    },
+  return async (dispatch, getState, { graphqlRequest }) => {
+    dispatch(() => ({ type: UNXLIST_SECTION, payload: { sectionId } }));
+    try {
+      const { data } = await graphqlRequest(
+        `mutation {uncrosslistCourse(sectionId: ${sectionId})}`,
+      );
+      if (!data) {
+        dispatch(
+          uncrosslistSectionFail([
+            { key: 'general', message: 'Failed to uncrosslist.' },
+          ]),
+        );
+      }
+      const courseId = await graphqlRequest(
+        `{section(sectionId: ${sectionId}){nonxlist_course_id}}`,
+      );
+      if (!data) {
+        dispatch(
+          uncrosslistSectionFail([
+            { key: 'general', message: 'Failed to get original course_id.' },
+          ]),
+        );
+      }
+      dispatch(uncrosslistSectionDone(sectionId, courseId));
+    } catch (e) {
+      const errors = [
+        {
+          key: 'general',
+          message: e,
+        },
+      ];
+      dispatch(uncrosslistSectionFail(errors));
+      throw e;
+    }
   };
 }

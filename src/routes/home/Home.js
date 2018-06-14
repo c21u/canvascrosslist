@@ -133,10 +133,10 @@ function mapDispatchToProps(dispatch) {
       dispatch(setCrosslistTarget({ termId, courseId }));
     },
     xlist: sectionId => {
-      dispatch(crosslistSection(sectionId));
+      dispatch(crosslistSection({ sectionId }));
     },
     unxlist: sectionId => {
-      dispatch(uncrosslistSection(sectionId));
+      dispatch(uncrosslistSection({ sectionId }));
     },
   };
 }

@@ -13,22 +13,24 @@ import {
 } from 'graphql';
 
 import courses from './queries/courses';
+import section from './queries/section';
 
-import crosslistCourses from './mutations/crosslistCourses';
-import deCrosslistCourses from './mutations/deCrosslistCourses';
+import crosslistCourse from './mutations/crosslistCourse';
+import deCrosslistCourse from './mutations/deCrosslistCourse';
 
 const schema = new Schema({
   query: new ObjectType({
     name: 'Query',
     fields: {
       courses,
+      section,
     },
   }),
   mutation: new ObjectType({
     name: 'Mutation',
     fields: {
-      crosslistCourses,
-      deCrosslistCourses,
+      crosslistCourse,
+      deCrosslistCourse,
     },
   }),
 });
