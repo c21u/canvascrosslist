@@ -48,6 +48,10 @@ class Html extends React.Component {
             <link key={script} rel="preload" href={script} as="script" />
           ))}
           <link rel="manifest" href="/site.webmanifest" />
+          <link
+            href="https://fonts.googleapis.com/css?family=Lato"
+            rel="stylesheet"
+          />
           <link rel="apple-touch-icon" href="/icon.png" />
           {styles.map(style => (
             <style
