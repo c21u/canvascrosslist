@@ -1,6 +1,7 @@
 import Canvas from 'canvas-lms-api';
 import jwt from 'jsonwebtoken';
 import { GraphQLID as StringType, GraphQLNonNull as NonNull } from 'graphql';
+import FullSectionType from '../types/FullSectionItemType';
 import config from '../../config';
 
 const canvas = new Canvas(config.canvas.url, {
@@ -8,7 +9,7 @@ const canvas = new Canvas(config.canvas.url, {
 });
 
 const crosslist = {
-  type: StringType,
+  type: FullSectionType,
   args: {
     targetId: { type: new NonNull(StringType) },
     sectionId: { type: new NonNull(StringType) },
@@ -22,7 +23,6 @@ const crosslist = {
       .post(`sections/${args.sectionId}/crosslist/${args.targetId}`, {
         as_user_id: userid,
       })
-      .then(() => 'OK')
       .catch(err => {
         throw err;
       });

@@ -6,6 +6,7 @@ import {
   UNXLIST_SECTION_DONE,
   GET_COURSES,
   GET_COURSES_DONE,
+  GET_COURSE_DONE,
 } from '../constants';
 
 export default function crosslist(
@@ -55,6 +56,11 @@ export default function crosslist(
         available: state.available.filter(sectionFilter),
         pending: [...state.pending, action.payload.sectionId],
       };
+      newCoursesById[state.target].sections = [
+        ...newCoursesById[state.target].sections,
+        action.payload.sectionId,
+      ];
+
       newState.courses.byId = newCoursesById;
       return newState;
     }
@@ -70,20 +76,14 @@ export default function crosslist(
       ].sections.filter(sectionFilter);
       return newState;
     }
-    case XLIST_SECTION_DONE: {
-      const newState = {
+    case XLIST_SECTION_DONE:
+      return {
         ...state,
         // move section from pending to xlisted
         pending: state.pending.filter(
           sectionId => action.payload.sectionId !== sectionId,
         ),
       };
-      newState.courses.byId[action.payload.courseId].sections = [
-        ...state.courses.byId[action.payload.courseId].sections,
-        action.payload.sectionId,
-      ];
-      return newState;
-    }
     case UNXLIST_SECTION_DONE: {
       const newState = {
         ...state,
@@ -96,7 +96,7 @@ export default function crosslist(
       // put the section back in it's original course
       newState.courses.byId[action.payload.courseId].sections = [
         ...state.courses.byId[action.payload.courseId].sections,
-        action.payload.courseId,
+        action.payload.sectionId,
       ];
       return newState;
     }
@@ -116,6 +116,20 @@ export default function crosslist(
         sections: action.payload.sections,
         fetching: false,
       };
+    case GET_COURSE_DONE: {
+      const newState = {
+        ...state,
+        courses: {
+          ...state.courses,
+          allIds: [...state.courses.allIds, action.payload.courseId],
+        },
+      };
+      newState.courses.byId[action.payload.courseId] = {
+        ...action.payload.course,
+        sections: [],
+      };
+      return newState;
+    }
     default:
       return state;
   }

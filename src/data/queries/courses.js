@@ -1,4 +1,4 @@
-import { GraphQLList as List } from 'graphql';
+import { GraphQLList as List, GraphQLID as StringType } from 'graphql';
 import Canvas from 'canvas-lms-api';
 import jwt from 'jsonwebtoken';
 import CourseItemType from '../types/CourseItemType';
@@ -10,13 +10,21 @@ const canvas = new Canvas(config.canvas.url, {
 
 const courses = {
   type: new List(CourseItemType),
+  args: {
+    courseId: { type: StringType },
+  },
+
   resolve(obj, args, ctx) {
     const userid = ctx.user
       ? ctx.user.custom_canvas_user_id
       : jwt.verify(ctx.token, config.auth.jwt.secret).custom_canvas_user_id;
 
+    let url = `users/${userid}/courses`;
+    if (args.courseId) {
+      url += `/${args.courseId}`;
+    }
     return canvas
-      .get(`users/${userid}/courses`, {
+      .get(url, {
         enrollment_role: 'TeacherEnrollment',
         enrollment_state: 'active',
         exclude_blueprint_courses: true,

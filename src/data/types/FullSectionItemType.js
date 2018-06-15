@@ -6,7 +6,7 @@ import {
 } from 'graphql';
 import { GraphQLDateTime as DateType } from 'graphql-iso-date';
 
-const SectionItemType = new ObjectType({
+const FullSectionItemType = new ObjectType({
   name: 'FullSectionItem',
   fields: {
     id: { type: new NonNull(IDType) },
@@ -20,4 +20,4 @@ const SectionItemType = new ObjectType({
   },
 });
 
-export default SectionItemType;
+export default FullSectionItemType;

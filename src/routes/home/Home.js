@@ -34,12 +34,16 @@ class Home extends React.Component {
       allIds: PropTypes.arrayOf(PropTypes.string),
     }).isRequired,
     fetching: PropTypes.bool.isRequired,
-    target: PropTypes.string.isRequired,
+    target: PropTypes.string,
     available: PropTypes.arrayOf(PropTypes.string).isRequired,
-    // pending: PropTypes.arrayOf(PropTypes.string).isRequired,
+    pending: PropTypes.arrayOf(PropTypes.string).isRequired,
     setTarget: PropTypes.func.isRequired,
     xlist: PropTypes.func.isRequired,
-    // unxlist: PropTypes.func.isRequired,
+    unxlist: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    target: null,
   };
 
   render() {
@@ -62,48 +66,72 @@ class Home extends React.Component {
                   <h1 className={s.termTitle}>
                     {this.props.terms.byId[termId].name}
                   </h1>
-                  {this.props.terms.byId[termId].courses.map(courseId => (
-                    <div
-                      key={courseId}
-                      className={`${s.course} ${this.props.target ===
-                        courseId && s.active}`}
-                    >
-                      <div className={s.courseInfo}>
-                        <h2 className={s.courseTitle}>
-                          {this.props.courses.byId[courseId].name}
-                        </h2>
-                        <div className={s.courseDesc}>
-                          {this.props.courses.byId[courseId].course_code} -{' '}
-                          {this.props.courses.byId[courseId].sis_course_id}
+                  {this.props.terms.byId[termId].courses
+                    .filter(
+                      courseId =>
+                        this.props.courses.byId[courseId].sections.length > 0,
+                    )
+                    .map(courseId => (
+                      <div
+                        key={courseId}
+                        className={`${s.course} ${this.props.target ===
+                          courseId && s.active}`}
+                      >
+                        <div className={s.courseInfo}>
+                          <h2 className={s.courseTitle}>
+                            {this.props.courses.byId[courseId].name}
+                          </h2>
+                          <div className={s.courseDesc}>
+                            {this.props.courses.byId[courseId].course_code} -{' '}
+                            {this.props.courses.byId[courseId].sis_course_id}
+                          </div>
+                          {this.props.target !== courseId && (
+                            <button
+                              onClick={() =>
+                                this.props.setTarget(termId, courseId)
+                              }
+                            >
+                              Manage
+                            </button>
+                          )}
                         </div>
-                        {this.props.target !== courseId && (
-                          <button
-                            onClick={() =>
-                              this.props.setTarget(termId, courseId)
-                            }
-                          >
-                            Manage
-                          </button>
-                        )}
+                        <ul>
+                          {this.props.courses.byId[courseId].sections.map(
+                            sectionId => (
+                              <li key={sectionId}>
+                                {this.props.sections.byId[sectionId]}
+                                {this.props.available.includes(sectionId) && (
+                                  <button
+                                    onClick={() => this.props.xlist(sectionId)}
+                                  >
+                                    Crosslist
+                                  </button>
+                                )}
+                                {this.props.target === courseId &&
+                                  this.props.courses.byId[
+                                    courseId
+                                    // this is a bit of a kludge because the section could be renamed, but we have to do a separate request for each section if we want to get their sis_section_id
+                                  ].sis_course_id.slice(-5) !==
+                                    this.props.sections.byId[sectionId].slice(
+                                      -5,
+                                    ) && (
+                                    <button
+                                      onClick={() =>
+                                        this.props.unxlist(sectionId)
+                                      }
+                                    >
+                                      Un-Crosslist
+                                    </button>
+                                  )}
+                                {this.props.pending.includes(sectionId) && (
+                                  <Spinner />
+                                )}
+                              </li>
+                            ),
+                          )}
+                        </ul>
                       </div>
-                      <ul>
-                        {this.props.courses.byId[courseId].sections.map(
-                          sectionId => (
-                            <li key={sectionId}>
-                              {this.props.sections.byId[sectionId]}
-                              {this.props.available.includes(sectionId) && (
-                                <button
-                                  onClick={() => this.props.xlist(sectionId)}
-                                >
-                                  Crosslist
-                                </button>
-                              )}
-                            </li>
-                          ),
-                        )}
-                      </ul>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               ))}
             </>
