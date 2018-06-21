@@ -1708,9 +1708,9 @@ caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000817, caniuse-lite@^1.0.300008
   version "1.0.30000819"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000819.tgz#aabee5fd15a080febab6ae5d30c9ea15f4c6d4e2"
 
-canvas-lms-api@^0.2.0:
+"canvas-lms-api@https://github.com/stuartf/canvas-lms-api.git":
   version "0.2.0"
-  resolved "https://registry.yarnpkg.com/canvas-lms-api/-/canvas-lms-api-0.2.0.tgz#4884245437342e5b2efefff590e8d7efe62ba0db"
+  resolved "https://github.com/stuartf/canvas-lms-api.git#76e0b65a64a1b2142401f1978dd17a79e23dd99e"
   dependencies:
     bluebird "^3.1.1"
     lodash "^4.0.0"
