@@ -71,7 +71,6 @@ export function getCourses() {
         },
       ];
       dispatch(getCoursesFail(errors));
-      throw e;
     }
   };
 }
@@ -165,7 +164,6 @@ export function crosslistSection({ sectionId }) {
         },
       ];
       dispatch(crosslistSectionFail(errors));
-      throw e;
     }
   };
 }
@@ -216,7 +214,6 @@ export function uncrosslistSection({ sectionId }) {
         },
       ];
       dispatch(uncrosslistSectionFail(errors));
-      throw e;
     }
   };
 }
