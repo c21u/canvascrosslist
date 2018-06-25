@@ -47,88 +47,108 @@ class Home extends React.Component {
   };
 
   render() {
-    if (this.props.fetching) {
+    const {
+      terms,
+      courses,
+      sections,
+      fetching,
+      target,
+      pending,
+      available,
+      setTarget,
+      xlist,
+      unxlist,
+    } = this.props;
+
+    if (fetching) {
       return <Spinner />;
     }
 
     return (
       <div className={s.root}>
         <div className={s.container}>
-          {this.props.terms.allIds.length === 0 ? (
+          {terms.allIds.length === 0 ? (
             <h1>
               You do not appear to be listed as instructor of any active
               courses.
             </h1>
           ) : (
             <>
-              {this.props.terms.allIds.map(termId => (
+              <h1 className={s.warning}>
+                Cross-listing should be done while courses are unpublished.
+                Coursework is retained with the course, not with the section
+                enrollments, so if a published course is cross-listed, all
+                cross-listed enrollments will lose any associated assignment
+                submissions and grades. Sections can only be in one course at a
+                time. Once a section is cross-listed, you can re-cross-list or
+                un-cross-list the section.
+              </h1>
+              <div className={s.note}>
+                <p>
+                  Section visibility is an important option to help protect you
+                  from violating the Federal Education Rights Privacy Act
+                  (FERPA). You can allow students to communicate and view
+                  students in other sections, or you can isolate students to
+                  their section. If course sections meet together and you would
+                  like students to communicate with each other, do not isolate
+                  your sections. If course sections do not meet together, we
+                  recommend isolating the sections to comply with FERPA. This
+                  setting affects all cross-listed sections.
+                </p>
+                <p>
+                  If you would like to isolate your sections, send your request
+                  to <a href="mailto:canvas@gatech.edu">canvas@gatech.edu</a>.
+                </p>
+              </div>
+              {terms.allIds.map(termId => (
                 <div key={termId}>
-                  <h1 className={s.termTitle}>
-                    {this.props.terms.byId[termId].name}
-                  </h1>
-                  {this.props.terms.byId[termId].courses
+                  <h1 className={s.termTitle}>{terms.byId[termId].name}</h1>
+                  {terms.byId[termId].courses
                     .filter(
-                      courseId =>
-                        this.props.courses.byId[courseId].sections.length > 0,
+                      courseId => courses.byId[courseId].sections.length > 0,
                     )
                     .map(courseId => (
                       <div
                         key={courseId}
-                        className={`${s.course} ${this.props.target ===
-                          courseId && s.active}`}
+                        className={`${s.course} ${target === courseId &&
+                          s.active}`}
                       >
                         <div className={s.courseInfo}>
                           <h2 className={s.courseTitle}>
-                            {this.props.courses.byId[courseId].name}
+                            {courses.byId[courseId].name}
                           </h2>
                           <div className={s.courseDesc}>
-                            {this.props.courses.byId[courseId].course_code} -{' '}
-                            {this.props.courses.byId[courseId].sis_course_id}
+                            {courses.byId[courseId].course_code} -{' '}
+                            {courses.byId[courseId].sis_course_id}
                           </div>
-                          {this.props.target !== courseId && (
-                            <button
-                              onClick={() =>
-                                this.props.setTarget(termId, courseId)
-                              }
-                            >
+                          {target !== courseId && (
+                            <button onClick={() => setTarget(termId, courseId)}>
                               Manage
                             </button>
                           )}
                         </div>
                         <ul>
-                          {this.props.courses.byId[courseId].sections.map(
-                            sectionId => (
-                              <li key={sectionId}>
-                                {this.props.sections.byId[sectionId]}
-                                {this.props.available.includes(sectionId) && (
-                                  <button
-                                    onClick={() => this.props.xlist(sectionId)}
-                                  >
-                                    Crosslist
+                          {courses.byId[courseId].sections.map(sectionId => (
+                            <li key={sectionId}>
+                              {sections.byId[sectionId]}
+                              {available.includes(sectionId) && (
+                                <button onClick={() => xlist(sectionId)}>
+                                  Crosslist
+                                </button>
+                              )}
+                              {target === courseId &&
+                                courses.byId[
+                                  courseId
+                                  // this is a bit of a kludge because the section could be renamed, but we have to do a separate request for each section if we want to get their sis_section_id
+                                ].sis_course_id.slice(-5) !==
+                                  sections.byId[sectionId].slice(-5) && (
+                                  <button onClick={() => unxlist(sectionId)}>
+                                    Un-Crosslist
                                   </button>
                                 )}
-                                {this.props.target === courseId &&
-                                  this.props.courses.byId[
-                                    courseId
-                                    // this is a bit of a kludge because the section could be renamed, but we have to do a separate request for each section if we want to get their sis_section_id
-                                  ].sis_course_id.slice(-5) !==
-                                    this.props.sections.byId[sectionId].slice(
-                                      -5,
-                                    ) && (
-                                    <button
-                                      onClick={() =>
-                                        this.props.unxlist(sectionId)
-                                      }
-                                    >
-                                      Un-Crosslist
-                                    </button>
-                                  )}
-                                {this.props.pending.includes(sectionId) && (
-                                  <Spinner />
-                                )}
-                              </li>
-                            ),
-                          )}
+                              {pending.includes(sectionId) && <Spinner />}
+                            </li>
+                          ))}
                         </ul>
                       </div>
                     ))}

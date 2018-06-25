@@ -102,3 +102,12 @@ button {
     font-size: 1.125rem;
   }
 }
+
+.warning::before {
+  content: 'Warning: ';
+  color: #f33;
+}
+
+.note {
+  padding: 0.25rem;
+}
