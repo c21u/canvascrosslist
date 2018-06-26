@@ -1,4 +1,4 @@
-FROM node:8.10.0-alpine as builder
+FROM node:8.11.2-alpine as builder
 
 # Set a working directory
 WORKDIR /usr/src/app
