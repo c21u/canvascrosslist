@@ -15,7 +15,7 @@ import { getCourses } from '../../actions/crosslist';
 async function action({ store }) {
   store.dispatch(getCourses());
   return {
-    title: 'Crosslist',
+    title: 'Combine Sections',
     chunks: ['home'],
     component: (
       <Layout>

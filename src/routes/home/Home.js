@@ -74,15 +74,21 @@ class Home extends React.Component {
             </h1>
           ) : (
             <>
-              <h1 className={s.warning}>
-                Cross-listing should be done while courses are unpublished.
-                Coursework is retained with the course, not with the section
-                enrollments, so if a published course is cross-listed, all
-                cross-listed enrollments will lose any associated assignment
-                submissions and grades. Sections can only be in one course at a
-                time. Once a section is cross-listed, you can re-cross-list or
-                un-cross-list the section.
-              </h1>
+              <ul className={s.warning}>
+                <li>
+                  Do not combine sections if students have already submitted
+                  work in one of your sections. Coursework is retained with the
+                  course, not with the section enrollments. So if a section is
+                  combined with a section in another course, all enrollments
+                  will lose any associated assignment submissions and grades.
+                </li>
+                <li>Sections can only be in one course at a time.</li>
+                <li>
+                  Once a section is combined with another section, you can
+                  separate the section back out. This will return it to its
+                  original course.
+                </li>
+              </ul>
               <div className={s.note}>
                 <p>
                   Section visibility is an important option to help protect you
@@ -93,7 +99,7 @@ class Home extends React.Component {
                   like students to communicate with each other, do not isolate
                   your sections. If course sections do not meet together, we
                   recommend isolating the sections to comply with FERPA. This
-                  setting affects all cross-listed sections.
+                  setting affects all combined sections.
                 </p>
                 <p>
                   If you would like to isolate your sections, send your request
@@ -133,7 +139,7 @@ class Home extends React.Component {
                               {sections.byId[sectionId]}
                               {available.includes(sectionId) && (
                                 <button onClick={() => xlist(sectionId)}>
-                                  Crosslist
+                                  Combine
                                 </button>
                               )}
                               {target === courseId &&
@@ -143,7 +149,7 @@ class Home extends React.Component {
                                 ].sis_course_id.slice(-5) !==
                                   sections.byId[sectionId].slice(-5) && (
                                   <button onClick={() => unxlist(sectionId)}>
-                                    Un-Crosslist
+                                    Separate
                                   </button>
                                 )}
                               {pending.includes(sectionId) && <Spinner />}
