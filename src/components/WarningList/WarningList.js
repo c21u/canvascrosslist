@@ -25,7 +25,7 @@ class WarningList extends React.Component {
   render() {
     return (
       <ul className={s.warning}>
-        {this.props.warnings.map(warning => <li key={nextKey}>{warning}</li>)}
+        {this.props.warnings.map(warning => <li key={nextKey()}>{warning}</li>)}
       </ul>
     );
   }

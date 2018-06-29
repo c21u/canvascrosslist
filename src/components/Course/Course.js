@@ -17,8 +17,8 @@ class Course extends React.Component {
   static propTypes = {
     course: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      courseCode: PropTypes.string.isRequired,
-      sisCourseId: PropTypes.string.isRequired,
+      course_code: PropTypes.string.isRequired,
+      sis_course_id: PropTypes.string.isRequired,
       sections: PropTypes.arrayOf(PropTypes.string).isRequired,
     }).isRequired,
     xlist: PropTypes.func.isRequired,
