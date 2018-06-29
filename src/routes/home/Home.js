@@ -17,6 +17,7 @@ import {
   uncrosslistSection,
 } from '../../actions/crosslist';
 import Spinner from '../../components/Spinner';
+import Section from '../../components/Section';
 import s from './Home.css';
 
 class Home extends React.Component {
@@ -135,25 +136,16 @@ class Home extends React.Component {
                         </div>
                         <ul>
                           {courses.byId[courseId].sections.map(sectionId => (
-                            <li key={sectionId}>
-                              {sections.byId[sectionId]}
-                              {available.includes(sectionId) && (
-                                <button onClick={() => xlist(sectionId)}>
-                                  Combine
-                                </button>
-                              )}
-                              {target === courseId &&
-                                courses.byId[
-                                  courseId
-                                  // this is a bit of a kludge because the section could be renamed, but we have to do a separate request for each section if we want to get their sis_section_id
-                                ].sis_course_id.slice(-5) !==
-                                  sections.byId[sectionId].slice(-5) && (
-                                  <button onClick={() => unxlist(sectionId)}>
-                                    Separate
-                                  </button>
-                                )}
-                              {pending.includes(sectionId) && <Spinner />}
-                            </li>
+                            <Section
+                              key={sectionId}
+                              section={sections.byId[sectionId]}
+                              sisCourseId={courses.byId[courseId].sis_course_id}
+                              xlistOnClick={() => xlist(sectionId)}
+                              unxlistOnClick={() => unxlist(sectionId)}
+                              isTarget={target === courseId}
+                              isPending={pending.includes(sectionId)}
+                              isAvailable={available.includes(sectionId)}
+                            />
                           ))}
                         </ul>
                       </div>

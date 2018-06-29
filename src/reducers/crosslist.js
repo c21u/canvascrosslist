@@ -65,15 +65,11 @@ export default function crosslist(
       return newState;
     }
     case UNXLIST_SECTION: {
-      const sectionFilter = sectionId => action.payload.sectionId !== sectionId;
       const newState = {
         ...state,
         // move section from xlisted to pending
         pending: [...state.pending, action.payload.sectionId],
       };
-      newState.courses.byId[state.target].sections = newState.courses.byId[
-        state.target
-      ].sections.filter(sectionFilter);
       return newState;
     }
     case XLIST_SECTION_DONE:
@@ -85,20 +81,41 @@ export default function crosslist(
         ),
       };
     case UNXLIST_SECTION_DONE: {
-      const newState = {
+      const sectionFilter = sectionId => action.payload.sectionId !== sectionId;
+      return {
         ...state,
         // move section from pending to available
         pending: state.pending.filter(
           sectionId => action.payload.sectionId !== sectionId,
         ),
         available: [...state.available, action.payload.sectionId],
+        // move section to its original course
+        courses: {
+          ...state.courses,
+          byId: {
+            ...Object.entries(state.courses.byId)
+              .map(([key, value]) => {
+                if (key === action.payload.courseId) {
+                  return [
+                    key,
+                    {
+                      ...value,
+                      sections: [...value.sections, action.payload.sectionId],
+                    },
+                  ];
+                }
+                return [
+                  key,
+                  {
+                    ...value,
+                    sections: value.sections.filter(sectionFilter),
+                  },
+                ];
+              })
+              .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+          },
+        },
       };
-      // put the section back in it's original course
-      newState.courses.byId[action.payload.courseId].sections = [
-        ...state.courses.byId[action.payload.courseId].sections,
-        action.payload.sectionId,
-      ];
-      return newState;
     }
     case GET_COURSES:
       return {
