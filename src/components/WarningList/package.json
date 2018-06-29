@@ -1,0 +1,6 @@
+{
+  "name": "WarningList",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./WarningList.js"
+}

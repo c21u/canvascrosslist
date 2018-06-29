@@ -17,7 +17,8 @@ import {
   uncrosslistSection,
 } from '../../actions/crosslist';
 import Spinner from '../../components/Spinner';
-import Section from '../../components/Section';
+import Course from '../../components/Course';
+import WarningList from '../../components/WarningList';
 import s from './Home.css';
 
 class Home extends React.Component {
@@ -75,21 +76,13 @@ class Home extends React.Component {
             </h1>
           ) : (
             <>
-              <ul className={s.warning}>
-                <li>
-                  Do not combine sections if students have already submitted
-                  work in one of your sections. Coursework is retained with the
-                  course, not with the section enrollments. So if a section is
-                  combined with a section in another course, all enrollments
-                  will lose any associated assignment submissions and grades.
-                </li>
-                <li>Sections can only be in one course at a time.</li>
-                <li>
-                  Once a section is combined with another section, you can
-                  separate the section back out. This will return it to its
-                  original course.
-                </li>
-              </ul>
+              <WarningList
+                warnings={[
+                  'Do not combine sections if students have already submitted work in one of your sections. Coursework is retained with the course, not with the section enrollments. So if a section is combined with a section in another course, all enrollments will lose any associated assignment submissions and grades.',
+                  'Sections can only be in one course at a time.',
+                  'Once a section is combined with another section, you can separate the section back out. This will return it to its original course.',
+                ]}
+              />
               <div className={s.note}>
                 <p>
                   Section visibility is an important option to help protect you
@@ -115,40 +108,17 @@ class Home extends React.Component {
                       courseId => courses.byId[courseId].sections.length > 0,
                     )
                     .map(courseId => (
-                      <div
+                      <Course
                         key={courseId}
-                        className={`${s.course} ${target === courseId &&
-                          s.active}`}
-                      >
-                        <div className={s.courseInfo}>
-                          <h2 className={s.courseTitle}>
-                            {courses.byId[courseId].name}
-                          </h2>
-                          <div className={s.courseDesc}>
-                            {courses.byId[courseId].course_code} -{' '}
-                            {courses.byId[courseId].sis_course_id}
-                          </div>
-                          {target !== courseId && (
-                            <button onClick={() => setTarget(termId, courseId)}>
-                              Manage
-                            </button>
-                          )}
-                        </div>
-                        <ul>
-                          {courses.byId[courseId].sections.map(sectionId => (
-                            <Section
-                              key={sectionId}
-                              section={sections.byId[sectionId]}
-                              sisCourseId={courses.byId[courseId].sis_course_id}
-                              xlistOnClick={() => xlist(sectionId)}
-                              unxlistOnClick={() => unxlist(sectionId)}
-                              isTarget={target === courseId}
-                              isPending={pending.includes(sectionId)}
-                              isAvailable={available.includes(sectionId)}
-                            />
-                          ))}
-                        </ul>
-                      </div>
+                        course={courses.byId[courseId]}
+                        xlist={xlist}
+                        unxlist={unxlist}
+                        setTargetOnClick={() => setTarget(termId, courseId)}
+                        isTarget={target === courseId}
+                        pending={pending}
+                        available={available}
+                        sections={sections}
+                      />
                     ))}
                 </div>
               ))}

@@ -1,0 +1,4 @@
+.warning::before {
+  content: 'Warning: ';
+  color: #f33;
+}
