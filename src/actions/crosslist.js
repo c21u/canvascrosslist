@@ -75,11 +75,12 @@ export function getCourses() {
   };
 }
 
-export function getCourseDone(courseId, course) {
+export function getCourseDone(courseId, termId, course) {
   return {
     type: GET_COURSE_DONE,
     payload: {
       courseId,
+      termId,
       course,
     },
   };
@@ -94,7 +95,7 @@ export function getCourse(courseId) {
     dispatch({ type: GET_COURSE, payload: { courseId } });
     try {
       const { data } = await graphqlRequest(
-        `{courses(courseId: ${courseId}){name,course_code,sis_course_id}}`,
+        `{courses(courseId: ${courseId}){name,course_code,sis_course_id,term{id},sections{id}}}`,
       );
       if (!data) {
         dispatch(
@@ -103,7 +104,13 @@ export function getCourse(courseId) {
           ]),
         );
       }
-      dispatch(getCourseDone(courseId, data));
+      const course = {
+        name: data.courses[0].name,
+        course_code: data.courses[0].course_code,
+        sis_course_id: data.courses[0].sis_course_id,
+        sections: data.courses[0].sections.map(section => section.id),
+      };
+      dispatch(getCourseDone(courseId, data.courses[0].term.id, course));
     } catch (e) {
       const errors = [
         {

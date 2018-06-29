@@ -39,39 +39,38 @@ export default function crosslist(
     case XLIST_SECTION: {
       const sectionFilter = sectionId => action.payload.sectionId !== sectionId;
 
-      // remove the section from the course it's currently in
-      const newCoursesById = Object.entries(state.courses.byId)
-        .map(([key, value]) => [
-          key,
-          {
-            ...value,
-            sections: value.sections.filter(sectionFilter),
-          },
-        ])
-        .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {});
-
-      const newState = {
+      return {
         ...state,
         // move section from available to pending
         available: state.available.filter(sectionFilter),
         pending: [...state.pending, action.payload.sectionId],
+        // remove the section from the course it's currently in
+        courses: {
+          ...state.courses,
+          byId: Object.entries(state.courses.byId)
+            .map(([key, value]) => [
+              key,
+              {
+                ...value,
+                sections:
+                  key === state.target
+                    ? [
+                        ...state.courses.byId[state.target].sections,
+                        action.payload.sectionId,
+                      ]
+                    : value.sections.filter(sectionFilter),
+              },
+            ])
+            .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+        },
       };
-      newCoursesById[state.target].sections = [
-        ...newCoursesById[state.target].sections,
-        action.payload.sectionId,
-      ];
-
-      newState.courses.byId = newCoursesById;
-      return newState;
     }
-    case UNXLIST_SECTION: {
-      const newState = {
+    case UNXLIST_SECTION:
+      return {
         ...state,
         // move section from xlisted to pending
         pending: [...state.pending, action.payload.sectionId],
       };
-      return newState;
-    }
     case XLIST_SECTION_DONE:
       return {
         ...state,
@@ -133,20 +132,32 @@ export default function crosslist(
         sections: action.payload.sections,
         fetching: false,
       };
-    case GET_COURSE_DONE: {
-      const newState = {
+    case GET_COURSE_DONE:
+      return {
         ...state,
         courses: {
           ...state.courses,
           allIds: [...state.courses.allIds, action.payload.courseId],
+          byId: {
+            ...state.courses.byId,
+            [action.payload.courseId]: action.payload.course,
+          },
+        },
+        terms: {
+          ...state.terms,
+          byId: {
+            ...state.terms.byId,
+            [action.payload.termId]: {
+              ...state.terms.byId[action.payload.termId],
+              // FIXME de-duplicate?
+              courses: [
+                ...state.terms.byId[action.payload.termId].courses,
+                action.payload.courseId,
+              ],
+            },
+          },
         },
       };
-      newState.courses.byId[action.payload.courseId] = {
-        ...action.payload.course,
-        sections: [],
-      };
-      return newState;
-    }
     default:
       return state;
   }

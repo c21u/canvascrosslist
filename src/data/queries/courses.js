@@ -19,18 +19,31 @@ const courses = {
       ? ctx.user.custom_canvas_user_id
       : jwt.verify(ctx.token, config.auth.jwt.secret).custom_canvas_user_id;
 
-    let url = `users/${userid}/courses`;
-    if (args.courseId) {
-      url += `/${args.courseId}`;
-    }
+    const url = args.courseId
+      ? `courses/${args.courseId}`
+      : `users/${userid}/courses`;
+
+    let options = {
+      include: ['term', 'sections'],
+    };
+
+    options = args.courseId
+      ? options
+      : {
+          ...options,
+          enrollment_role: 'TeacherEnrollment',
+          enrollment_state: 'active',
+          exclude_blueprint_courses: true,
+        };
+
     return canvas
-      .get(url, {
-        enrollment_role: 'TeacherEnrollment',
-        enrollment_state: 'active',
-        exclude_blueprint_courses: true,
-        include: ['term', 'sections'],
-      })
-      .then(data => data.filter(course => course.sis_course_id))
+      .get(url, options)
+      .then(
+        data =>
+          Array.isArray(data)
+            ? data.filter(course => course.sis_course_id)
+            : [data],
+      )
       .catch(err => {
         throw err;
       });
