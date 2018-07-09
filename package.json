@@ -15,7 +15,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.51",
     "body-parser": "^1.18.3",
-    "canvas-lms-api": "https://github.com/stuartf/canvas-lms-api.git",
+    "canvas-lms-api": "0.2.1",
     "classnames": "^2.2.6",
     "express": "^4.16.3",
     "express-graphql": "^0.6.12",
