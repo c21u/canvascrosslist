@@ -27,7 +27,7 @@ export function getCourses() {
     dispatch({ type: GET_COURSES });
     try {
       const { data } = await graphqlRequest(
-        '{courses{id,name,sis_course_id,course_code,term{id, name},sections{id,name}}}',
+        '{courses{id,name,sis_course_id,course_code,term{id, name, end_at},sections{id,name}}}',
       );
       if (!data || !data.courses) {
         dispatch(
@@ -58,6 +58,7 @@ export function getCourses() {
           terms.byId[course.term.id] = {
             name: course.term.name,
             courses: [course.id],
+            end_at: new Date(course.term.end_at),
           };
           terms.allIds.push(course.term.id);
         }

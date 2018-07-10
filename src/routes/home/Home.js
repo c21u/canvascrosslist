@@ -100,28 +100,35 @@ class Home extends React.Component {
                   to <a href="mailto:canvas@gatech.edu">canvas@gatech.edu</a>.
                 </p>
               </div>
-              {terms.allIds.map(termId => (
-                <div key={termId}>
-                  <h1 className={s.termTitle}>{terms.byId[termId].name}</h1>
-                  {terms.byId[termId].courses
-                    .filter(
-                      courseId => courses.byId[courseId].sections.length > 0,
-                    )
-                    .map(courseId => (
-                      <Course
-                        key={courseId}
-                        course={courses.byId[courseId]}
-                        xlist={xlist}
-                        unxlist={unxlist}
-                        setTargetOnClick={() => setTarget(termId, courseId)}
-                        isTarget={target === courseId}
-                        pending={pending}
-                        available={available}
-                        sections={sections}
-                      />
-                    ))}
-                </div>
-              ))}
+              {terms.allIds
+                .sort((a, b) => terms.byId[a].end_at - terms.byId[b].end_at)
+                .map(termId => (
+                  <div key={termId}>
+                    <h1 className={s.termTitle}>{terms.byId[termId].name}</h1>
+                    {terms.byId[termId].courses
+                      .filter(
+                        courseId => courses.byId[courseId].sections.length > 0,
+                      )
+                      .sort((a, b) =>
+                        courses.byId[a].name.localeCompare(
+                          courses.byId[b].name,
+                        ),
+                      )
+                      .map(courseId => (
+                        <Course
+                          key={courseId}
+                          course={courses.byId[courseId]}
+                          xlist={xlist}
+                          unxlist={unxlist}
+                          setTargetOnClick={() => setTarget(termId, courseId)}
+                          isTarget={target === courseId}
+                          pending={pending}
+                          available={available}
+                          sections={sections}
+                        />
+                      ))}
+                  </div>
+                ))}
             </>
           )}
         </div>
@@ -157,6 +164,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(s)(Home),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withStyles(s)(Home));
