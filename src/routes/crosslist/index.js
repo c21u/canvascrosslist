@@ -8,17 +8,18 @@
  */
 
 import React from 'react';
-import Home from './Home';
+import Crosslist from './Crosslist';
 import Layout from '../../components/Layout';
-import Terms from './Terms.md';
+import { getCourses } from '../../actions/crosslist';
 
-async function action() {
+async function action({ store }) {
+  store.dispatch(getCourses());
   return {
-    title: 'Combine Courses',
-    chunks: ['home'],
+    title: 'Combine Sections',
+    chunks: ['crosslist'],
     component: (
       <Layout>
-        <Home {...Terms} />
+        <Crosslist />
       </Layout>
     ),
   };
