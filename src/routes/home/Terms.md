@@ -15,7 +15,7 @@ There are several FERPA considerations for combining sections in Canvas:
 - Can I combine my sections?
   - If you teach the sections as a single course, then they can be combined. For example, if you have multiple sections that work, collaborate, or attend lectures together (either in-person or online), they could be combined.
 - Should I isolate my sections?
-  - Section visibility is an important option to help protect you from violating the Federal Education Rights Privacy Act (FERPA). If course sections meet together and you would like students to communicate with each other, do not isolate your sections. If course sections do not meet together, we recommend isolating the sections to comply with FERPA. This setting affects all combined sections. To isolate your combined sections, send a request to canvas@gatech.edu.
+  - Section visibility is an important option to help protect you from violating the Family Education Rights Privacy Act (FERPA). If course sections meet together and you would like students to communicate with each other, do not isolate your sections. If course sections do not meet together, we recommend isolating the sections to comply with FERPA. This setting affects all combined sections. To isolate your combined sections, send a request to canvas@gatech.edu.
 - Can I isolate a single student in a combined course?
   - Yes. If you would like to limit individual users in a section – as opposed to all students in a section – to only see users enrolled in the same section, follow the instructions at https://community.canvaslms.com/docs/DOC-13026.
 - Can I combine a section I am teaching with a section taught by someone else?
