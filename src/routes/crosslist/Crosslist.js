@@ -16,10 +16,35 @@ import {
   crosslistSection,
   uncrosslistSection,
 } from '../../actions/crosslist';
+import Link from '../../components/Link';
 import Spinner from '../../components/Spinner';
 import Course from '../../components/Course';
 import WarningList from '../../components/WarningList';
 import s from './Crosslist.css';
+
+function renderErrors(errors) {
+  return errors ? (
+    <p>
+      There was an error communicating with Canvas, please{' '}
+      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+      <Link to="#" onClick={Location.reload}>
+        refresh the page
+      </Link>{' '}
+      to continue.
+    </p>
+  ) : null;
+}
+
+function renderNoCourses(terms, errors) {
+  if (!errors && terms.allIds.length === 0) {
+    return (
+      <h1>
+        You do not appear to be listed as instructor of any active courses.
+      </h1>
+    );
+  }
+  return null;
+}
 
 class Crosslist extends React.Component {
   static propTypes = {
@@ -42,10 +67,12 @@ class Crosslist extends React.Component {
     setTarget: PropTypes.func.isRequired,
     xlist: PropTypes.func.isRequired,
     unxlist: PropTypes.func.isRequired,
+    errors: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
     target: null,
+    errors: null,
   };
 
   render() {
@@ -60,6 +87,7 @@ class Crosslist extends React.Component {
       setTarget,
       xlist,
       unxlist,
+      errors,
     } = this.props;
 
     if (fetching) {
@@ -70,12 +98,9 @@ class Crosslist extends React.Component {
       <div className={s.root}>
         <div className={s.container}>
           <h2>Combine Courses</h2>
-          {terms.allIds.length === 0 ? (
-            <h1>
-              You do not appear to be listed as instructor of any active
-              courses.
-            </h1>
-          ) : (
+          {renderErrors(errors)}
+          {renderNoCourses(terms, errors)}
+          {errors || terms.allIds.length === 0 ? null : (
             <>
               <WarningList
                 warnings={[
@@ -90,6 +115,12 @@ class Crosslist extends React.Component {
                   If you would like to isolate your sections, send your request
                   to <a href="mailto:canvas@gatech.edu">canvas@gatech.edu</a>.
                 </p>
+              </div>
+              <div className={s.note}>
+                <h3>
+                  To get started, click the &quot;Manage&quot; button on the
+                  course you would like to combine sections into.
+                </h3>
               </div>
               {terms.allIds
                 .sort((a, b) => terms.byId[a].end_at - terms.byId[b].end_at)
@@ -137,8 +168,18 @@ function mapStateToProps(state) {
     available,
     pending,
     fetching,
+    errors,
   } = state.crosslist;
-  return { terms, courses, sections, target, available, pending, fetching };
+  return {
+    terms,
+    courses,
+    sections,
+    target,
+    available,
+    pending,
+    fetching,
+    errors,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
