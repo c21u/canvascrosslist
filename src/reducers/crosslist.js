@@ -3,10 +3,14 @@ import {
   XLIST_SECTION,
   UNXLIST_SECTION,
   XLIST_SECTION_DONE,
+  XLIST_SECTION_FAIL,
   UNXLIST_SECTION_DONE,
+  UNXLIST_SECTION_FAIL,
   GET_COURSES,
   GET_COURSES_DONE,
+  GET_COURSES_FAIL,
   GET_COURSE_DONE,
+  GET_COURSE_FAIL,
 } from '../constants';
 
 export default function crosslist(
@@ -149,7 +153,6 @@ export default function crosslist(
             ...state.terms.byId,
             [action.payload.termId]: {
               ...state.terms.byId[action.payload.termId],
-              // FIXME de-duplicate?
               courses: [
                 ...state.terms.byId[action.payload.termId].courses,
                 action.payload.courseId,
@@ -158,6 +161,35 @@ export default function crosslist(
           },
         },
       };
+    case GET_COURSES_FAIL: {
+      const errors = state.errors ? state.errors : [];
+      return {
+        ...state,
+        fetching: false,
+        errors: [...errors, ...action.payload],
+      };
+    }
+    case GET_COURSE_FAIL: {
+      const errors = state.errors ? state.errors : [];
+      return {
+        ...state,
+        errors: [...errors, ...action.payload],
+      };
+    }
+    case XLIST_SECTION_FAIL: {
+      const errors = state.errors ? state.errors : [];
+      return {
+        ...state,
+        errors: [...errors, ...action.payload],
+      };
+    }
+    case UNXLIST_SECTION_FAIL: {
+      const errors = state.errors ? state.errors : [];
+      return {
+        ...state,
+        errors: [...errors, ...action.payload],
+      };
+    }
     default:
       return state;
   }

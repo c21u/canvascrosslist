@@ -43,10 +43,7 @@ const courses = {
           Array.isArray(data)
             ? data.filter(course => course.sis_course_id)
             : [data],
-      )
-      .catch(err => {
-        throw err;
-      });
+      );
   },
 };
 

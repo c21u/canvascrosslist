@@ -19,13 +19,12 @@ const crosslist = {
       ? ctx.user.custom_canvas_user_id
       : jwt.verify(ctx.token, config.auth.jwt.secret).custom_canvas_user_id;
 
-    return canvas
-      .post(`sections/${args.sectionId}/crosslist/${args.targetId}`, {
+    return canvas.post(
+      `sections/${args.sectionId}/crosslist/${args.targetId}`,
+      {
         as_user_id: userid,
-      })
-      .catch(err => {
-        throw err;
-      });
+      },
+    );
   },
 };
 

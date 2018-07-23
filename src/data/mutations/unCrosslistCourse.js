@@ -42,9 +42,6 @@ const uncrosslist = {
 
             throw new Error('Permission Denied');
           });
-      })
-      .catch(err => {
-        throw err;
       });
   },
 };
