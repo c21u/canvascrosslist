@@ -10,6 +10,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider as ReduxProvider } from 'react-redux';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faCog);
 
 const ContextType = {
   // Enables critical path CSS rendering

@@ -9,6 +9,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Course.css';
 import SectionList from '../SectionList';
@@ -31,6 +32,8 @@ class Course extends React.Component {
       byId: PropTypes.object.isRequired,
       allIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     }).isRequired,
+    canvasUrl: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
   };
 
   render() {
@@ -43,15 +46,27 @@ class Course extends React.Component {
       pending,
       available,
       sections,
+      canvasUrl,
+      id,
     } = this.props;
     return (
       <div className={`${s.course} ${isTarget && s.active}`}>
         <div className={s.courseInfo}>
           <h2 className={s.courseTitle}>{course.name}</h2>
+          {!isTarget && <button onClick={setTargetOnClick}>Manage</button>}
+          {isTarget && (
+            <button
+              /* eslint-disable-next-line no-return-assign */
+              onClick={() =>
+                (window.parent.location = `https://${canvasUrl}/courses/${id}/settings`)
+              }
+            >
+              <FontAwesomeIcon icon="cog" />
+            </button>
+          )}
           <div className={s.courseDesc}>
             {course.course_code} - {course.sis_course_id}
           </div>
-          {!isTarget && <button onClick={setTargetOnClick}>Manage</button>}
         </div>
         <SectionList
           sections={sections}

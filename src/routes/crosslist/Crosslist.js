@@ -68,6 +68,7 @@ class Crosslist extends React.Component {
     xlist: PropTypes.func.isRequired,
     unxlist: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.string),
+    canvasUrl: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -88,6 +89,7 @@ class Crosslist extends React.Component {
       xlist,
       unxlist,
       errors,
+      canvasUrl,
     } = this.props;
 
     if (fetching) {
@@ -139,6 +141,7 @@ class Crosslist extends React.Component {
                       .map(courseId => (
                         <Course
                           key={courseId}
+                          id={courseId}
                           course={courses.byId[courseId]}
                           xlist={xlist}
                           unxlist={unxlist}
@@ -147,6 +150,7 @@ class Crosslist extends React.Component {
                           pending={pending}
                           available={available}
                           sections={sections}
+                          canvasUrl={canvasUrl}
                         />
                       ))}
                   </div>
@@ -170,6 +174,7 @@ function mapStateToProps(state) {
     fetching,
     errors,
   } = state.crosslist;
+  const canvasUrl = state.user.custom_canvas_api_domain;
   return {
     terms,
     courses,
@@ -179,6 +184,7 @@ function mapStateToProps(state) {
     pending,
     fetching,
     errors,
+    canvasUrl,
   };
 }
 
