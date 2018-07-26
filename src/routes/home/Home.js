@@ -39,7 +39,7 @@ class Home extends React.Component {
           </Link>
         </div>
         <div>
-          <Link className={s.linkButton} to="/crosslist">
+          <Link className={`${s.linkButton} ${s.hilight}`} to="/crosslist">
             I Understand These Guidelines, Continue
           </Link>
         </div>

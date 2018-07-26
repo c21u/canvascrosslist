@@ -33,6 +33,11 @@
   margin: 2px;
 }
 
+.linkButton.hilight {
+  background-color: #eeb211;
+  color: #262626;
+}
+
 @media print {
   .linkButton {
     display: none;
