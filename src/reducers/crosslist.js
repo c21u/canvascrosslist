@@ -56,6 +56,7 @@ export default function crosslist(
               key,
               {
                 ...value,
+                ...(key === state.target ? { saveState: 'saving' } : null),
                 sections:
                   key === state.target
                     ? [
@@ -82,6 +83,20 @@ export default function crosslist(
         pending: state.pending.filter(
           sectionId => action.payload.sectionId !== sectionId,
         ),
+        courses: {
+          ...state.courses,
+          byId: Object.entries(state.courses.byId)
+            .map(([key, value]) => [
+              key,
+              {
+                ...value,
+                ...(value.sections.includes(action.payload.sectionId)
+                  ? { saveState: 'saved' }
+                  : null),
+              },
+            ])
+            .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+        },
       };
     case UNXLIST_SECTION_DONE: {
       const sectionFilter = sectionId => action.payload.sectionId !== sectionId;
@@ -103,6 +118,7 @@ export default function crosslist(
                     key,
                     {
                       ...value,
+                      saveState: 'saved',
                       sections: [...value.sections, action.payload.sectionId],
                     },
                   ];

@@ -14,6 +14,17 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Course.css';
 import SectionList from '../SectionList';
 
+function getSaved(saveState) {
+  if (saveState) {
+    return (
+      <div className={s.saved}>
+        {saveState === 'saving' ? 'Saving changes...' : 'Changes saved'}
+      </div>
+    );
+  }
+  return null;
+}
+
 class Course extends React.Component {
   static propTypes = {
     course: PropTypes.shape({
@@ -68,6 +79,7 @@ class Course extends React.Component {
             {course.course_code} - {course.sis_course_id}
           </div>
         </div>
+        {getSaved(course.saveState)}
         <SectionList
           sections={sections}
           mySections={course.sections}
