@@ -9,16 +9,29 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Course.css';
 import SectionList from '../SectionList';
+import Link from '../Link';
 
-function getSaved(saveState) {
+function getSaved(saveState, canvasUrl, id) {
   if (saveState) {
+    if (saveState === 'saving') {
+      return <div className={s.saved}>Saving changes...</div>;
+    }
     return (
       <div className={s.saved}>
-        {saveState === 'saving' ? 'Saving changes...' : 'Changes saved'}
+        Changes saved
+        {' ' /* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        <Link
+          /* eslint-disable-next-line no-return-assign */
+          onClick={() =>
+            (window.parent.location = `https://${canvasUrl}/courses/${id}/settings`)
+          }
+          to="#"
+        >
+          Edit Course Settings
+        </Link>
       </div>
     );
   }
@@ -65,21 +78,11 @@ class Course extends React.Component {
         <div className={s.courseInfo}>
           <h2 className={s.courseTitle}>{course.name}</h2>
           {!isTarget && <button onClick={setTargetOnClick}>Manage</button>}
-          {isTarget && (
-            <button
-              /* eslint-disable-next-line no-return-assign */
-              onClick={() =>
-                (window.parent.location = `https://${canvasUrl}/courses/${id}/settings`)
-              }
-            >
-              <FontAwesomeIcon icon="cog" />
-            </button>
-          )}
           <div className={s.courseDesc}>
             {course.course_code} - {course.sis_course_id}
           </div>
         </div>
-        {getSaved(course.saveState)}
+        {getSaved(course.saveState, canvasUrl, id)}
         <SectionList
           sections={sections}
           mySections={course.sections}
