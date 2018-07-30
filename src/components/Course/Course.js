@@ -21,7 +21,7 @@ function getSaved(saveState, canvasUrl, id) {
     }
     return (
       <div className={s.saved}>
-        Changes saved
+        Changes saved -
         {' ' /* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <Link
           /* eslint-disable-next-line no-return-assign */
