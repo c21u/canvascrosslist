@@ -5,7 +5,7 @@ component: ContentPage
 
 ## Combine Courses
 
-Read the following guidelines, then click ‘Continue’ at the bottom of the page to combine your courses.
+### Read the following guidelines, then click ‘Continue’ at the bottom of the page to combine your courses.
 
 Canvas allows teachers to move section enrollments from individual courses and combine them into one course. This feature is helpful for instructors who teach several sections of the same course and only want to manage course data in one location. These combined courses can be set in the following ways:
 

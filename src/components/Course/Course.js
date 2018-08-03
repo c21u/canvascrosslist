@@ -30,7 +30,7 @@ function getSaved(saveState, canvasUrl, id) {
           }
           to="#"
         >
-          Edit Course Settings
+          Edit Course Name
         </Link>
       </div>
     );
