@@ -127,6 +127,9 @@ export default function crosslist(
                   key,
                   {
                     ...value,
+                    ...(value.sections.includes(action.payload.sectionId)
+                      ? { saveState: 'saved' }
+                      : null),
                     sections: value.sections.filter(sectionFilter),
                   },
                 ];
