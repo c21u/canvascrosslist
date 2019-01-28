@@ -16,7 +16,8 @@
 import passport from 'passport';
 import LTIStrategy from 'passport-lti';
 import lti from 'ims-lti';
-import { LTISecret } from './data/models';
+
+const cfg = require('./config').auth.lti;
 
 /**
  * Sign in with LTI.
@@ -26,17 +27,10 @@ passport.use(
     {
       createProvider: (req, done) => {
         const key = req.body.oauth_consumer_key;
-        LTISecret.findOne({
-          attributes: ['secret'],
-          where: { key },
-        })
-          .then(row => {
-            if (row) {
-              return done(null, new lti.Provider(key, row.get('secret')));
-            }
-            return done('Not authorized');
-          })
-          .catch(err => done(err));
+        if (key === cfg.key) {
+          return done(null, new lti.Provider(key, cfg.secret));
+        }
+        return done('Not authorized');
       },
     },
     (ltiContext, done) => done(null, ltiContext),
