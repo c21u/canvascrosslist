@@ -8,7 +8,6 @@ const canvas = new Canvas(config.canvas.url, {
   accessToken: config.canvas.token,
 });
 
-let coursesData;
 const courses = {
   type: new List(CourseItemType),
   args: {
@@ -39,17 +38,16 @@ const courses = {
 
     return canvas
       .get(url, options)
-      .then(data => {
-        coursesData = data;
-        return data;
-      })
-      .then(coursesInfo => {
-        const sections = coursesInfo.map(course =>
+      .then(coursesData => {
+        const sections = coursesData.map(course =>
           canvas.get(`courses/${course.id}/sections`),
         );
-        return Promise.all(sections);
+        return Promise.all(sections).then(sectionsData => ({
+          coursesData,
+          sectionsData,
+        }));
       })
-      .then(sectionsData => {
+      .then(({ coursesData, sectionsData }) => {
         const sectionMap = {};
         sectionsData.map(sectionLists =>
           sectionLists.map(section => {
@@ -59,9 +57,9 @@ const courses = {
             return section;
           }),
         );
-        return sectionMap;
+        return { coursesData, sectionMap };
       })
-      .then(sectionMap =>
+      .then(({ coursesData, sectionMap }) =>
         coursesData.map(courseData => {
           const updatedCourseData = courseData;
           updatedCourseData.sections = updatedCourseData.sections.map(
