@@ -39,6 +39,20 @@ const courses = {
     return canvas
       .get(url, options)
       .then(coursesData => {
+        const recentStudents = coursesData.map(course =>
+          canvas
+            .get(`courses/${course.id}/recent_students`)
+            .then(recentStudentsData => {
+              const updatedCourse = course;
+              updatedCourse.recent_students = recentStudentsData.filter(
+                recentStudent => !!recentStudent.last_login,
+              ).length;
+              return updatedCourse;
+            }),
+        );
+        return Promise.all(recentStudents).then(() => coursesData);
+      })
+      .then(coursesData => {
         const sections = coursesData.map(course =>
           canvas.get(`courses/${course.id}/sections`),
         );
