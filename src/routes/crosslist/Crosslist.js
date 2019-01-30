@@ -147,6 +147,7 @@ class Crosslist extends React.Component {
                           unxlist={unxlist}
                           setTargetOnClick={() => setTarget(termId, courseId)}
                           isTarget={target === courseId}
+                          targetExists={!!target}
                           pending={pending}
                           available={available}
                           sections={sections}

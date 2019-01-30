@@ -76,3 +76,9 @@
   padding-left: 1rem;
   background-color: #f3f3f3;
 }
+
+.studentActivityInfo {
+  display: block;
+  padding: 0 0 0.5rem 1rem;
+  font-weight: bold;
+}

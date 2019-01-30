@@ -43,6 +43,7 @@ class Course extends React.Component {
     course: PropTypes.shape({
       name: PropTypes.string.isRequired,
       course_code: PropTypes.string.isRequired,
+      recent_students: PropTypes.number.isRequired,
       sis_course_id: PropTypes.string.isRequired,
       sections: PropTypes.arrayOf(PropTypes.string).isRequired,
     }).isRequired,
@@ -50,6 +51,7 @@ class Course extends React.Component {
     unxlist: PropTypes.func.isRequired,
     setTargetOnClick: PropTypes.func.isRequired,
     isTarget: PropTypes.bool.isRequired,
+    targetExists: PropTypes.bool.isRequired,
     pending: PropTypes.arrayOf(PropTypes.string).isRequired,
     available: PropTypes.arrayOf(PropTypes.string).isRequired,
     sections: PropTypes.shape({
@@ -67,6 +69,7 @@ class Course extends React.Component {
       unxlist,
       setTargetOnClick,
       isTarget,
+      targetExists,
       pending,
       available,
       sections,
@@ -81,6 +84,16 @@ class Course extends React.Component {
           <div className={s.courseDesc}>
             {course.course_code} - {course.sis_course_id}
           </div>
+          {targetExists && !isTarget ? (
+            <div className={s.studentActivityInfo}>
+              {course.recent_students} student{course.recent_students === 1
+                ? ' has '
+                : 's have '}
+              logged in to this course.
+            </div>
+          ) : (
+            ''
+          )}
         </div>
         {getSaved(course.saveState, canvasUrl, id)}
         <SectionList
