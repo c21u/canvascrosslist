@@ -1,0 +1,9 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Entering install phase...
+    finally:
+      - echo Done with install phase.
+  
