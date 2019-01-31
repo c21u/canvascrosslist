@@ -105,6 +105,7 @@ class Course extends React.Component {
           isTarget={isTarget}
           pending={pending}
           available={available}
+          recentStudentsCount={course.recent_students}
         />
       </div>
     );

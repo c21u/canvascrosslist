@@ -194,8 +194,8 @@ function mapDispatchToProps(dispatch) {
     setTarget: (termId, courseId) => {
       dispatch(setCrosslistTarget({ termId, courseId }));
     },
-    xlist: sectionId => {
-      dispatch(crosslistSection({ sectionId }));
+    xlist: (sectionId, recentStudentsCount) => {
+      dispatch(crosslistSection({ sectionId, recentStudentsCount }));
     },
     unxlist: sectionId => {
       dispatch(uncrosslistSection({ sectionId }));

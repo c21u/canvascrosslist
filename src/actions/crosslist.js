@@ -152,30 +152,36 @@ export function crosslistSectionFail(errors) {
   return { type: XLIST_SECTION_FAIL, payload: errors };
 }
 
-export function crosslistSection({ sectionId }) {
+export function crosslistSection({ sectionId, recentStudentsCount }) {
   return async (dispatch, getState, { graphqlRequest }) => {
-    const courseId = getState().crosslist.target;
-    dispatch({ type: XLIST_SECTION, payload: { sectionId } });
-    try {
-      const { data } = await graphqlRequest(
-        `mutation {crosslistCourse(sectionId: ${sectionId}, targetId: ${courseId}){course_id}}`,
-      );
-      if (!data) {
-        dispatch(
-          crosslistSectionFail([
-            { key: 'general', message: 'Failed to crosslist.' },
-          ]),
+    /* Prompt for confirmation if the course that the section-to-be-crosslisted
+    is in, has any count of recent_students in the course. Otherwise, go on. */
+    const shouldContinue =
+      recentStudentsCount > 0 ? window.confirm('Are you sure?') : true;
+    if (shouldContinue) {
+      const courseId = getState().crosslist.target;
+      dispatch({ type: XLIST_SECTION, payload: { sectionId } });
+      try {
+        const { data } = await graphqlRequest(
+          `mutation {crosslistCourse(sectionId: ${sectionId}, targetId: ${courseId}){course_id}}`,
         );
+        if (!data) {
+          dispatch(
+            crosslistSectionFail([
+              { key: 'general', message: 'Failed to crosslist.' },
+            ]),
+          );
+        }
+        dispatch(crosslistSectionDone(sectionId, courseId));
+      } catch (e) {
+        const errors = [
+          {
+            key: 'general',
+            message: e,
+          },
+        ];
+        dispatch(crosslistSectionFail(errors));
       }
-      dispatch(crosslistSectionDone(sectionId, courseId));
-    } catch (e) {
-      const errors = [
-        {
-          key: 'general',
-          message: e,
-        },
-      ];
-      dispatch(crosslistSectionFail(errors));
     }
   };
 }

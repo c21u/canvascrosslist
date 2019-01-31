@@ -24,6 +24,7 @@ class SectionList extends React.Component {
     pending: PropTypes.arrayOf(PropTypes.string).isRequired,
     available: PropTypes.arrayOf(PropTypes.string).isRequired,
     mySections: PropTypes.arrayOf(PropTypes.string).isRequired,
+    recentStudentsCount: PropTypes.number.isRequired,
   };
 
   render() {
@@ -36,6 +37,7 @@ class SectionList extends React.Component {
       isTarget,
       pending,
       available,
+      recentStudentsCount,
     } = this.props;
     return (
       <ul>
@@ -44,7 +46,7 @@ class SectionList extends React.Component {
             key={sectionId}
             section={sections.byId[sectionId]}
             sisCourseId={sisCourseId}
-            xlistOnClick={() => xlist(sectionId)}
+            xlistOnClick={() => xlist(sectionId, recentStudentsCount)}
             unxlistOnClick={() => unxlist(sectionId)}
             isTarget={isTarget}
             isPending={pending.includes(sectionId)}
