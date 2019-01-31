@@ -3,7 +3,6 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Entering install phase...
+      - yarn install
     finally:
-      - echo Done with install phase.
-  
+      - echo Finished yarn install.
