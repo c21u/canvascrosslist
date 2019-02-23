@@ -1,11 +1,24 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_ACCOUNT_ID: "332672892491"
+    AWS_DEFAULT_REGION: "us-east-1"
+    IMAGE_REPO_NAME: "eduapps/canvascrosslist"
+    IMAGE_TAG: "latest"
 phases:
-  install:
+  pre_build:
     commands:
-      # Node, NPM, AWS-CLI are preinstalled on this CodeBuild image.
-      - sudo apt-get update -y && sudo apt-get install -y make apt-transport-https
-      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-      - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-      - sudo apt-get update -y && sudo apt-get install -y yarn
-      - yarn install
+    - echo Logging in to ECR...
+    - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+  build:
+    commands:
+    - echo Build started on `date`
+    - echo Building Docker image...
+    - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+    - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+  post_build:
+    commands:
+    - echo Build completed on `date`
+    - echo Pushing Docker image...
+    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
