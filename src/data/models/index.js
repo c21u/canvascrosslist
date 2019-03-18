@@ -8,11 +8,9 @@
  */
 
 import sequelize from '../sequelize';
-import LTISecret from './LTISecret';
 
 function sync(...args) {
   return sequelize.sync(...args);
 }
 
 export default { sync };
-export { LTISecret };
