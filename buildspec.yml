@@ -44,5 +44,5 @@ phases:
       # Discard the default output (json full description of the service.)
       - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment 1>/dev/null
 
-      - Build completed.
+      - echo Build completed.
       - echo Service $SERVICE_NAME in cluster $CLUSTER_NAME is now updating...
