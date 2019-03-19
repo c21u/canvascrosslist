@@ -2,39 +2,41 @@ version: 0.2
 
 env:
   variables:
-    AWS_ACCOUNT_ID: "332672892491"
-    AWS_DEFAULT_REGION: "us-east-1"
-    CLUSTER_NAME: "eduapp-test"
-    IMAGE_NAME: "canvascrosslist"
-    IMAGE_NAMESPACE: "eduapps"
-    SERVICE_NAME: "crosslist-test"
+    AWS_ACCOUNT_ID:
+    AWS_REGION:
+    CLUSTER_NAME:
+    IMAGE_NAME:
+    IMAGE_NAMESPACE:
+    IMAGE_TAG:
+    SERVICE_NAME:
 
 phases:
   pre_build:
     commands:
+      # Set up more env variables.
+
+      # Short commit hash
       - GIT_COMMIT_HASH=$(git rev-parse --short=7 --verify HEAD)
-      - PACKAGE_VERSION=$(awk -F\" '/"version":/ {print $4}' package.json)
-      - APP_VERSION=$PACKAGE_VERSION-$GIT_COMMIT_HASH
-      - REPO_URL=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_NAMESPACE/$IMAGE_NAME
+
+      # Container repository location
+      - REPO_URL=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAMESPACE/$IMAGE_NAME
+
+      # Use IMAGE_TAG passed in from the build, fallback to 'latest' if blank.
       - TAG=${IMAGE_TAG:-latest}
-      - echo $TAG
 
-      - echo Logging in to ECR...
-      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      # Log in to ECR
+      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
 
+      # Pull this image for the build to cache from.
       - docker pull $REPO_URL:$TAG || true
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building Docker image...
       - echo Cache from $REPO_URL:$TAG
-      - docker build --build-arg app_version=$APP_VERSION --cache-from $REPO_URL:$TAG -t $IMAGE_NAME:$GIT_COMMIT_HASH -t $IMAGE_NAME:$TAG .
+      - docker build --cache-from $REPO_URL:$TAG -t $IMAGE_NAME:$GIT_COMMIT_HASH -t $IMAGE_NAME:$TAG .
       - docker tag $IMAGE_NAME:$TAG $REPO_URL:$TAG
       - docker tag $IMAGE_NAME:$TAG $REPO_URL:$GIT_COMMIT_HASH
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing Docker image and tags...
       - docker push $REPO_URL:$TAG
       - docker push $REPO_URL:$GIT_COMMIT_HASH
 
