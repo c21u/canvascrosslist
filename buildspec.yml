@@ -4,21 +4,42 @@ env:
   variables:
     AWS_ACCOUNT_ID: "332672892491"
     AWS_DEFAULT_REGION: "us-east-1"
-    IMAGE_REPO_NAME: "eduapps/canvascrosslist"
-    IMAGE_TAG: "latest"
+    CLUSTER_NAME: "eduapp-test"
+    IMAGE_NAME: "canvascrosslist"
+    IMAGE_NAMESPACE: "eduapps"
+    SERVICE_NAME: "crosslist-test"
+
 phases:
   pre_build:
     commands:
-    - echo Logging in to ECR...
-    - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - GIT_COMMIT_HASH=$(git rev-parse --short=7 --verify HEAD)
+      - PACKAGE_VERSION=$(awk -F\" '/"version":/ {print $4}' package.json)
+      - APP_VERSION=$PACKAGE_VERSION-$GIT_COMMIT_HASH
+      - REPO_URL=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_NAMESPACE/$IMAGE_NAME
+      - TAG=${IMAGE_TAG:-latest}
+      - echo $TAG
+
+      - echo Logging in to ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+
+      - docker pull $REPO_URL:$TAG || true
   build:
     commands:
-    - echo Build started on `date`
-    - echo Building Docker image...
-    - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
-    - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - echo Build started on `date`
+      - echo Building Docker image...
+      - echo Cache from $REPO_URL:$TAG
+      - docker build --build-arg app_version=$APP_VERSION --cache-from $REPO_URL:$TAG -t $IMAGE_NAME:$GIT_COMMIT_HASH -t $IMAGE_NAME:$TAG .
+      - docker tag $IMAGE_NAME:$TAG $REPO_URL:$TAG
+      - docker tag $IMAGE_NAME:$TAG $REPO_URL:$GIT_COMMIT_HASH
   post_build:
     commands:
-    - echo Build completed on `date`
-    - echo Pushing Docker image...
-    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - echo Build completed on `date`
+      - echo Pushing Docker image and tags...
+      - docker push $REPO_URL:$TAG
+      - docker push $REPO_URL:$GIT_COMMIT_HASH
+
+      # Update the service.
+      # Discard the default output (json full description of the service.)
+      - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment 1>/dev/null
+
+      - echo Done
