@@ -41,18 +41,24 @@ class SectionList extends React.Component {
     } = this.props;
     return (
       <ul>
-        {mySections.map(sectionId => (
-          <Section
-            key={sectionId}
-            section={sections.byId[sectionId]}
-            sisCourseId={sisCourseId}
-            xlistOnClick={() => xlist(sectionId, recentStudentsCount)}
-            unxlistOnClick={() => unxlist(sectionId)}
-            isTarget={isTarget}
-            isPending={pending.includes(sectionId)}
-            isAvailable={available.includes(sectionId)}
-          />
-        ))}
+        {mySections
+          .sort((a, b) => {
+            if (sections.byId[a].name < sections.byId[b].name) return -1;
+            if (sections.byId[a].name > sections.byId[b].name) return 1;
+            return 0;
+          })
+          .map(sectionId => (
+            <Section
+              key={sectionId}
+              section={sections.byId[sectionId]}
+              sisCourseId={sisCourseId}
+              xlistOnClick={() => xlist(sectionId, recentStudentsCount)}
+              unxlistOnClick={() => unxlist(sectionId)}
+              isTarget={isTarget}
+              isPending={pending.includes(sectionId)}
+              isAvailable={available.includes(sectionId)}
+            />
+          ))}
       </ul>
     );
   }
