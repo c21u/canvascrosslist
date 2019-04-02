@@ -43,8 +43,19 @@ class SectionList extends React.Component {
       <ul>
         {mySections
           .sort((a, b) => {
-            if (sections.byId[a].name < sections.byId[b].name) return -1;
-            if (sections.byId[a].name > sections.byId[b].name) return 1;
+            // First sort in alphabetical order
+            const sectionA = sections.byId[a];
+            const sectionB = sections.byId[b];
+            if (sectionA.name < sectionB.name) return -1;
+            if (sectionA.name > sectionB.name) return 1;
+            return 0;
+          })
+          .sort((a, b) => {
+            // Second sort to ensure the primary section is sorted first.
+            const sectionA = sections.byId[a];
+            const sectionB = sections.byId[b];
+            if (sectionA.nonxlist_course_id === null) return -1;
+            if (sectionB.nonxlist_course_id === null) return 1;
             return 0;
           })
           .map(sectionId => (
