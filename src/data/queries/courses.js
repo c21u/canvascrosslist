@@ -39,7 +39,10 @@ const courses = {
     return canvas
       .get(url, options)
       .then(coursesData => {
-        const recentStudents = coursesData.map(course =>
+        const theCourses = Array.isArray(coursesData)
+          ? coursesData
+          : [coursesData];
+        const recentStudents = theCourses.map(course =>
           canvas
             .get(`courses/${course.id}/recent_students`)
             .then(recentStudentsData => {
@@ -50,7 +53,7 @@ const courses = {
               return updatedCourse;
             }),
         );
-        return Promise.all(recentStudents).then(() => coursesData);
+        return Promise.all(recentStudents).then(() => theCourses);
       })
       .then(coursesData => {
         const sections = coursesData.map(course =>
