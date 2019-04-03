@@ -158,7 +158,12 @@ export function crosslistSection({ sectionId, recentStudentsCount }) {
     /* Prompt for confirmation if the course that the section-to-be-crosslisted
     is in, has any count of recent_students in the course. Otherwise, go on. */
     const shouldContinue =
-      recentStudentsCount > 0 ? window.confirm('Are you sure?') : true;
+      recentStudentsCount > 0
+        ? // eslint-disable-next-line no-alert
+          window.confirm(
+            `Are you sure you want to combine this section into another course? Students have already logged in to it, so data loss could result.`,
+          )
+        : true;
     if (shouldContinue) {
       const courseId = getState().crosslist.target;
       dispatch({ type: XLIST_SECTION, payload: { sectionId } });
