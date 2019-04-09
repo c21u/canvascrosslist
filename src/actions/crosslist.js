@@ -161,7 +161,7 @@ export function crosslistSection({ sectionId, recentStudentsCount }) {
       recentStudentsCount > 0
         ? // eslint-disable-next-line no-alert
           window.confirm(
-            `Are you sure you want to combine this section into another course? Students have already logged in to it, so data loss could result.`,
+            `Are you sure you want to move this section? Data loss could result.`,
           )
         : true;
     if (shouldContinue) {
