@@ -42,8 +42,6 @@ class Section extends React.Component {
           !isPending && <button onClick={xlistOnClick}>Combine</button>}
         {isTarget &&
           !isPending &&
-          // this is a bit of a kludge because the section could be renamed,
-          // but we have to do a separate request for each section if we want to get their sis_section_id
           (section.nonxlist_course_id &&
             sisCourseId.slice(-5) !== section.sis_section_id.slice(-5)) && (
             <button onClick={unxlistOnClick}>Separate</button>

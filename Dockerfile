@@ -14,7 +14,7 @@ RUN yarn run build --release
 
 FROM node:8.11.2-alpine as runner
 WORKDIR /usr/src/app
-RUN apk update; apk add git; apk add sqlite
+RUN apk update; apk add git
 COPY --from=builder /usr/src/app/build .
 RUN yarn install --production --no-progress
 USER node
