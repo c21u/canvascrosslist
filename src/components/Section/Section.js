@@ -15,7 +15,6 @@ class Section extends React.Component {
   static propTypes = {
     section: PropTypes.shape({
       name: PropTypes.string,
-      sis_section_id: PropTypes.string,
     }).isRequired,
     sisCourseId: PropTypes.string.isRequired,
     xlistOnClick: PropTypes.func.isRequired,
@@ -43,7 +42,7 @@ class Section extends React.Component {
         {isTarget &&
           !isPending &&
           (section.nonxlist_course_id &&
-            sisCourseId.slice(-5) !== section.sis_section_id.slice(-5)) && (
+            sisCourseId !== section.nonxlist_course_id) && (
             <button onClick={unxlistOnClick}>Separate</button>
           )}
         {isPending && <Spinner />}

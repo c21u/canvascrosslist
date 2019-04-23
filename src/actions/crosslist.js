@@ -27,7 +27,7 @@ export function getCourses() {
     dispatch({ type: GET_COURSES });
     try {
       const { data } = await graphqlRequest(
-        '{courses{id,name,sis_course_id,course_code,term{id, name, end_at},sections{id,name,sis_section_id,nonxlist_course_id},recent_students}}',
+        '{courses{id,name,sis_course_id,course_code,term{id, name, end_at},sections{id,name,nonxlist_course_id},recent_students}}',
       );
       if (!data || !data.courses) {
         dispatch(
@@ -52,7 +52,6 @@ export function getCourses() {
         course.sections.map(section => {
           sections.byId[section.id] = {
             name: section.name,
-            sis_section_id: section.sis_section_id,
             nonxlist_course_id: section.nonxlist_course_id,
           };
           return sections.allIds.push(section.id);

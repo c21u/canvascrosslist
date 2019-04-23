@@ -70,7 +70,6 @@ const courses = {
           sectionLists.map(section => {
             if (section && !sectionMap[section.id]) {
               sectionMap[section.id] = {
-                sis_section_id: section.sis_section_id,
                 nonxlist_course_id: section.nonxlist_course_id,
               };
             }
@@ -85,8 +84,6 @@ const courses = {
           updatedCourseData.sections = updatedCourseData.sections.map(
             section => {
               const updatedSection = section;
-              updatedSection.sis_section_id =
-                sectionMap[updatedSection.id].sis_section_id;
               updatedSection.nonxlist_course_id =
                 sectionMap[updatedSection.id].nonxlist_course_id;
               return updatedSection;

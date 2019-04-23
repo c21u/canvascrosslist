@@ -12,7 +12,6 @@ const SectionItemType = new ObjectType({
     id: { type: new NonNull(IDType) },
     name: { type: new NonNull(StringType) },
     enrollment_role: { type: StringType },
-    sis_section_id: { type: new NonNull(StringType) },
     nonxlist_course_id: { type: StringType },
     start_at: { type: DateType },
     end_at: { type: DateType },

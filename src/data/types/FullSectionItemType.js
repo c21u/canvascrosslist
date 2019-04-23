@@ -12,7 +12,6 @@ const FullSectionItemType = new ObjectType({
     id: { type: new NonNull(IDType) },
     course_id: { type: new NonNull(StringType) },
     sis_course_id: { type: new NonNull(StringType) },
-    sis_section_id: { type: new NonNull(StringType) },
     nonxlist_course_id: { type: new NonNull(StringType) },
     name: { type: new NonNull(StringType) },
     start_at: { type: DateType },
