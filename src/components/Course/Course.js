@@ -99,7 +99,7 @@ class Course extends React.Component {
         <SectionList
           sections={sections}
           mySections={course.sections}
-          sisCourseId={course.sis_course_id}
+          courseId={id}
           xlist={xlist}
           unxlist={unxlist}
           isTarget={isTarget}

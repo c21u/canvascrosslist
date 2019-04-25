@@ -16,7 +16,7 @@ class Section extends React.Component {
     section: PropTypes.shape({
       name: PropTypes.string,
     }).isRequired,
-    sisCourseId: PropTypes.string.isRequired,
+    courseId: PropTypes.string.isRequired,
     xlistOnClick: PropTypes.func.isRequired,
     unxlistOnClick: PropTypes.func.isRequired,
     isTarget: PropTypes.bool.isRequired,
@@ -27,7 +27,7 @@ class Section extends React.Component {
   render() {
     const {
       section,
-      sisCourseId,
+      courseId,
       xlistOnClick,
       unxlistOnClick,
       isTarget,
@@ -42,7 +42,7 @@ class Section extends React.Component {
         {isTarget &&
           !isPending &&
           (section.nonxlist_course_id &&
-            sisCourseId !== section.nonxlist_course_id) && (
+            courseId !== section.nonxlist_course_id) && (
             <button onClick={unxlistOnClick}>Separate</button>
           )}
         {isPending && <Spinner />}

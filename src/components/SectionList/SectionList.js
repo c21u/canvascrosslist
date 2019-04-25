@@ -17,7 +17,7 @@ class SectionList extends React.Component {
       byId: PropTypes.object.isRequired,
       allIds: PropTypes.arrayOf(PropTypes.string),
     }).isRequired,
-    sisCourseId: PropTypes.string.isRequired,
+    courseId: PropTypes.string.isRequired,
     xlist: PropTypes.func.isRequired,
     unxlist: PropTypes.func.isRequired,
     isTarget: PropTypes.bool.isRequired,
@@ -31,7 +31,7 @@ class SectionList extends React.Component {
     const {
       sections,
       mySections,
-      sisCourseId,
+      courseId,
       xlist,
       unxlist,
       isTarget,
@@ -62,7 +62,7 @@ class SectionList extends React.Component {
             <Section
               key={sectionId}
               section={sections.byId[sectionId]}
-              sisCourseId={sisCourseId}
+              courseId={courseId}
               xlistOnClick={() => xlist(sectionId, recentStudentsCount)}
               unxlistOnClick={() => unxlist(sectionId)}
               isTarget={isTarget}

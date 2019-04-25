@@ -52,7 +52,9 @@ export function getCourses() {
         course.sections.map(section => {
           sections.byId[section.id] = {
             name: section.name,
-            nonxlist_course_id: section.nonxlist_course_id,
+            nonxlist_course_id: section.nonxlist_course_id
+              ? section.nonxlist_course_id
+              : course.id,
           };
           return sections.allIds.push(section.id);
         });
