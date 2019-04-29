@@ -53,4 +53,9 @@ module.exports = {
       secret: process.env.LTI_SECRET || '',
     },
   },
+
+  // Logging
+  log: {
+    level: 'INFO' || process.env.LOG_LEVEL,
+  },
 };
