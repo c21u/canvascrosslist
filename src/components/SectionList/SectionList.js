@@ -54,8 +54,8 @@ class SectionList extends React.Component {
             // Second sort to ensure the primary section is sorted first.
             const sectionA = sections.byId[a];
             const sectionB = sections.byId[b];
-            if (sectionA.nonxlist_course_id === null) return -1;
-            if (sectionB.nonxlist_course_id === null) return 1;
+            if (sectionA.nonxlist_course_id === courseId) return -1;
+            if (sectionB.nonxlist_course_id === courseId) return 1;
             return 0;
           })
           .map(sectionId => (
