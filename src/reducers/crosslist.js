@@ -119,7 +119,11 @@ export default function crosslist(
                     {
                       ...value,
                       saveState: 'saved',
-                      sections: [...value.sections, action.payload.sectionId],
+                      sections: value.sections.includes(
+                        action.payload.sectionId,
+                      )
+                        ? value.sections
+                        : [...value.sections, action.payload.sectionId],
                     },
                   ];
                 }

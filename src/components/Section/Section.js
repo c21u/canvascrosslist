@@ -13,8 +13,10 @@ import Spinner from '../Spinner';
 
 class Section extends React.Component {
   static propTypes = {
-    section: PropTypes.string.isRequired,
-    sisCourseId: PropTypes.string.isRequired,
+    section: PropTypes.shape({
+      name: PropTypes.string,
+    }).isRequired,
+    courseId: PropTypes.string.isRequired,
     xlistOnClick: PropTypes.func.isRequired,
     unxlistOnClick: PropTypes.func.isRequired,
     isTarget: PropTypes.bool.isRequired,
@@ -25,7 +27,7 @@ class Section extends React.Component {
   render() {
     const {
       section,
-      sisCourseId,
+      courseId,
       xlistOnClick,
       unxlistOnClick,
       isTarget,
@@ -34,14 +36,13 @@ class Section extends React.Component {
     } = this.props;
     return (
       <li>
-        {section}
+        {section.name}
         {isAvailable &&
           !isPending && <button onClick={xlistOnClick}>Combine</button>}
         {isTarget &&
           !isPending &&
-          // this is a bit of a kludge because the section could be renamed,
-          // but we have to do a separate request for each section if we want to get their sis_section_id
-          sisCourseId.slice(-5) !== section.slice(-5) && (
+          (section.nonxlist_course_id &&
+            courseId !== section.nonxlist_course_id) && (
             <button onClick={unxlistOnClick}>Separate</button>
           )}
         {isPending && <Spinner />}

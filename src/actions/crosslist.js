@@ -27,7 +27,7 @@ export function getCourses() {
     dispatch({ type: GET_COURSES });
     try {
       const { data } = await graphqlRequest(
-        '{courses{id,name,sis_course_id,course_code,term{id, name, end_at},sections{id,name}}}',
+        '{courses{id,name,sis_course_id,course_code,term{id, name, end_at},sections{id,name,nonxlist_course_id},recent_students}}',
       );
       if (!data || !data.courses) {
         dispatch(
@@ -44,12 +44,18 @@ export function getCourses() {
         courses.byId[course.id] = {
           name: course.name,
           course_code: course.course_code,
+          recent_students: course.recent_students,
           sis_course_id: course.sis_course_id,
           sections: course.sections.map(section => section.id),
         };
         courses.allIds.push(course.id);
         course.sections.map(section => {
-          sections.byId[section.id] = section.name;
+          sections.byId[section.id] = {
+            name: section.name,
+            nonxlist_course_id: section.nonxlist_course_id
+              ? section.nonxlist_course_id
+              : course.id,
+          };
           return sections.allIds.push(section.id);
         });
         if (terms.byId[course.term.id]) {
@@ -96,7 +102,7 @@ export function getCourse(courseId) {
     dispatch({ type: GET_COURSE, payload: { courseId } });
     try {
       const { data } = await graphqlRequest(
-        `{courses(courseId: ${courseId}){name,course_code,sis_course_id,term{id},sections{id}}}`,
+        `{courses(courseId: ${courseId}){name,course_code,sis_course_id,term{id},sections{id},recent_students}}`,
       );
       if (!data) {
         dispatch(
@@ -106,9 +112,7 @@ export function getCourse(courseId) {
         );
       }
       const course = {
-        name: data.courses[0].name,
-        course_code: data.courses[0].course_code,
-        sis_course_id: data.courses[0].sis_course_id,
+        ...data.courses[0],
         sections: data.courses[0].sections.map(section => section.id),
       };
       dispatch(getCourseDone(courseId, data.courses[0].term.id, course));
@@ -148,30 +152,41 @@ export function crosslistSectionFail(errors) {
   return { type: XLIST_SECTION_FAIL, payload: errors };
 }
 
-export function crosslistSection({ sectionId }) {
+export function crosslistSection({ sectionId, recentStudentsCount }) {
   return async (dispatch, getState, { graphqlRequest }) => {
-    const courseId = getState().crosslist.target;
-    dispatch({ type: XLIST_SECTION, payload: { sectionId } });
-    try {
-      const { data } = await graphqlRequest(
-        `mutation {crosslistCourse(sectionId: ${sectionId}, targetId: ${courseId}){course_id}}`,
-      );
-      if (!data) {
-        dispatch(
-          crosslistSectionFail([
-            { key: 'general', message: 'Failed to crosslist.' },
-          ]),
+    /* Prompt for confirmation if the course that the section-to-be-crosslisted
+    is in, has any count of recent_students in the course. Otherwise, go on. */
+    const shouldContinue =
+      recentStudentsCount > 0
+        ? // eslint-disable-next-line no-alert
+          window.confirm(
+            `Are you sure you want to move this section? Data loss could result.`,
+          )
+        : true;
+    if (shouldContinue) {
+      const courseId = getState().crosslist.target;
+      dispatch({ type: XLIST_SECTION, payload: { sectionId } });
+      try {
+        const { data } = await graphqlRequest(
+          `mutation {crosslistCourse(sectionId: ${sectionId}, targetId: ${courseId}){course_id}}`,
         );
+        if (!data) {
+          dispatch(
+            crosslistSectionFail([
+              { key: 'general', message: 'Failed to crosslist.' },
+            ]),
+          );
+        }
+        dispatch(crosslistSectionDone(sectionId, courseId));
+      } catch (e) {
+        const errors = [
+          {
+            key: 'general',
+            message: e,
+          },
+        ];
+        dispatch(crosslistSectionFail(errors));
       }
-      dispatch(crosslistSectionDone(sectionId, courseId));
-    } catch (e) {
-      const errors = [
-        {
-          key: 'general',
-          message: e,
-        },
-      ];
-      dispatch(crosslistSectionFail(errors));
     }
   };
 }

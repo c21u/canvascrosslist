@@ -18,11 +18,15 @@
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
     "body-parser": "^1.18.3",
+    "bunyan": "^1.8.12",
+    "bunyan-express-serializer": "^1.0.0",
     "canvas-lms-api": "0.2.1",
     "classnames": "^2.2.6",
+    "dotenv": "^6.2.0",
     "express": "^4.16.3",
     "express-graphql": "^0.6.12",
     "express-jwt": "^5.3.1",
+    "express-request-id": "^1.4.1",
     "graphql": "^0.13.2",
     "graphql-iso-date": "^3.5.0",
     "history": "^4.7.2",
@@ -33,9 +37,6 @@
     "normalize.css": "^8.0.0",
     "passport": "^0.4.0",
     "passport-lti": "^0.0.7",
-    "pg": "^7.4.3",
-    "pg-hstore": "^2.3.2",
-    "pretty-error": "^2.1.1",
     "prop-types": "^15.6.1",
     "query-string": "^6.1.0",
     "react": "^16.4.1",
@@ -45,10 +46,8 @@
     "redux-devtools-extension": "^2.13.2",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
-    "sequelize": "^4.37.10",
     "serialize-javascript": "^1.5.0",
     "source-map-support": "^0.5.6",
-    "sqlite3": "^4.0.0",
     "universal-router": "^6.0.0",
     "whatwg-fetch": "^2.0.4"
   },
@@ -172,6 +171,6 @@
     "deploy": "babel-node tools/run deploy",
     "render": "babel-node tools/run render",
     "serve": "babel-node tools/run runServer",
-    "start": "babel-node tools/run start"
+    "start": "babel-node tools/run start | bunyan -L"
   }
 }

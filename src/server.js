@@ -17,7 +17,7 @@ import jwt from 'jsonwebtoken';
 import nodeFetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
-import PrettyError from 'pretty-error';
+import addReqId from 'express-request-id';
 import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
@@ -25,8 +25,8 @@ import errorPageStyle from './routes/error/ErrorPage.css';
 import createFetch from './createFetch';
 import passport from './passport';
 import router from './router';
-import models from './data/models';
 import schema from './data/schema';
+import log from './logger';
 // import assets from './asset-manifest.json'; // eslint-disable-line import/no-unresolved
 import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unresolved
 import configureStore from './store/configureStore';
@@ -35,7 +35,7 @@ import { setUser } from './actions/user';
 import config from './config';
 
 process.on('unhandledRejection', (reason, p) => {
-  console.error('Unhandled Rejection at:', p, 'reason:', reason);
+  log.error('Unhandled Rejection at:', p, 'reason:', reason);
   // send entire app down. Process manager will restart it
   process.exit(1);
 });
@@ -54,6 +54,45 @@ const app = express();
 // Default is to trust proxy headers only from loopback interface.
 // -----------------------------------------------------------------------------
 app.set('trust proxy', config.trustProxy);
+
+app.use(addReqId());
+
+//
+// Log Requests
+//------------------------------------------------------------------------------
+app.use((req, res, next) => {
+  const l = log.child(
+    {
+      id: req.id,
+      body: req.body,
+    },
+    true,
+  );
+  l.info({
+    req,
+  });
+  next();
+});
+
+//
+// Log responses
+//------------------------------------------------------------------------------
+app.use((req, res, next) => {
+  function afterResponse() {
+    res.removeListener('finish', afterResponse);
+    res.removeListener('close', afterResponse);
+    const l = log.child(
+      {
+        id: req.id,
+      },
+      true,
+    );
+    l.info({ res }, 'response');
+  }
+  res.on('finish', afterResponse);
+  res.on('close', afterResponse);
+  next();
+});
 
 //
 // Register Node.js middleware
@@ -87,7 +126,7 @@ app.use(
 app.use((err, req, res, next) => {
   // eslint-disable-line no-unused-vars
   if (err instanceof Jwt401Error) {
-    console.error('[express-jwt-error]', req.headers.authorization);
+    log.error('[express-jwt-error]', req.headers.authorization);
     // delete jwt header, otherwise user can't use web-app until token expires
     res.removeHeader('Authorization');
   }
@@ -212,13 +251,11 @@ app.get('*', async (req, res, next) => {
 //
 // Error handling
 // -----------------------------------------------------------------------------
-const pe = new PrettyError();
-pe.skipNodeFiles();
-pe.skipPackage('express');
+const e = new Error();
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error(pe.render(err));
+  log.error(e);
   const html = ReactDOM.renderToStaticMarkup(
     <Html
       title="Internal Server Error"
@@ -235,12 +272,9 @@ app.use((err, req, res, next) => {
 //
 // Launch the server
 // -----------------------------------------------------------------------------
-const promise = models.sync().catch(err => console.error(err.stack));
 if (!module.hot) {
-  promise.then(() => {
-    app.listen(config.port, () => {
-      console.info(`The server is running at http://localhost:${config.port}/`);
-    });
+  app.listen(config.port, () => {
+    log.info(`The server is running at http://localhost:${config.port}/`);
   });
 }
 

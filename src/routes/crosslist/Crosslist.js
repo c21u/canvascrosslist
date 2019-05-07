@@ -109,7 +109,7 @@ class Crosslist extends React.Component {
                   'Do not combine sections if students have already submitted work in one of your sections. Coursework is retained with the course, not with the section enrollments. So if a section is combined with a section in another course, all enrollments will lose any associated assignment submissions and grades.',
                   'Sections can only be in one course at a time.',
                   'Once a section is combined with another section, you can separate the section back out. This will return it to its original course.',
-                  'You can rename your combined course by navigating to your course in Canvas, and clicking "Settings" in the course navigation along the left.',
+                  'You can rename your combined course by navigating to your course in Canvas, clicking "Settings" in the course navigation along the left, then making sure the "Course Details" tab is selected at the top.',
                 ]}
               />
               <div className={s.note}>
@@ -147,6 +147,7 @@ class Crosslist extends React.Component {
                           unxlist={unxlist}
                           setTargetOnClick={() => setTarget(termId, courseId)}
                           isTarget={target === courseId}
+                          targetExists={!!target}
                           pending={pending}
                           available={available}
                           sections={sections}
@@ -193,8 +194,8 @@ function mapDispatchToProps(dispatch) {
     setTarget: (termId, courseId) => {
       dispatch(setCrosslistTarget({ termId, courseId }));
     },
-    xlist: sectionId => {
-      dispatch(crosslistSection({ sectionId }));
+    xlist: (sectionId, recentStudentsCount) => {
+      dispatch(crosslistSection({ sectionId, recentStudentsCount }));
     },
     unxlist: sectionId => {
       dispatch(uncrosslistSection({ sectionId }));

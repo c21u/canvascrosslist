@@ -38,6 +38,60 @@ const courses = {
 
     return canvas
       .get(url, options)
+      .then(coursesData => {
+        const theCourses = Array.isArray(coursesData)
+          ? coursesData
+          : [coursesData];
+        const recentStudents = theCourses.map(course =>
+          canvas
+            .get(`courses/${course.id}/recent_students`)
+            .then(recentStudentsData => {
+              const updatedCourse = course;
+              updatedCourse.recent_students = recentStudentsData.filter(
+                recentStudent => !!recentStudent.last_login,
+              ).length;
+              return updatedCourse;
+            }),
+        );
+        return Promise.all(recentStudents).then(() => theCourses);
+      })
+      .then(coursesData => {
+        const sections = coursesData.map(course =>
+          canvas.get(`courses/${course.id}/sections`),
+        );
+        return Promise.all(sections).then(sectionsData => ({
+          coursesData,
+          sectionsData,
+        }));
+      })
+      .then(({ coursesData, sectionsData }) => {
+        const sectionMap = {};
+        sectionsData.map(sectionLists =>
+          sectionLists.map(section => {
+            if (section && !sectionMap[section.id]) {
+              sectionMap[section.id] = {
+                nonxlist_course_id: section.nonxlist_course_id,
+              };
+            }
+            return section;
+          }),
+        );
+        return { coursesData, sectionMap };
+      })
+      .then(({ coursesData, sectionMap }) =>
+        coursesData.map(courseData => {
+          const updatedCourseData = courseData;
+          updatedCourseData.sections = updatedCourseData.sections.map(
+            section => {
+              const updatedSection = section;
+              updatedSection.nonxlist_course_id =
+                sectionMap[updatedSection.id].nonxlist_course_id;
+              return updatedSection;
+            },
+          );
+          return updatedCourseData;
+        }),
+      )
       .then(
         data =>
           Array.isArray(data)
