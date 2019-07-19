@@ -83,6 +83,11 @@ class Course extends React.Component {
           {!isTarget && <button onClick={setTargetOnClick}>Manage</button>}
           <div className={s.courseDesc}>
             {course.course_code} - {course.sis_course_id}
+            {targetExists && isTarget ? (
+              <p>The managed section is the primary course section and should be the section that has the most certain or largest projected enrollments.</p>
+            ) : (
+              ''
+            )}
           </div>
           {targetExists && !isTarget ? (
             <div className={s.studentActivityInfo}>

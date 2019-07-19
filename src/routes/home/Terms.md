@@ -7,7 +7,9 @@ component: ContentPage
 
 ### Read the following guidelines, then click ‘Continue’ at the bottom of the page to combine your courses.
 
-Canvas allows teachers to move section enrollments from individual courses and combine them into one course. This feature is helpful for instructors who teach several sections of the same course and only want to manage course data in one location. These combined courses can be set in the following ways:
+Canvas allows instructors to move section enrollments from individual courses and combine them into one course. This feature is helpful for instructors who teach several sections of the same course and only want to manage course data in one location.
+
+If you choose to combine courses, please start with your largest projected section as the primary course section, i.e. the one you "manage". Course materials and grades technically reside within this section and it is important to structure your combined courses in this way.
 
 1.  Open Sections: Students can communicate with and view students in other combined sections.
 2.  Isolated Sections: Students can only communicate with and view student in their own section. To isolate your combined sections, send a request to canvas@gatech.edu.

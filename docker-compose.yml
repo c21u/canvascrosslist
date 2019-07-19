@@ -1,0 +1,23 @@
+version: '3'
+services:
+  web:
+    build: .
+    environment:
+      NODE_ENV: production
+      VIRTUAL_HOST: crosslist.127.0.0.1.xip.io
+      LTI_KEY: gatech
+      LTI_SECRET: doesitmatter
+      BUZZAPI_APP_ID: eduapps1
+      BUZZAPI_PASSWORD: $BUZZAPI_PASSWORD
+      CANVAS_TOKEN:
+      TRUST_PROXY: uniquelocal
+    expose:
+      - "3000"
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - $HOME/certs:/etc/nginx/certs
