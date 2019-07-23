@@ -29,6 +29,7 @@ LTI_URL
         <lticm:property name="visibility">admins</lticm:property>
         <lticm:property name="default">enabled</lticm:property>
         <lticm:property name="enabled">true</lticm:property>
+        <lticm:property name="not_selectable">true</lticm:property>
       </lticm:options>
       <lticm:options name="custom_fields">
         <lticm:property name="canvas_user_id">$Canvas.user.id</lticm:property>
