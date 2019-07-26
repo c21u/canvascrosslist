@@ -23,10 +23,10 @@ LTI_URL
     <blti:extensions platform="canvas.instructure.com">
       <lticm:property name="tool_id">LTI_TOOL_ID</lticm:property>
       <lticm:property name="privacy_level">anonymous</lticm:property>
-      <lticm:options name="course_navigation">
+      <lticm:property name="not_selectable">true</lticm:property>
+      <lticm:options name="user_navigation">
         <lticm:property name="url">LTI_URL</lticm:property>
         <lticm:property name="text">LTI_TEXT</lticm:property>
-        <lticm:property name="visibility">admins</lticm:property>
         <lticm:property name="default">enabled</lticm:property>
         <lticm:property name="enabled">true</lticm:property>
       </lticm:options>
@@ -37,4 +37,4 @@ LTI_URL
     </blti:extensions>
     <cartridge_bundle identifierref="BLTI001_Bundle"/>
     <cartridge_icon identifierref="BLTI001_Icon"/>
-</cartridge_basiclti_link>  
+</cartridge_basiclti_link>
