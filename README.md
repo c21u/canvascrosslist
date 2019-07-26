@@ -4,11 +4,11 @@ Built using [React Starter Kit](https://github.com/kriasoft/react-starter-kit/bl
 
 Dev setup:
 
-- Create a `.env` file containing
+Create a `.env` file containing
 
-  LTI_KEY=key
-  LTI_SECRET=secret
-  CANVAS_TOKEN=canvas-admin-token
+    LTI_KEY=key
+    LTI_SECRET=secret
+    CANVAS_TOKEN=canvas-admin-token
 
 - Install [mkcert](https://github.com/FiloSottile/mkcert)
 - Run `mkcert -install` to install a local CA
