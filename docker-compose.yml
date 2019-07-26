@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    environment:
+      NODE_ENV: production
+      VIRTUAL_HOST: dev.127.0.0.1.xip.io
+      TRUST_PROXY: uniquelocal
+      LTI_KEY: $LTI_KEY
+      LTI_SECRET: $LTI_SECRET
+      CANVAS_TOKEN: $CANVAS_TOKEN
+    expose:
+      - "3000"
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - $HOME/certs:/etc/nginx/certs
