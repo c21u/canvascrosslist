@@ -131,18 +131,6 @@ exports[`Layout renders children correctly 1`] = `
       </span>
       <a
         className="link"
-        href="/privacy"
-        onClick={[Function]}
-      >
-        Privacy
-      </a>
-      <span
-        className="spacer"
-      >
-        ·
-      </span>
-      <a
-        className="link"
         href="/not-found"
         onClick={[Function]}
       >
