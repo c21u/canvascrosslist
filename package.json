@@ -63,7 +63,7 @@
     "@babel/preset-stage-2": "^7.0.0-beta.51",
     "autoprefixer": "^8.6.3",
     "babel-core": "^7.0.0-0",
-    "babel-eslint": "^8.2.3",
+    "babel-eslint": "10.0.2",
     "babel-jest": "^23.0.1",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-react-remove-prop-types": "0.4.24",
@@ -71,16 +71,16 @@
     "chokidar": "^2.0.4",
     "css-loader": "^0.28.11",
     "enzyme": "3.10.0",
-    "eslint": "^4.19.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-config-prettier": "^2.9.0",
+    "eslint": "6.1.0",
+    "eslint-config-airbnb": "17.1.1",
+    "eslint-config-prettier": "6.0.0",
     "eslint-import-resolver-node": "^0.3.2",
     "eslint-loader": "2.2.1",
     "eslint-plugin-css-modules": "2.11.0",
-    "eslint-plugin-flowtype": "^2.49.3",
+    "eslint-plugin-flowtype": "3.12.1",
     "eslint-plugin-import": "2.18.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
-    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-prettier": "3.1.0",
     "eslint-plugin-react": "7.14.3",
     "file-loader": "^1.1.11",
     "flow-bin": "0.103.0",
@@ -89,7 +89,7 @@
     "husky": "^3.0.1",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^23.6.0",
-    "lint-staged": "^7.3.0",
+    "lint-staged": "9.2.1",
     "markdown-it": "^8.4.2",
     "mkdirp": "^0.5.1",
     "null-loader": "^0.1.1",
@@ -100,7 +100,7 @@
     "postcss-calc": "^6.0.1",
     "postcss-flexbugs-fixes": "^3.3.1",
     "postcss-import": "^11.1.0",
-    "postcss-loader": "^2.1.5",
+    "postcss-loader": "3.0.0",
     "postcss-preset-env": "^6.7.0",
     "postcss-pseudoelements": "^5.0.0",
     "prettier": "1.18.2",
@@ -124,23 +124,9 @@
     "webpack-node-externals": "^1.7.2"
   },
   "lint-staged": {
-    "ignore": [
-      "package.json"
-    ],
-    "linters": {
-      "*.{js,jsx}": [
-        "eslint --no-ignore --fix",
-        "git add --force"
-      ],
-      "*.{json,md,graphql}": [
-        "prettier --write",
-        "git add --force"
-      ],
-      "*.{css,less,styl,scss,sass,sss}": [
-        "stylelint --fix",
-        "git add --force"
-      ]
-    }
+    "*.{js,jsx}": "eslint --no-ignore --fix && git add --force",
+    "!(package).json|*.{md,graphql}": "prettier --write && git add --force",
+    "*.{css,less,styl,scss,sass,sss}": "stylelint --fix && git add --force"
   },
   "scripts": {
     "lint-js": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
