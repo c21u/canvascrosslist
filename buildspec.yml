@@ -11,6 +11,9 @@ env:
     SERVICE_NAME:
 
 phases:
+  install:
+    runtime-versions:
+      docker: 18
   pre_build:
     commands:
       # Set up more env variables.
