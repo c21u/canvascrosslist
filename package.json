@@ -1,6 +1,6 @@
 {
-  "name": "web",
-  "version": "1.0.3",
+  "name": "canvascrosslist",
+  "version": "1.0.4",
   "private": true,
   "engines": {
     "node": ">=6.13.1",
