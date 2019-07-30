@@ -1,8 +1,5 @@
 version: '3'
-<<<<<<< HEAD
-=======
 
->>>>>>> 4a8899b1d42824b4c740da85dd6db1c4effb2395
 services:
   web:
     build: .
