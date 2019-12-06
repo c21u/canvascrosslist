@@ -46,7 +46,7 @@
     "redux-devtools-extension": "2.13.8",
     "redux-logger": "^3.0.6",
     "redux-thunk": "2.3.0",
-    "serialize-javascript": "1.7.0",
+    "serialize-javascript": "2.1.1",
     "source-map-support": "0.5.12",
     "universal-router": "^6.0.0",
     "whatwg-fetch": "^3.0.0"
