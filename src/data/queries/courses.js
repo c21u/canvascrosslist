@@ -92,11 +92,10 @@ const courses = {
           return updatedCourseData;
         }),
       )
-      .then(
-        data =>
-          Array.isArray(data)
-            ? data.filter(course => course.sis_course_id)
-            : [data],
+      .then(data =>
+        Array.isArray(data)
+          ? data.filter(course => course.sis_course_id)
+          : [data],
       );
   },
 };

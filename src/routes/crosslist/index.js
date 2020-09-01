@@ -10,10 +10,8 @@
 import React from 'react';
 import Crosslist from './Crosslist';
 import Layout from '../../components/Layout';
-import { getCourses } from '../../actions/crosslist';
 
-async function action({ store }) {
-  store.dispatch(getCourses());
+async function action() {
   return {
     title: 'Combine Sections',
     chunks: ['crosslist'],

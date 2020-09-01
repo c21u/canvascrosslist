@@ -1,22 +1,22 @@
-FROM node:10.15.3-alpine as builder
+FROM node:12-alpine as builder
 
 # Set a working directory
 WORKDIR /usr/src/app
 
-RUN apk update; apk add git
-
-ADD . .
+COPY . .
 
 # Install Node.js dependencies
 RUN yarn install
 
 RUN yarn run build --release
 
-FROM node:10.15.3-alpine as runner
+FROM node:12-alpine as runner
 WORKDIR /usr/src/app
-RUN apk update; apk add git
-COPY --from=builder /usr/src/app/build .
+COPY --from=builder --chown=node:node /usr/src/app/build .
 RUN yarn install --production --no-progress
+RUN chmod 755 /usr/src/app
+
+# Run the container under "node" user by default
 USER node
 
 # Set NODE_ENV env variable to "production" for faster expressjs

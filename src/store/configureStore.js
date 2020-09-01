@@ -1,5 +1,9 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import dynamicMiddlewares, {
+  resetMiddlewares,
+  addMiddleware,
+} from 'redux-dynamic-middlewares';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import { name, version } from '../../package.json';
 import rootReducer from '../reducers';
@@ -8,7 +12,7 @@ import createLogger from './logger';
 
 export default function configureStore(initialState, helpersConfig) {
   const helpers = createHelpers(helpersConfig);
-  const middleware = [thunk.withExtraArgument(helpers)];
+  const middleware = [dynamicMiddlewares];
 
   let enhancer;
 
@@ -30,6 +34,8 @@ export default function configureStore(initialState, helpersConfig) {
   // https://redux.js.org/docs/api/createStore.html
   const store = createStore(rootReducer, initialState, enhancer);
 
+  addMiddleware(thunk.withExtraArgument(helpers));
+
   // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
   if (__DEV__ && module.hot) {
     module.hot.accept('../reducers', () =>
@@ -39,4 +45,10 @@ export default function configureStore(initialState, helpersConfig) {
   }
 
   return store;
+}
+
+export function rewireMiddlewares(helpersConfig) {
+  const helpers = createHelpers(helpersConfig);
+  resetMiddlewares();
+  addMiddleware(thunk.withExtraArgument(helpers));
 }

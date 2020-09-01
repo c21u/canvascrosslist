@@ -15,6 +15,7 @@ import {
 
 export default function crosslist(
   state = {
+    initialized: false,
     target: null,
     available: [],
     pending: [],
@@ -32,11 +33,10 @@ export default function crosslist(
         target: action.payload.courseId,
         // Get a flat array of all the sectionIds for the term that corresponds to the selected course
         available: state.terms.byId[action.payload.termId].courses
-          .map(
-            courseId =>
-              courseId === action.payload.courseId
-                ? []
-                : state.courses.byId[courseId].sections,
+          .map(courseId =>
+            courseId === action.payload.courseId
+              ? []
+              : state.courses.byId[courseId].sections,
           )
           .reduce((acc, cur) => acc.concat(cur)),
       };
@@ -146,6 +146,7 @@ export default function crosslist(
     case GET_COURSES:
       return {
         ...state,
+        initialized: true,
         terms: { byId: {}, allIds: [] },
         courses: { byId: {}, allIds: [] },
         sections: { byId: {}, allIds: [] },
