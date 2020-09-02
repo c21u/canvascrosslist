@@ -4,10 +4,6 @@ import jwt from 'jsonwebtoken';
 import CourseItemType from '../types/CourseItemType';
 import config from '../../config';
 
-const canvas = new Canvas(config.canvas.url, {
-  accessToken: config.canvas.token,
-});
-
 const courses = {
   type: new List(CourseItemType),
   args: {
@@ -15,9 +11,15 @@ const courses = {
   },
 
   resolve(obj, args, ctx) {
-    const userid = ctx.user
-      ? ctx.user.custom_canvas_user_id
-      : jwt.verify(ctx.token, config.auth.jwt.secret).custom_canvas_user_id;
+    const user = ctx.user
+      ? ctx.user
+      : jwt.verify(ctx.token, config.auth.jwt.secret);
+
+    const canvas = new Canvas(user.custom_canvas_api_baseurl, {
+      accessToken: config.canvas.token,
+    });
+
+    const userid = user.custom_canvas_user_id;
 
     const url = args.courseId
       ? `courses/${args.courseId}`
