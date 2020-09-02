@@ -128,10 +128,10 @@ export default connect(
                         key={courseId}
                         id={courseId}
                         course={courses.byId[courseId]}
-                        xlist={crosslistSection}
-                        unxlist={uncrosslistSection}
+                        xlist={props.crosslistSection}
+                        unxlist={props.uncrosslistSection}
                         setTargetOnClick={() =>
-                          setCrosslistTarget({ termId, courseId })
+                          props.setCrosslistTarget({ termId, courseId })
                         }
                         isTarget={target === courseId}
                         targetExists={!!target}
