@@ -275,9 +275,10 @@ app.use((err, req, res, next) => {
 // Launch the server
 // -----------------------------------------------------------------------------
 if (!module.hot) {
-  app.listen(config.port, () => {
+  const server = app.listen(config.port, () => {
     log.info(`The server is running at http://localhost:${config.port}/`);
   });
+  server.keepAliveTimeout = 61 * 1000;
 }
 
 //
