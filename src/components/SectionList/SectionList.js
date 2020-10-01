@@ -19,7 +19,7 @@ export default function SectionList(props) {
     isTarget,
     pending,
     available,
-    recentStudentsCount,
+    published,
     xlist,
     unxlist,
   } = props;
@@ -47,7 +47,7 @@ export default function SectionList(props) {
             key={sectionId}
             section={sections.byId[sectionId]}
             courseId={courseId}
-            xlistOnClick={() => xlist({ sectionId, recentStudentsCount })}
+            xlistOnClick={() => xlist({ sectionId, published })}
             unxlistOnClick={() => unxlist({ sectionId })}
             isTarget={isTarget}
             isPending={pending.includes(sectionId)}
@@ -68,7 +68,7 @@ SectionList.propTypes = {
   pending: PropTypes.arrayOf(PropTypes.string).isRequired,
   available: PropTypes.arrayOf(PropTypes.string).isRequired,
   mySections: PropTypes.arrayOf(PropTypes.string).isRequired,
-  recentStudentsCount: PropTypes.number.isRequired,
+  published: PropTypes.bool.isRequired,
   xlist: PropTypes.func.isRequired,
   unxlist: PropTypes.func.isRequired,
 };

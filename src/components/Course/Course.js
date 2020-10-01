@@ -92,7 +92,7 @@ export default function Course(props) {
         isTarget={isTarget}
         pending={pending}
         available={available}
-        recentStudentsCount={course.recent_students}
+        published={course.workflow_state !== 'unpublished'}
         xlist={xlist}
         unxlist={unxlist}
       />
@@ -106,6 +106,7 @@ Course.propTypes = {
     recent_students: PropTypes.number.isRequired,
     saveState: PropTypes.string.isRequired,
     sis_course_id: PropTypes.string.isRequired,
+    workflow_state: PropTypes.string.isRequired,
     sections: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
   setTargetOnClick: PropTypes.func.isRequired,
