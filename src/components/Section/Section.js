@@ -11,44 +11,47 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../Spinner';
 
-class Section extends React.Component {
-  static propTypes = {
-    section: PropTypes.shape({
-      name: PropTypes.string,
-    }).isRequired,
-    courseId: PropTypes.string.isRequired,
-    xlistOnClick: PropTypes.func.isRequired,
-    unxlistOnClick: PropTypes.func.isRequired,
-    isTarget: PropTypes.bool.isRequired,
-    isPending: PropTypes.bool.isRequired,
-    isAvailable: PropTypes.bool.isRequired,
-  };
+export default function Section(props) {
+  const {
+    section,
+    courseId,
+    xlistOnClick,
+    unxlistOnClick,
+    isTarget,
+    isPending,
+    isAvailable,
+  } = props;
 
-  render() {
-    const {
-      section,
-      courseId,
-      xlistOnClick,
-      unxlistOnClick,
-      isTarget,
-      isPending,
-      isAvailable,
-    } = this.props;
-    return (
-      <li>
-        {section.name}
-        {isAvailable &&
-          !isPending && <button onClick={xlistOnClick}>Combine</button>}
-        {isTarget &&
-          !isPending &&
-          (section.nonxlist_course_id &&
-            courseId !== section.nonxlist_course_id) && (
-            <button onClick={unxlistOnClick}>Separate</button>
-          )}
-        {isPending && <Spinner />}
-      </li>
-    );
-  }
+  return (
+    <li>
+      {section.name}
+      {isAvailable && !isPending && (
+        <button type="button" onClick={xlistOnClick}>
+          Combine
+        </button>
+      )}
+      {isTarget &&
+        !isPending &&
+        section.nonxlist_course_id &&
+        courseId !== section.nonxlist_course_id && (
+          <button type="button" onClick={unxlistOnClick}>
+            Separate
+          </button>
+        )}
+      {isPending && <Spinner />}
+    </li>
+  );
 }
 
-export default Section;
+Section.propTypes = {
+  section: PropTypes.shape({
+    name: PropTypes.string,
+    nonxlist_course_id: PropTypes.string,
+  }).isRequired,
+  courseId: PropTypes.string.isRequired,
+  xlistOnClick: PropTypes.func.isRequired,
+  unxlistOnClick: PropTypes.func.isRequired,
+  isTarget: PropTypes.bool.isRequired,
+  isPending: PropTypes.bool.isRequired,
+  isAvailable: PropTypes.bool.isRequired,
+};

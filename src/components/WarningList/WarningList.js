@@ -7,8 +7,8 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
+import useStyles from 'isomorphic-style-loader/useStyles';
 import React from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import PropTypes from 'prop-types';
 import s from './WarningList.css';
 
@@ -18,17 +18,17 @@ function nextKey() {
   return i;
 }
 
-class WarningList extends React.Component {
-  static propTypes = {
-    warnings: PropTypes.arrayOf(PropTypes.string).isRequired,
-  };
-  render() {
-    return (
-      <ul className={s.warning}>
-        {this.props.warnings.map(warning => <li key={nextKey()}>{warning}</li>)}
-      </ul>
-    );
-  }
+export default function WarningList({ warnings }) {
+  useStyles(s);
+  return (
+    <ul className={s.warning}>
+      {warnings.map(warning => (
+        <li key={nextKey()}>{warning}</li>
+      ))}
+    </ul>
+  );
 }
 
-export default withStyles(s)(WarningList);
+WarningList.propTypes = {
+  warnings: PropTypes.arrayOf(PropTypes.string).isRequired,
+};

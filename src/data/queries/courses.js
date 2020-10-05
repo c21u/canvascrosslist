@@ -1,12 +1,9 @@
 import { GraphQLList as List, GraphQLID as StringType } from 'graphql';
 import Canvas from 'canvas-lms-api';
 import jwt from 'jsonwebtoken';
+import PQueue from 'p-queue';
 import CourseItemType from '../types/CourseItemType';
 import config from '../../config';
-
-const canvas = new Canvas(config.canvas.url, {
-  accessToken: config.canvas.token,
-});
 
 const courses = {
   type: new List(CourseItemType),
@@ -15,9 +12,17 @@ const courses = {
   },
 
   resolve(obj, args, ctx) {
-    const userid = ctx.user
-      ? ctx.user.custom_canvas_user_id
-      : jwt.verify(ctx.token, config.auth.jwt.secret).custom_canvas_user_id;
+    const queue = new PQueue({ concurrency: 50 });
+
+    const user = ctx.user
+      ? ctx.user
+      : jwt.verify(ctx.token, config.auth.jwt.secret);
+
+    const canvas = new Canvas(user.custom_canvas_api_baseurl, {
+      accessToken: config.canvas.token,
+    });
+
+    const userid = user.custom_canvas_user_id;
 
     const url = args.courseId
       ? `courses/${args.courseId}`
@@ -38,28 +43,41 @@ const courses = {
 
     return canvas
       .get(url, options)
-      .then(coursesData => {
-        const theCourses = Array.isArray(coursesData)
-          ? coursesData
-          : [coursesData];
-        const recentStudents = theCourses.map(course =>
-          canvas
-            .get(`courses/${course.id}/recent_students`)
-            .then(recentStudentsData => {
+      .then(coursesData =>
+        Array.isArray(coursesData) ? coursesData : [coursesData],
+      )
+      .then(theCourses => {
+        const courseActivity = theCourses.map(course => () =>
+          /* canvas
+            .get(`courses/${course.id}/analytics/student_summaries`)
+            .then(summaries => {
               const updatedCourse = course;
-              updatedCourse.recent_students = recentStudentsData.filter(
-                recentStudent => !!recentStudent.last_login,
+              updatedCourse.recent_students = summaries.filter(
+                summary => summary.participations > 0,
               ).length;
               return updatedCourse;
-            }),
+            })
+            .catch(err => {
+              if (err.code === 404) {
+                const updatedCourse = course;
+                updatedCourse.recent_students = 0;
+                return updatedCourse;
+              }
+              throw new Error(err);
+            }), */
+          {
+            const updatedCourse = course;
+            updatedCourse.recent_students = 0;
+            return updatedCourse;
+          },
         );
-        return Promise.all(recentStudents).then(() => theCourses);
+        return queue.addAll(courseActivity).then(() => theCourses);
       })
       .then(coursesData => {
-        const sections = coursesData.map(course =>
+        const sections = coursesData.map(course => () =>
           canvas.get(`courses/${course.id}/sections`),
         );
-        return Promise.all(sections).then(sectionsData => ({
+        return queue.addAll(sections).then(sectionsData => ({
           coursesData,
           sectionsData,
         }));
@@ -92,12 +110,12 @@ const courses = {
           return updatedCourseData;
         }),
       )
-      .then(
-        data =>
-          Array.isArray(data)
-            ? data.filter(course => course.sis_course_id)
-            : [data],
-      );
+      .then(data =>
+        Array.isArray(data)
+          ? data.filter(course => course.sis_course_id)
+          : [data],
+      )
+      .catch(console.error);
   },
 };
 
