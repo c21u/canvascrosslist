@@ -159,7 +159,7 @@ export function crosslistSection({ sectionId, published }) {
     const shouldContinue = published
       ? // eslint-disable-next-line no-alert
         window.confirm(
-          `The course containing this section is published, moving the section will result in loss of access to data associated with the course. Are you sure you would like to continue?`,
+          'Warning - the course containing the section to be combined is published, combining this section may result in loss of access to data (grades, participations and materials). Are you sure you would like to continue?',
         )
       : true;
     if (shouldContinue) {
