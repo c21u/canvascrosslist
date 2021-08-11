@@ -23,7 +23,7 @@ There are several FERPA considerations for combining sections in Canvas:
 - Can I isolate a single student in a combined course?
   - Yes. If you would like to limit individual users in a section – as opposed to all students in a section – to only see users enrolled in the same section, follow the instructions at <a href="https://community.canvaslms.com/docs/DOC-13026" target="_blank">https://community.canvaslms.com/docs/DOC-13026</a>.
 - Can I combine a section I am teaching with a section taught by someone else?
-  - Sections can only be combined if they all have a common instructor. <a href="https://community.canvaslms.com/docs/DOC-12973-4152724200" target="_blank">A section’s existing instructor can add additional instructors using the People tool</a>. When adding users, be sure to select “Login ID” and enter the user’s GT Account (e.g. gburdell3). Once all sections have a common instructor, that instructor can combine the sections using this tool.
+  - Sections can only be combined if they all have a common instructor. Please contact your department scheduler (for Banner) or Academic Office to have additional instructors added to an official Canvas course via Banner.
 - What if I am unsure?
   - If you are unsure whether it is appropriate to combine your sections – or whether to isolate your combined sections – contact the Registrars Office at <a href="https://registrar.gatech.edu/contact" target="_blank">https://registrar.gatech.edu/contact</a> for guidance.
 
