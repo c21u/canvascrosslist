@@ -152,17 +152,16 @@ export function crosslistSectionFail(errors) {
   return { type: XLIST_SECTION_FAIL, payload: errors };
 }
 
-export function crosslistSection({ sectionId, recentStudentsCount }) {
+export function crosslistSection({ sectionId, published }) {
   return async (dispatch, getState, { graphqlRequest }) => {
     /* Prompt for confirmation if the course that the section-to-be-crosslisted
     is in, has any count of recent_students in the course. Otherwise, go on. */
-    const shouldContinue =
-      recentStudentsCount > 0
-        ? // eslint-disable-next-line no-alert
-          window.confirm(
-            `Are you sure you want to move this section? Data loss could result.`,
-          )
-        : true;
+    const shouldContinue = published
+      ? // eslint-disable-next-line no-alert
+        window.confirm(
+          'Warning - the course containing the section to be combined is published, combining this section may result in loss of access to data (grades, participations and materials). Are you sure you would like to continue?',
+        )
+      : true;
     if (shouldContinue) {
       const courseId = getState().crosslist.target;
       dispatch({ type: XLIST_SECTION, payload: { sectionId } });

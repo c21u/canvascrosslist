@@ -8,19 +8,16 @@
  */
 
 import React from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 import s from './Spinner.css';
 
-class Spinner extends React.Component {
-  render() {
-    return (
-      <div className={s.spinner}>
-        <div className={s.bounce1} />
-        <div className={s.bounce2} />
-        <div className={s.bounce3} />
-      </div>
-    );
-  }
+export default function Spinner() {
+  useStyles(s);
+  return (
+    <div className={s.spinner}>
+      <div className={s.bounce1} />
+      <div className={s.bounce2} />
+      <div className={s.bounce3} />
+    </div>
+  );
 }
-
-export default withStyles(s)(Spinner);

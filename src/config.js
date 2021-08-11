@@ -35,7 +35,6 @@ module.exports = {
   },
 
   canvas: {
-    url: process.env.CANVAS_URL || 'https://gatech.test.instructure.com',
     token: process.env.CANVAS_TOKEN,
   },
 

@@ -1,18 +1,18 @@
 version: '3'
+
 services:
   web:
     build: .
     environment:
       NODE_ENV: production
-      VIRTUAL_HOST: crosslist.127.0.0.1.xip.io
-      LTI_KEY: gatech
-      LTI_SECRET: doesitmatter
-      BUZZAPI_APP_ID: eduapps1
-      BUZZAPI_PASSWORD: $BUZZAPI_PASSWORD
-      CANVAS_TOKEN:
+      VIRTUAL_HOST: dev.127.0.0.1.xip.io
       TRUST_PROXY: uniquelocal
+      LTI_KEY: $LTI_KEY
+      LTI_SECRET: $LTI_SECRET
+      CANVAS_TOKEN: $CANVAS_TOKEN
     expose:
       - "3000"
+
   nginx-proxy:
     image: jwilder/nginx-proxy
     ports:

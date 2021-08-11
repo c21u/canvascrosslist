@@ -18,6 +18,7 @@ import nodeFetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import addReqId from 'express-request-id';
+import { Provider } from 'react-redux';
 import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
@@ -107,7 +108,7 @@ function getToken(req) {
     req.headers.authorization.split(' ')[0] === 'Bearer'
   )
     return req.headers.authorization.split(' ')[1];
-  else if (req.query && req.query.token) return req.query.token;
+  if (req.query && req.query.token) return req.query.token;
   return null;
 }
 
@@ -199,14 +200,11 @@ app.get('*', async (req, res, next) => {
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
     const context = {
-      insertCss,
       fetch,
       // The twins below are wild, be careful!
       pathname: req.path,
       query: req.query,
-      // You can access redux through react-redux connect
       store,
-      storeSubscription: null,
     };
 
     const route = await router.resolve(context);
@@ -218,7 +216,11 @@ app.get('*', async (req, res, next) => {
 
     const data = { ...route };
     data.children = ReactDOM.renderToString(
-      <App context={context}>{route.component}</App>,
+      <Provider store={store}>
+        <App context={context} insertCss={insertCss}>
+          {route.component}
+        </App>
+      </Provider>,
     );
     data.styles = [{ id: 'css', cssText: [...css].join('') }];
 
@@ -237,7 +239,7 @@ app.get('*', async (req, res, next) => {
     data.scripts = Array.from(scripts);
     data.app = {
       apiUrl: config.api.clientUrl,
-      state: context.store.getState(),
+      state: store.getState(),
     };
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
@@ -273,9 +275,10 @@ app.use((err, req, res, next) => {
 // Launch the server
 // -----------------------------------------------------------------------------
 if (!module.hot) {
-  app.listen(config.port, () => {
+  const server = app.listen(config.port, () => {
     log.info(`The server is running at http://localhost:${config.port}/`);
   });
+  server.keepAliveTimeout = 61 * 1000;
 }
 
 //
