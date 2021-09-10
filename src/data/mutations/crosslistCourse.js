@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { GraphQLID as StringType, GraphQLNonNull as NonNull } from 'graphql';
 import FullSectionType from '../types/FullSectionItemType';
 import config from '../../config';
+import logger from '../logger.js';
 
 const crosslist = {
   type: FullSectionType,
@@ -26,7 +27,9 @@ const crosslist = {
       {
         as_user_id: userid,
       },
-    );
+    ).then(() => {
+      logger.info({action: "crosslist", user: userid, section: args.sectionId, course: args.targetId }, "Section Crosslisted")
+    });
   },
 };
 

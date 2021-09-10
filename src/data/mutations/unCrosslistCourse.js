@@ -3,11 +3,13 @@ import jwt from 'jsonwebtoken';
 import { GraphQLID as StringType, GraphQLNonNull as NonNull } from 'graphql';
 import FullSectionType from '../types/FullSectionItemType';
 import config from '../../config';
+import logger from '../logger.js';
 
 const uncrosslist = {
   type: FullSectionType,
   args: {
     sectionId: { type: new NonNull(StringType) },
+    targetId: { type: new NonNull(StringType) },
   },
   resolve(obj, args, ctx) {
     const user = ctx.user
@@ -33,13 +35,17 @@ const uncrosslist = {
             .includes(userid)
         ) {
           // The user can only uncrosslist as themselves if they still have an enrollment in the original course so we do this as admin
-          return canvas.delete(`sections/${args.sectionId}/crosslist`);
+          return canvas.delete(`sections/${args.sectionId}/crosslist`).then(() => {
+            logger.info({action: "crosslist", user: userid, section: args.sectionId, course: args.targetId }, "Section UncrossListed");
+          });
         }
         return canvas
           .get('accounts/self/admins', { user_id: [userid] })
           .then(admins => {
             if (admins.length > 0) {
-              return canvas.delete(`sections/${args.sectionId}/crosslist`);
+              return canvas.delete(`sections/${args.sectionId}/crosslist`).then(() => {
+                logger.info({action: "uncrosslist", user: userid, section: args.sectionId, course: args.targetId }, "Section UncrossListed");
+              });
             }
 
             throw new Error('Permission Denied');
