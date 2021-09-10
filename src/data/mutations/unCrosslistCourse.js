@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { GraphQLID as StringType, GraphQLNonNull as NonNull } from 'graphql';
 import FullSectionType from '../types/FullSectionItemType';
 import config from '../../config';
-import logger from '../logger.js';
+import logger from '../../logger.js';
 
 const uncrosslist = {
   type: FullSectionType,
