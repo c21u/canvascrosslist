@@ -44,7 +44,7 @@ const uncrosslist = {
           .then(admins => {
             if (admins.length > 0) {
               return canvas.delete(`sections/${args.sectionId}/crosslist`).then(() => {
-                logger.info({action: "uncrosslist", user: userid, section: args.sectionId, course: args.targetId }, "Section UncrossListed");
+                logger.info({action: "crosslist", user: userid, section: args.sectionId, course: args.targetId }, "Section UncrossListed");
               });
             }
 
