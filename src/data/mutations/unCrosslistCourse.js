@@ -8,7 +8,7 @@ import logger from '../../logger.js';
 const uncrosslist = {
   type: FullSectionType,
   args: {
-    sectionId: { type: new NonNull(StringType) }
+    sectionId: { type: new NonNull(StringType) },
   },
   resolve(obj, args, ctx) {
     const user = ctx.user
@@ -16,6 +16,7 @@ const uncrosslist = {
       : jwt.verify(ctx.token, config.auth.jwt.secret);
 
     const userid = user.custom_canvas_user_id;
+    const gtaccount = user.custom_lis_user_username;
 
     const canvas = new Canvas(user.custom_canvas_api_baseurl, {
       accessToken: config.canvas.token,
@@ -34,17 +35,37 @@ const uncrosslist = {
             .includes(userid)
         ) {
           // The user can only uncrosslist as themselves if they still have an enrollment in the original course so we do this as admin
-          return canvas.delete(`sections/${args.sectionId}/crosslist`).then(() => {
-            logger.info({action: "crosslist", user: userid, section: args.sectionId}, "Section UncrossListed");
-          });
+          return canvas
+            .delete(`sections/${args.sectionId}/crosslist`)
+            .then(() => {
+              logger.info(
+                {
+                  action: 'crosslist',
+                  user: userid,
+                  gtaccount,
+                  section: args.sectionId,
+                },
+                'Section UncrossListed',
+              );
+            });
         }
         return canvas
           .get('accounts/self/admins', { user_id: [userid] })
           .then(admins => {
             if (admins.length > 0) {
-              return canvas.delete(`sections/${args.sectionId}/crosslist`).then(() => {
-                logger.info({action: "crosslist", user: userid, section: args.sectionId}, "Section UncrossListed");
-              });
+              return canvas
+                .delete(`sections/${args.sectionId}/crosslist`)
+                .then(() => {
+                  logger.info(
+                    {
+                      action: 'uncrosslist',
+                      user: userid,
+                      gtaccount,
+                      section: args.sectionId,
+                    },
+                    'Section UncrossListed',
+                  );
+                });
             }
 
             throw new Error('Permission Denied');
