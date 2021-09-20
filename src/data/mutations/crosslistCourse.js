@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { GraphQLID as StringType, GraphQLNonNull as NonNull } from 'graphql';
 import FullSectionType from '../types/FullSectionItemType';
 import config from '../../config';
+import logger from '../../logger.js';
 
 const crosslist = {
   type: FullSectionType,
@@ -20,13 +21,24 @@ const crosslist = {
     });
 
     const userid = user.custom_canvas_user_id;
+    const gtaccount = user.custom_lis_user_username;
 
-    return canvas.post(
-      `sections/${args.sectionId}/crosslist/${args.targetId}`,
-      {
+    return canvas
+      .post(`sections/${args.sectionId}/crosslist/${args.targetId}`, {
         as_user_id: userid,
-      },
-    );
+      })
+      .then(() => {
+        logger.info(
+          {
+            action: 'crosslist',
+            user: userid,
+            gtaccount,
+            section: args.sectionId,
+            course: args.targetId,
+          },
+          'Section CrossListed',
+        );
+      });
   },
 };
 
