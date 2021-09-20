@@ -40,7 +40,7 @@ const uncrosslist = {
             .then(() => {
               logger.info(
                 {
-                  action: 'crosslist',
+                  action: 'uncrosslist',
                   user: userid,
                   gtaccount,
                   section: args.sectionId,
