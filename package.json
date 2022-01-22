@@ -33,7 +33,7 @@
     "ims-lti": "^3.0.2",
     "isomorphic-style-loader": "^5.1.0",
     "jsonwebtoken": "^8.3.0",
-    "node-fetch": "^2.2.0",
+    "node-fetch": "^3.1.1",
     "normalize.css": "^8.0.0",
     "p-queue": "^6.6.1",
     "passport": "^0.4.0",
