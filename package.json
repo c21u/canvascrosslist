@@ -32,7 +32,7 @@
     "history": "^4.7.2",
     "ims-lti": "^3.0.2",
     "isomorphic-style-loader": "^5.1.0",
-    "jsonwebtoken": "^8.3.0",
+    "jsonwebtoken": "^9.0.0",
     "node-fetch": "^2.2.0",
     "normalize.css": "^8.0.0",
     "p-queue": "^6.6.1",
