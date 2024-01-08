@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { GraphQLID as StringType, GraphQLNonNull as NonNull } from 'graphql';
 import FullSectionType from '../types/FullSectionItemType';
 import config from '../../config';
-import logger from '../../logger.js';
+import logger from '../../logger';
 
 const uncrosslist = {
   type: FullSectionType,
@@ -37,7 +37,7 @@ const uncrosslist = {
           // The user can only uncrosslist as themselves if they still have an enrollment in the original course so we do this as admin
           return canvas
             .delete(`sections/${args.sectionId}/crosslist`)
-            .then(() => {
+            .then(section => {
               logger.info(
                 {
                   action: 'uncrosslist',
@@ -47,6 +47,7 @@ const uncrosslist = {
                 },
                 'Section UncrossListed',
               );
+              return section;
             });
         }
         return canvas
@@ -55,7 +56,7 @@ const uncrosslist = {
             if (admins.length > 0) {
               return canvas
                 .delete(`sections/${args.sectionId}/crosslist`)
-                .then(() => {
+                .then(section => {
                   logger.info(
                     {
                       action: 'uncrosslist',
@@ -65,6 +66,7 @@ const uncrosslist = {
                     },
                     'Section UncrossListed',
                   );
+                  return section;
                 });
             }
 
