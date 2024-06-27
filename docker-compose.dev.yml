@@ -1,0 +1,34 @@
+version: "3"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: development
+      VIRTUAL_HOST: canvas-crosslist.127.0.0.1.nip.io
+      BUZZAPI_URL:
+      CANVAS_API_URL: $CANVAS_API_URL
+      CANVAS_URL: $CANVAS_URL
+      CANVAS_API_ROOT: $CANVAS_API_ROOT
+      LTI_KEY: gatech
+      LTI_SECRET: doesitmatter
+      BUZZAPI_APP_ID: $BUZZAPI_APP_ID
+      BUZZAPI_PASSWORD: $BUZZAPI_PASSWORD
+      CANVAS_TOKEN: $CANVAS_TOKEN
+      TRUST_PROXY: uniquelocal
+      JWT_SECRET: $JWT_SECRET
+      LOG_LEVEL:
+      SENTRY_DSN:
+    expose:
+      - "3000"
+    volumes:
+      - ./:/app/
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs

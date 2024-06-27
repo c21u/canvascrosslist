@@ -1,0 +1,53 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_ACCOUNT_ID:
+    AWS_REGION:
+    CLUSTER_NAME:
+    DOCKER_HUB_PASSWORD:
+    DOCKER_HUB_USERNAME:
+    IMAGE_NAME:
+    IMAGE_NAMESPACE:
+    IMAGE_TAG:
+    SERVICE_NAME:
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:
+    commands:
+      # Short commit hash
+      - GIT_COMMIT_HASH=$(git rev-parse --short=7 --verify HEAD)
+
+      # Container repository location
+      - REPO_URL=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAMESPACE/$IMAGE_NAME
+
+      # Use IMAGE_TAG passed in from the build, fallback to 'latest' if blank.
+      - TAG=${IMAGE_TAG:-latest}
+
+      # Log in to ECR
+      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
+
+       # Log in to Docker Hub
+      - docker login --password $DOCKER_HUB_PASSWORD --username $DOCKER_HUB_USERNAME
+
+      # Pull image for caching.
+      - docker pull $REPO_URL:$TAG || true
+  build:
+    commands:
+      - docker build --cache-from $REPO_URL:$TAG -t $IMAGE_NAME:$GIT_COMMIT_HASH -t $IMAGE_NAME:$TAG .
+      - docker tag $IMAGE_NAME:$TAG $REPO_URL:$TAG
+      - docker tag $IMAGE_NAME:$TAG $REPO_URL:$GIT_COMMIT_HASH
+  post_build:
+    commands:
+      - docker push $REPO_URL:$TAG
+      - docker push $REPO_URL:$GIT_COMMIT_HASH
+
+      # Update the service.
+      # Discard the default output (json full description of the service.)
+      - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment 1>/dev/null
+
+      - echo Build completed.
+      - echo Service $SERVICE_NAME in cluster $CLUSTER_NAME is now updating...

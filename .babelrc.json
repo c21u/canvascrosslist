@@ -1,0 +1,12 @@
+{
+  "sourceType": "module",
+  "presets": ["@babel/preset-react", "mobx"],
+  "plugins": [
+    [
+      "@babel/transform-runtime",
+      {
+        "regenerator": true
+      }
+    ]
+  ]
+}

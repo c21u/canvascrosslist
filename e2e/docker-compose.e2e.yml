@@ -1,0 +1,39 @@
+version: "2.4"
+services:
+  app:
+    build: ..
+    container_name: admin-dashboard
+    environment:
+      - BUZZAPI_APP_ID
+      - BUZZAPI_PASSWORD
+      - BUZZAPI_URL
+      - CANVAS_API_URL
+      - CANVAS_TOKEN
+      - CANVAS_URL
+      - JWT_SECRET
+      - LTI_KEY
+      - LTI_SECRET
+      - NODE_ENV=ci
+      - TRUST_PROXY=uniquelocal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://app:3000"]
+    ports:
+      - 3000
+  e2e:
+    build: .
+    command: npx cypress run
+    container_name: cypress
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      - APP_URL=http://app:3000/
+      - CI=1
+      - NO_COLOR=1
+      - CYPRESS_baseUrl=http://app:3000
+      - LTI_KEY
+      - LTI_SECRET
+      - TERM=dumb
+    volumes:
+      - ./cypress:/app/cypress:rw
+      - ./cypress.json:/app/cypress.json:ro

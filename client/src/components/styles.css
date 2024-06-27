@@ -1,0 +1,146 @@
+body {
+    color: #54585A;
+}
+
+button {
+    width: 80px;
+    padding: 8px;
+    margin: auto 0px;
+    font-size: 0.9em;
+    border-radius: 5px;
+    border-style: none;
+    cursor: pointer;
+}
+
+.crosslistTitle {
+    font-size: 2.1em;
+}
+
+.termsTitle {
+    background-color: #003057;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    text-align: center;
+    color: #EAAA00;
+}
+
+.linkStyle {
+    color: #3A5DAE;
+    text-decoration: none;
+}
+
+.continueButton {
+    color: #003057;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #EAAA00;
+    text-decoration: none;
+}
+
+.continueButton:hover {
+    background-color: #EAAA00;
+}
+
+.course {
+    margin-bottom: 20px;
+}
+
+.courseHeader {
+    display: flex;
+    flex-direction: row;
+    background-color: #54585A;
+    padding: 0px 20px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.courseHeader h2 {
+    margin-right: auto;
+    color: #F9F6E5;
+}
+
+.targetedText {
+    color:#00EC9C;
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+.courseSubHeader {
+    background-color: #F9F6E5;
+    padding: 20px;
+}
+
+.manageButton {
+    background-color: #D6DBD4;
+    color: #54585A;
+}
+
+.manageButton:hover {
+    color: black;
+}
+
+.primarySection {
+    color: #003057;
+}
+
+.primarySection h3, p {
+    margin: 0px;
+}
+
+#targeted {
+    color:#00EC9C;
+}
+
+.primarySection p {
+    margin-bottom: 10px;
+}
+
+.studentsLoggedIn {
+    color: #54585A;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.sectionList {
+    background-color: #D6DBD4;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.section {
+    display: flex;
+    flex-direction: row;
+    padding: 0px 20px;
+}
+
+.section h3 {
+    margin-right: auto;
+    color: #54585A;
+}
+
+.separateButton {
+    background-color: #E04F39;
+    color: #F9F6E5;
+}
+
+.separateButton:hover {
+    color: white;
+}
+
+.combineButton {
+    background-color: #00EC9C;
+    color: #54585A;
+}
+
+.combineButton:hover {
+    color: black;
+}
+
+@media print {
+    .excludePrint {
+        display: none;
+    }
+}
