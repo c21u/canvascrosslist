@@ -7,6 +7,7 @@ import { Spinner } from "@instructure/ui-spinner";
 import { Link } from "react-router-dom";
 import "./styles.css";
 import agent from "../agent.js";
+import Course from "./Course.js";
 
 const Crosslist = () => {
   const [coursesLoading, setCoursesLoading] = useState(true);
@@ -272,114 +273,21 @@ const Crosslist = () => {
                     courses.byId[a].name.localeCompare(courses.byId[b].name)
                   )
                   .map((courseId) => (
-                    <View as="div" key={courseId} className="course">
-                      <View as="div" className="courseHeader">
-                        <h2
-                          id={!!target && target == courseId ? "targeted" : ""}
-                        >
-                          {courses.byId[courseId].name}
-                        </h2>
-                        {!(target === courseId) ? (
-                          <button
-                            onClick={() => {
-                              setCrossListTarget(termId, courseId);
-                            }}
-                            // color="primary"
-                            // size="small"
-                            className="manageButton"
-                          >
-                            Manage
-                          </button>
-                        ) : (
-                          <h3 className="targetedText">TARGETED</h3>
-                        )}
-                      </View>
-                      <View as="div" className="courseSubHeader">
-                        <View as="div" className="primarySection">
-                          <h3>
-                            {courses.byId[courseId].course_code} -{" "}
-                            {courses.byId[courseId].sis_course_id}
-                          </h3>
-                          <br></br>
-                          {!!target && target == courseId ? (
-                            <p>
-                              The managed section is the primary course section
-                              and should be the section that has the most
-                              certain or largest projected enrollments.
-                            </p>
-                          ) : (
-                            ""
-                          )}
-                        </View>
-                        <View as="div" className="studentsLoggedIn">
-                          <p>
-                            {courses.byId[courseId].recent_students} student
-                            {courses.byId[courseId].recent_students === 1
-                              ? " has "
-                              : "s have "}
-                            logged in to this course.
-                          </p>
-                        </View>
-                      </View>
-                      <View as="div" className="sectionList">
-                        {courses.byId[courseId].sections
-                          .sort((a, b) => {
-                            const sectionA = sections.byId[a];
-                            const sectionB = sections.byId[b];
-                            if (sectionA.name < sectionB.name) return -1;
-                            if (sectionA.name > sectionB.name) return 1;
-                            return 0;
-                          })
-                          .sort((a, b) => {
-                            const sectionA = sections.byId[a];
-                            const sectionB = sections.byId[b];
-                            if (sectionA.nonxlist_course_id === courseId)
-                              return -1;
-                            if (sectionB.nonxlist_course_id === courseId)
-                              return 1;
-                            return 0;
-                          })
-                          .map((sectionId) => (
-                            <View as="div" key={sectionId} className="section">
-                              <h3>{sections.byId[sectionId].name}</h3>
-                              {available.includes(sectionId) &&
-                              !pending.includes(sectionId) ? (
-                                <button
-                                  className="combineButton"
-                                  onClick={() => {
-                                    crossListSection(sectionId);
-                                  }}
-                                >
-                                  Combine
-                                </button>
-                              ) : (
-                                ""
-                              )}
-                              {target === courseId &&
-                              !pending.includes(sectionId) &&
-                              sections.byId[sectionId].nonxlist_course_id &&
-                              courseId !==
-                                sections.byId[sectionId].nonxlist_course_id ? (
-                                <button
-                                  className="separateButton"
-                                  onClick={() => {
-                                    unCrossListSection(sectionId);
-                                  }}
-                                >
-                                  Separate
-                                </button>
-                              ) : (
-                                ""
-                              )}
-                              {pending.includes(sectionId) ? (
-                                <Spinner size="x-small" />
-                              ) : (
-                                ""
-                              )}
-                            </View>
-                          ))}
-                      </View>
-                    </View>
+                    <Course
+                      key={courseId}
+                      courseId={courseId}
+                      course={courses.byId[courseId]}
+                      crossListSection={crossListSection}
+                      unCrossListSection={unCrossListSection}
+                      setCrossListTarget={() =>
+                        setCrossListTarget(termId, courseId)
+                      }
+                      isTarget={target === courseId}
+                      targetExists={!!target}
+                      pending={pending}
+                      available={available}
+                      sections={sections}
+                    />
                   ))}
               </View>
             ))}
