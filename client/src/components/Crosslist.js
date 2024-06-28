@@ -23,7 +23,6 @@ const Crosslist = () => {
     agent.courses
       .get()
       .then((data) => {
-        console.log(data);
         if (!data) {
           return {
             error: `No courses found for user_id ${data.userId}`,
@@ -42,11 +41,13 @@ const Crosslist = () => {
           };
           courses.allIds.push(course.id);
           course.sections.map((section) => {
+            console.log("SECTION", section);
             sections.byId[section.id] = {
               name: section.name,
               nonxlist_course_id: section.nonxlist_course_id
                 ? section.nonxlist_course_id
                 : course.id,
+              sisSectionId: section.sisSectionId,
             };
             return sections.allIds.push(section.id);
           });

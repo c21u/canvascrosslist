@@ -46,6 +46,7 @@ Canvas.getCourses = async (userId) => {
           if (section && !sectionMap[section.id]) {
             sectionMap[section.id] = {
               nonxlist_course_id: section.nonxlist_course_id,
+              sisSectionId: section.sis_section_id,
             };
           }
           return section;
@@ -61,6 +62,8 @@ Canvas.getCourses = async (userId) => {
             const updatedSection = section;
             updatedSection.nonxlist_course_id =
               sectionMap[updatedSection.id].nonxlist_course_id;
+            updatedSection.sisSectionId =
+              sectionMap[updatedSection.id].sisSectionId;
             return updatedSection;
           }
         );

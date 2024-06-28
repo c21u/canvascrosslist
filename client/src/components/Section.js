@@ -45,6 +45,7 @@ const Section = (props) => {
       ) : (
         ""
       )}
+      <button className="isolateButton">Isolate</button>
       {isPending ? <Spinner size="x-small" /> : ""}
     </View>
   );

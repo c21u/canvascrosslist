@@ -62,6 +62,21 @@ button {
     color: #F9F6E5;
 }
 
+#targeted {
+    position: sticky;
+    top: 0px;
+    bottom: 0px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #00EC9C;
+    border-radius: 13px;
+}
+
+#targeted h2 {
+    color:#00EC9C;
+    font-weight: bold;
+}
+
 .targetedText {
     color:#00EC9C;
     font-weight: bold;
@@ -90,9 +105,9 @@ button {
     margin: 0px;
 }
 
-#targeted {
+/* #targeted {
     color:#00EC9C;
-}
+} */
 
 .primarySection p {
     margin-bottom: 10px;
@@ -137,6 +152,16 @@ button {
 
 .combineButton:hover {
     color: black;
+}
+
+.isolateButton {
+    color: #F9F6E5;
+    background-color: #5F249F;
+    margin-left: 10px;
+}
+
+.isolateButton:hover {
+    color: white;
 }
 
 @media print {

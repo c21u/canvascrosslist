@@ -19,9 +19,13 @@ const Course = (props) => {
     unCrossListSection,
   } = props;
   return (
-    <View as="div" className="course">
+    <View
+      as="div"
+      className="course"
+      id={targetExists && isTarget ? "targeted" : ""}
+    >
       <View as="div" className="courseHeader">
-        <h2 id={targetExists && isTarget ? "targeted" : ""}>{course.name}</h2>
+        <h2>{course.name}</h2>
         {!isTarget ? (
           <button onClick={setCrossListTarget} className="manageButton">
             Manage
