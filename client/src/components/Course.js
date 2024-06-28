@@ -4,6 +4,7 @@ import { View } from "@instructure/ui-view";
 import SectionList from "./SectionList";
 // import { Link } from "@instructure/ui-link";
 import "./styles.css";
+import isolateSection from "../../../server/routes/handlers/isolateSection";
 
 const Course = (props) => {
   const {
@@ -68,6 +69,7 @@ const Course = (props) => {
         published={course.workflow_state !== "unpublished"}
         crossListSection={crossListSection}
         unCrossListSection={unCrossListSection}
+        isolateSection={isolateSection}
       />
     </View>
   );

@@ -1,16 +1,56 @@
 import CanvasLmsApi from "canvas-lms-api";
-import { canvas as config } from "../config.js";
+import { canvas as config } from "../../config.js";
 import PQueue from "p-queue";
+import superagent from "superagent";
+import parseLinkHeader from "parse-link-header";
+
+import BuzzAPI from "buzzapi";
+import { buzzAPI as cfg } from "../../config.js";
+
+const buzzApi = new BuzzAPI(cfg);
+
+const handleErrors = (err) => {
+  return err;
+};
+
+const tokenPlugin = (req) => {
+  req.set("Authorization", `Bearer ${config.token}`);
+};
+
+const responseBodyAndLinks = (res) => {
+  const linkHeader = res.header.link;
+  const links = parseLinkHeader(linkHeader);
+  return {
+    body: res.body,
+    links,
+  };
+};
+
+const rawReq = {
+  get: (url) =>
+    superagent
+      .get(`${config.lmsApiUrl}${url}`)
+      .use(tokenPlugin)
+      .then(handleErrors)
+      .then(responseBodyAndLinks),
+  post: (url, data) =>
+    superagent
+      .post(`${config.lmsApiUrl}${url}`)
+      .send(data)
+      .use(tokenPlugin)
+      .then(handleErrors)
+      .then(responseBodyAndLinks),
+};
 
 const CanvasApi = new CanvasLmsApi(config.lmsApiUrl, {
   accessToken: config.token,
 });
 
-const Canvas = {};
+const Handler = {};
 
 const queue = new PQueue({ concurrency: 50 });
 
-Canvas.getCourses = async (userId) => {
+Handler.getCourses = async (userId) => {
   console.log(userId);
   return CanvasApi.get(`users/${userId}/courses`, {
     include: ["term", "sections"],
@@ -80,7 +120,7 @@ Canvas.getCourses = async (userId) => {
     });
 };
 
-Canvas.crossListSection = async (targetId, sectionId, userId, gtAccount) => {
+Handler.crossListSection = async (targetId, sectionId, userId, gtAccount) => {
   console.log("running cross list section");
   console.log(targetId, sectionId, userId, gtAccount);
   return CanvasApi.post(`sections/${sectionId}/crosslist/${targetId}`, {
@@ -101,7 +141,7 @@ Canvas.crossListSection = async (targetId, sectionId, userId, gtAccount) => {
     });
 };
 
-Canvas.unCrossListSection = async (sectionId, userId, gtAccount) => {
+Handler.unCrossListSection = async (sectionId, userId, gtAccount) => {
   return CanvasApi.get(`sections/${sectionId}/enrollments`, {
     as_user_id: userId,
     type: "TeacherEnrollment",
@@ -147,4 +187,51 @@ Canvas.unCrossListSection = async (sectionId, userId, gtAccount) => {
     });
 };
 
-export default Canvas;
+const listSisUserIds = async (termCode, crn) => {
+  const query =
+    "query ($courseId: String) { course(sisId: $courseId) { usersConnection { nodes { sisId } } } }";
+  const variables = { courseId: `${termCode}/${crn}` };
+  try {
+    const result = await rawReq.post("/api/graphql", { query, variables });
+    return result.body.data.course.usersConnection.nodes.map(
+      (user) => user.sisId
+    );
+  } catch (err) {
+    console.log(err);
+    return;
+  }
+};
+
+Handler.isolateSection = async (termCode, crn) => {
+  listSisUserIds(termCode, crn).then(async (sisUserIds) => {
+    return buzzApi
+      .post("central.academics.sis.section_attributes", "create", {
+        term_code: termCode,
+        crn: crn,
+        attr_code: "ISOL",
+      })
+      .then(() => {
+        console.log(`Isolated section ${termCode}/${crn}`);
+        const payload = sisUserIds.join("|");
+        return buzzApi.post("central.iam.queues.work_items", "create", {
+          system_name: "canvas",
+          feed_name: "gted",
+          id_type: "gtid",
+          id: payload,
+          source: "section-isolation",
+          reason: "Refresh users in isolated section.",
+        });
+      })
+      .then(() => {
+        console.log(
+          `Created batch update work items for ${sisUserIds.length} user(s).`
+        );
+        return {
+          status: "success",
+          data: { isolatedSection: { termCode, crn } },
+        };
+      });
+  });
+};
+
+export default Handler;

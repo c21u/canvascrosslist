@@ -199,6 +199,18 @@ const Crosslist = () => {
       };
     });
   };
+
+  const isolateSection = (termCode, crn) => {
+    agent.courses
+      .isolateSection({ termCode, crn })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <View as="div">
       <View as="div" margin="none none medium none">
@@ -288,6 +300,7 @@ const Crosslist = () => {
                       pending={pending}
                       available={available}
                       sections={sections}
+                      isolateSection={isolateSection}
                     />
                   ))}
               </View>

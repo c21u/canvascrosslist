@@ -2,7 +2,7 @@ import express from "express";
 // eslint-disable-next-line new-cap
 const router = express.Router();
 import jwtMiddleware from "../lib/jwt.js";
-import canvas from "../dataLayer/Canvas.js";
+import handler from "./handlers/Handler.js";
 
 router.use(jwtMiddleware);
 
@@ -17,7 +17,7 @@ router.post("/get-courses", async (req, res, next) => {
   // *** since I don't have many courses, using the id below for testing purposes
   const userId = "16696";
   console.log("RUNNING GET COURSES");
-  canvas
+  handler
     .getCourses("16696")
     .then((courses) => {
       console.log("GOT COURSES");
@@ -33,7 +33,7 @@ router.post("/get-courses", async (req, res, next) => {
 });
 
 router.post("/crosslist-section", (req, res, next) => {
-  canvas
+  handler
     .crossListSection(
       req.body.target,
       req.body.sectionId,
@@ -42,11 +42,14 @@ router.post("/crosslist-section", (req, res, next) => {
     )
     .then((response) => {
       res.status(200).send(response);
+    })
+    .catch((err) => {
+      console.log(err);
     });
 });
 
 router.post("/uncrosslist-section", (req, res, next) => {
-  canvas
+  handler
     .unCrossListSection(
       req.body.sectionId,
       req.user.custom_canvas_user_id,
@@ -54,6 +57,20 @@ router.post("/uncrosslist-section", (req, res, next) => {
     )
     .then((response) => {
       res.status(200).send(response);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+router.post("/isolate-section", (req, res, next) => {
+  handler
+    .isolateSection(req.body.termCode, req.body.crn)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((err) => {
+      console.log(err);
     });
 });
 

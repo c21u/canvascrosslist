@@ -74,6 +74,7 @@ const courses = {
   get: () => requests.post("/get-courses", {}),
   crosslist: (body) => requests.post("/crosslist-section", body),
   uncrosslist: (body) => requests.post("/uncrosslist-section", body),
+  isolateSection: (body) => requests.post("/isolate-section", body),
 };
 export default {
   test,

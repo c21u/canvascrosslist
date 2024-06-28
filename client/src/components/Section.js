@@ -13,7 +13,11 @@ const Section = (props) => {
     isTarget,
     isPending,
     isAvailable,
+    isolateSection,
   } = props;
+
+  const termCode = "";
+  const crn = "";
 
   return (
     <View as="div" className="section">
@@ -45,7 +49,12 @@ const Section = (props) => {
       ) : (
         ""
       )}
-      <button className="isolateButton">Isolate</button>
+      <button
+        className="isolateButton"
+        onClick={() => isolateSection(termCode, crn)}
+      >
+        Isolate
+      </button>
       {isPending ? <Spinner size="x-small" /> : ""}
     </View>
   );

@@ -3,6 +3,7 @@ import React from "react";
 import { View } from "@instructure/ui-view";
 import Section from "./Section.js";
 import "./styles.css";
+import isolateSection from "../../../server/routes/handlers/isolateSection.js";
 
 const SectionList = (props) => {
   const {
@@ -43,6 +44,7 @@ const SectionList = (props) => {
             isTarget={isTarget}
             isPending={pending.includes(sectionId)}
             isAvailable={available.includes(sectionId)}
+            isolateSection={isolateSection}
           ></Section>
         ))}
     </View>
