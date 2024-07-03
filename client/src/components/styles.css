@@ -105,9 +105,30 @@ button {
     margin: 0px;
 }
 
-/* #targeted {
-    color:#00EC9C;
-} */
+.isolateButton {
+    color: #F9F6E5;
+    background-color: #5F249F;
+    margin-right: 20px;
+}
+
+.isolateButton:hover {
+    color: white;
+}
+
+.isolateModalHeader span {
+    color: #5F249F;
+}
+
+.isolateModalBody span {
+    color: #5F249F;
+    font-weight: bold;
+}
+
+.isolateConfirmButton {
+    background-color: #5F249F;
+    color: white;
+    margin-left: 10px;
+}
 
 .primarySection p {
     margin-bottom: 10px;
@@ -152,16 +173,6 @@ button {
 
 .combineButton:hover {
     color: black;
-}
-
-.isolateButton {
-    color: #F9F6E5;
-    background-color: #5F249F;
-    margin-left: 10px;
-}
-
-.isolateButton:hover {
-    color: white;
 }
 
 @media print {

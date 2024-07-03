@@ -17,60 +17,63 @@ const Crosslist = () => {
   const [target, setTarget] = useState(null); // target will equal a courseId
   const [available, setAvailable] = useState([]);
   const [pending, setPending] = useState([]);
+  const [refreshCourses, setRefreshCourses] = useState(true);
 
   useEffect(() => {
     console.log("Running api call!");
-    agent.courses
-      .get()
-      .then((data) => {
-        if (!data) {
-          return {
-            error: `No courses found for user_id ${data.userId}`,
-          };
-        }
-        const terms = { byId: {}, allIds: [] };
-        const courses = { byId: {}, allIds: [] };
-        const sections = { byId: {}, allIds: [] };
-        data.courses.forEach((course) => {
-          courses.byId[course.id] = {
-            name: course.name,
-            course_code: course.course_code,
-            recent_students: course.recent_students,
-            sis_course_id: course.sis_course_id,
-            sections: course.sections.map((section) => section.id),
-          };
-          courses.allIds.push(course.id);
-          course.sections.map((section) => {
-            console.log("SECTION", section);
-            sections.byId[section.id] = {
-              name: section.name,
-              nonxlist_course_id: section.nonxlist_course_id
-                ? section.nonxlist_course_id
-                : course.id,
-              sisSectionId: section.sisSectionId,
+    if (refreshCourses) {
+      agent.courses
+        .get()
+        .then((data) => {
+          if (!data) {
+            return {
+              error: `No courses found for user_id ${data.userId}`,
             };
-            return sections.allIds.push(section.id);
-          });
-          if (terms.byId[course.term.id]) {
-            terms.byId[course.term.id].courses.push(course.id);
-          } else {
-            terms.byId[course.term.id] = {
-              name: course.term.name,
-              courses: [course.id],
-              end_at: new Date(course.term.end_at),
-            };
-            terms.allIds.push(course.term.id);
           }
+          const terms = { byId: {}, allIds: [] };
+          const courses = { byId: {}, allIds: [] };
+          const sections = { byId: {}, allIds: [] };
+          data.courses.forEach((course) => {
+            courses.byId[course.id] = {
+              name: course.name,
+              course_code: course.course_code,
+              recent_students: course.recent_students,
+              sis_course_id: course.sis_course_id,
+              sections: course.sections.map((section) => section.id),
+            };
+            courses.allIds.push(course.id);
+            course.sections.map((section) => {
+              sections.byId[section.id] = {
+                name: section.name,
+                nonxlist_course_id: section.nonxlist_course_id
+                  ? section.nonxlist_course_id
+                  : course.id,
+                sisSectionId: section.sisSectionId,
+              };
+              return sections.allIds.push(section.id);
+            });
+            if (terms.byId[course.term.id]) {
+              terms.byId[course.term.id].courses.push(course.id);
+            } else {
+              terms.byId[course.term.id] = {
+                name: course.term.name,
+                courses: [course.id],
+                end_at: new Date(course.term.end_at),
+              };
+              terms.allIds.push(course.term.id);
+            }
+          });
+          setCourses(courses);
+          setTerms(terms);
+          setSections(sections);
+          setCoursesLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
         });
-        setCourses(courses);
-        setTerms(terms);
-        setSections(sections);
-        setCoursesLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    }
+    setRefreshCourses(false);
+  }, [refreshCourses]);
 
   const setCrossListTarget = (termId, courseId) => {
     console.log("running set cross list target");
@@ -116,6 +119,7 @@ const Crosslist = () => {
       .then((res) => {
         console.log(res);
         crossListSectionDone(sectionId);
+        setRefreshCourses(true);
       })
       .catch((err) => {
         console.log(err);
@@ -200,17 +204,6 @@ const Crosslist = () => {
     });
   };
 
-  const isolateSection = (termCode, crn) => {
-    agent.courses
-      .isolateSection({ termCode, crn })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   return (
     <View as="div">
       <View as="div" margin="none none medium none">
@@ -290,6 +283,13 @@ const Crosslist = () => {
                       key={courseId}
                       courseId={courseId}
                       course={courses.byId[courseId]}
+                      termCode={courses.byId[courseId].sis_course_id.substring(
+                        0,
+                        courses.byId[courseId].sis_course_id.indexOf("/")
+                      )}
+                      crn={courses.byId[courseId].sis_course_id.substring(
+                        courses.byId[courseId].sis_course_id.indexOf("/") + 1
+                      )}
                       crossListSection={crossListSection}
                       unCrossListSection={unCrossListSection}
                       setCrossListTarget={() =>
@@ -300,7 +300,6 @@ const Crosslist = () => {
                       pending={pending}
                       available={available}
                       sections={sections}
-                      isolateSection={isolateSection}
                     />
                   ))}
               </View>

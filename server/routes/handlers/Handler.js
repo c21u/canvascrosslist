@@ -8,6 +8,11 @@ import BuzzAPI from "buzzapi";
 import { buzzAPI as cfg } from "../../config.js";
 
 const buzzApi = new BuzzAPI(cfg);
+const testBuzzApi = new BuzzAPI({
+  apiUser: "eduapps1",
+  apiPassword: "Z4Z4KxsFh^Yi2RPABN&SQmob2",
+  server: "https://test.api.gatech.edu",
+});
 
 const handleErrors = (err) => {
   return err;
@@ -202,16 +207,22 @@ const listSisUserIds = async (termCode, crn) => {
   }
 };
 
-Handler.isolateSection = async (termCode, crn) => {
+Handler.isolateSection = async (termCode, crn, action) => {
+  // action can either be "create or "delete"
+  console.log("Running Handler.isolateSection", termCode, crn, action);
   listSisUserIds(termCode, crn).then(async (sisUserIds) => {
     return buzzApi
-      .post("central.academics.sis.section_attributes", "create", {
+      .post("central.academics.sis.section_attributes", action, {
         term_code: termCode,
         crn: crn,
         attr_code: "ISOL",
       })
       .then(() => {
-        console.log(`Isolated section ${termCode}/${crn}`);
+        console.log(
+          `${
+            action == "delete" ? "Unisolated" : "Isolated"
+          } section ${termCode}/${crn}`
+        );
         const payload = sisUserIds.join("|");
         return buzzApi.post("central.iam.queues.work_items", "create", {
           system_name: "canvas",
@@ -230,8 +241,28 @@ Handler.isolateSection = async (termCode, crn) => {
           status: "success",
           data: { isolatedSection: { termCode, crn } },
         };
+      })
+      .catch((err) => {
+        console.log(err);
       });
   });
+};
+
+Handler.checkSectionIsolation = async (termCode, crn) => {
+  console.log("PARAMS*****", termCode, crn);
+  return buzzApi
+    .post("central.academics.sis.section_attributes", "read", {
+      term_code: termCode,
+      crn: crn,
+      attr_code: "ISOL",
+    })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 export default Handler;

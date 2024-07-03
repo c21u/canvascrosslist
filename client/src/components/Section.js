@@ -3,6 +3,7 @@ import React from "react";
 import { View } from "@instructure/ui-view";
 import { Spinner } from "@instructure/ui-spinner";
 import "./styles.css";
+// import { useSearchParams } from "react-router-dom";
 
 const Section = (props) => {
   const {
@@ -13,11 +14,7 @@ const Section = (props) => {
     isTarget,
     isPending,
     isAvailable,
-    isolateSection,
   } = props;
-
-  const termCode = "";
-  const crn = "";
 
   return (
     <View as="div" className="section">
@@ -49,13 +46,13 @@ const Section = (props) => {
       ) : (
         ""
       )}
-      <button
-        className="isolateButton"
-        onClick={() => isolateSection(termCode, crn)}
-      >
-        Isolate
-      </button>
-      {isPending ? <Spinner size="x-small" /> : ""}
+      {isPending ? (
+        <div style={{ paddingTop: "20px", marginRight: "20px" }}>
+          <Spinner size="x-small" />
+        </div>
+      ) : (
+        ""
+      )}
     </View>
   );
 };

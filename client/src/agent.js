@@ -23,11 +23,6 @@ const handleErrors = (err) => {
 
 const responseBody = (res) => res.body;
 
-// const tokenPlugin = (req) => {
-//   if (commonStore.jwt) {
-//     req.set("Authorization", `Bearer ${commonStore.jwt}`);
-//   }
-// };
 const tokenPlugin = (req) => {
   let jwt;
   const token = parseQueryParams("token");
@@ -75,6 +70,8 @@ const courses = {
   crosslist: (body) => requests.post("/crosslist-section", body),
   uncrosslist: (body) => requests.post("/uncrosslist-section", body),
   isolateSection: (body) => requests.post("/isolate-section", body),
+  checkSectionIsolation: (body) =>
+    requests.post("/check-section-isolation", body),
 };
 export default {
   test,

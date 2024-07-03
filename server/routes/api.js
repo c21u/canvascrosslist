@@ -65,7 +65,19 @@ router.post("/uncrosslist-section", (req, res, next) => {
 
 router.post("/isolate-section", (req, res, next) => {
   handler
-    .isolateSection(req.body.termCode, req.body.crn)
+    .isolateSection(req.body.termCode, req.body.crn, req.body.action)
+    .then((response) => {
+      console.log("router response***", response);
+      res.status(200).send(response);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+router.post("/check-section-isolation", (req, res, next) => {
+  handler
+    .checkSectionIsolation(req.body.termCode, req.body.crn)
     .then((response) => {
       res.status(200).send(response);
     })
