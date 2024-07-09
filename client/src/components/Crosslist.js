@@ -18,62 +18,78 @@ const Crosslist = () => {
   const [available, setAvailable] = useState([]);
   const [pending, setPending] = useState([]);
   const [refreshCourses, setRefreshCourses] = useState(true);
+  const [state, setState] = useState({
+    coursesLoading: true,
+    courses: {},
+    terms: {},
+    sections: {},
+    target: null,
+    available: [],
+    pending: [],
+  });
 
   useEffect(() => {
     console.log("Running api call!");
-    if (refreshCourses) {
-      agent.courses
-        .get()
-        .then((data) => {
-          if (!data) {
-            return {
-              error: `No courses found for user_id ${data.userId}`,
+    agent.courses
+      .get()
+      .then((data) => {
+        if (!data) {
+          return {
+            error: `No courses found for user_id ${data.userId}`,
+          };
+        }
+        const terms = { byId: {}, allIds: [] };
+        const courses = { byId: {}, allIds: [] };
+        const sections = { byId: {}, allIds: [] };
+        data.courses.forEach((course) => {
+          courses.byId[course.id] = {
+            name: course.name,
+            course_code: course.course_code,
+            recent_students: course.recent_students,
+            sis_course_id: course.sis_course_id,
+            sections: course.sections.map((section) => section.id),
+          };
+          courses.allIds.push(course.id);
+          course.sections.map((section) => {
+            sections.byId[section.id] = {
+              name: section.name,
+              nonxlist_course_id: section.nonxlist_course_id
+                ? section.nonxlist_course_id
+                : course.id,
+              sisSectionId: section.sisSectionId,
             };
-          }
-          const terms = { byId: {}, allIds: [] };
-          const courses = { byId: {}, allIds: [] };
-          const sections = { byId: {}, allIds: [] };
-          data.courses.forEach((course) => {
-            courses.byId[course.id] = {
-              name: course.name,
-              course_code: course.course_code,
-              recent_students: course.recent_students,
-              sis_course_id: course.sis_course_id,
-              sections: course.sections.map((section) => section.id),
-            };
-            courses.allIds.push(course.id);
-            course.sections.map((section) => {
-              sections.byId[section.id] = {
-                name: section.name,
-                nonxlist_course_id: section.nonxlist_course_id
-                  ? section.nonxlist_course_id
-                  : course.id,
-                sisSectionId: section.sisSectionId,
-              };
-              return sections.allIds.push(section.id);
-            });
-            if (terms.byId[course.term.id]) {
-              terms.byId[course.term.id].courses.push(course.id);
-            } else {
-              terms.byId[course.term.id] = {
-                name: course.term.name,
-                courses: [course.id],
-                end_at: new Date(course.term.end_at),
-              };
-              terms.allIds.push(course.term.id);
-            }
+            return sections.allIds.push(section.id);
           });
-          setCourses(courses);
-          setTerms(terms);
-          setSections(sections);
-          setCoursesLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
+          if (terms.byId[course.term.id]) {
+            terms.byId[course.term.id].courses.push(course.id);
+          } else {
+            terms.byId[course.term.id] = {
+              name: course.term.name,
+              courses: [course.id],
+              end_at: new Date(course.term.end_at),
+            };
+            terms.allIds.push(course.term.id);
+          }
         });
-    }
-    setRefreshCourses(false);
-  }, [refreshCourses]);
+        setState((state) => {
+          return {
+            ...state,
+            courses,
+            terms,
+            sections,
+            setCoursesLoading: false,
+          };
+        });
+        setCourses(courses);
+        setTerms(terms);
+        setSections(sections);
+        setCoursesLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // setRefreshCourses(false);
+  }, []);
 
   const setCrossListTarget = (termId, courseId) => {
     console.log("running set cross list target");
@@ -117,9 +133,9 @@ const Crosslist = () => {
     agent.courses
       .crosslist({ sectionId, target }) // TODO - need to verify what args go here
       .then((res) => {
+        console.log("CROSSLIST success");
         console.log(res);
         crossListSectionDone(sectionId);
-        setRefreshCourses(true);
       })
       .catch((err) => {
         console.log(err);
@@ -129,10 +145,18 @@ const Crosslist = () => {
   const crossListSectionDone = (sectionId) => {
     console.log("running crosslistsectiondone");
     setPending(pending.filter((id) => sectionId !== id));
+    setAvailable((available) => {
+      return [...available, sectionId];
+    });
     setCourses((courses) => {
+      Object.entries(courses.byId).map(([key, value]) => {
+        console.log("key and value!");
+        console.log(key, value);
+      });
       return {
         ...courses,
         byId: Object.entries(courses.byId)
+          // key - courseId ..... value - course object
           .map(([key, value]) => [
             key,
             {
@@ -155,8 +179,10 @@ const Crosslist = () => {
     agent.courses
       .uncrosslist({ sectionId })
       .then((res) => {
+        console.log("uncrosslist response!");
         console.log(res);
-        uncrosslistSectionDone(sectionId, target);
+        const courseId = res.course_id;
+        uncrosslistSectionDone(sectionId, courseId);
       })
       .catch((err) => {
         console.log(err);
@@ -208,13 +234,7 @@ const Crosslist = () => {
     <View as="div">
       <View as="div" margin="none none medium none">
         <h1 className="crosslistTitle">Combine Courses</h1>
-        <button
-          onClick={() =>
-            console.log(courses, terms, sections, target, pending, available)
-          }
-        >
-          Click me!
-        </button>
+        <button onClick={() => console.log(state)}>Click me!</button>
       </View>
       <View as="div">
         <Text size="large" color="danger" weight="bold">

@@ -72,28 +72,28 @@ const Course = (props) => {
       });
   };
 
-//   const getSaved = (saveState, id) => {
-//     if (saveState) {
-//       if (saveState === "saving") {
-//         return <div>Saving changes...</div>;
-//       }
-//       return (
-//         <div>
-//           Changes saved -{" "}
-//           <button
-//             /* eslint-disable-next-line no-return-assign */
-//             // onClick={() =>
-//             //   (window.parent.location = `https://${canvasUrl}/courses/${id}/settings`)
-//             // }
-//             to="#"
-//           >
-//             Edit Course Name
-//           </button>
-//         </div>
-//       );
-//     }
-//     return null;
-//   };
+  //   const getSaved = (saveState, id) => {
+  //     if (saveState) {
+  //       if (saveState === "saving") {
+  //         return <div>Saving changes...</div>;
+  //       }
+  //       return (
+  //         <div>
+  //           Changes saved -{" "}
+  //           <button
+  //             /* eslint-disable-next-line no-return-assign */
+  //             // onClick={() =>
+  //             //   (window.parent.location = `https://${canvasUrl}/courses/${id}/settings`)
+  //             // }
+  //             to="#"
+  //           >
+  //             Edit Course Name
+  //           </button>
+  //         </div>
+  //       );
+  //     }
+  //     return null;
+  //   };
 
   return (
     <View
@@ -106,7 +106,6 @@ const Course = (props) => {
         {isolateButtonReady ? (
           <button
             className="isolateButton"
-            // onClick={() => isolateSection(termCode, crn, action)}
             onClick={() => {
               setIsolateConfirmModal(true);
             }}
