@@ -18,7 +18,7 @@ router.post("/get-courses", async (req, res, next) => {
   // const userId = "16696";
   console.log("RUNNING GET COURSES");
   handler
-    .getCourses("16696")
+    .getCourses(userId)
     .then((courses) => {
       console.log("GOT COURSES");
       res.send({
