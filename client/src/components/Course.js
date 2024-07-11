@@ -29,8 +29,6 @@ const Course = (props) => {
 
   useEffect(() => {
     if (termCode && crn) {
-      console.log(termCode, crn);
-      // check if section has "ISOL" attribute in buzzapi
       agent.courses
         .checkSectionIsolation({ termCode, crn })
         .then((res) => {
@@ -71,29 +69,6 @@ const Course = (props) => {
         console.log(err);
       });
   };
-
-  //   const getSaved = (saveState, id) => {
-  //     if (saveState) {
-  //       if (saveState === "saving") {
-  //         return <div>Saving changes...</div>;
-  //       }
-  //       return (
-  //         <div>
-  //           Changes saved -{" "}
-  //           <button
-  //             /* eslint-disable-next-line no-return-assign */
-  //             // onClick={() =>
-  //             //   (window.parent.location = `https://${canvasUrl}/courses/${id}/settings`)
-  //             // }
-  //             to="#"
-  //           >
-  //             Edit Course Name
-  //           </button>
-  //         </div>
-  //       );
-  //     }
-  //     return null;
-  //   };
 
   return (
     <View
@@ -140,7 +115,6 @@ const Course = (props) => {
           </p>
         </View>
       </View>
-      {/* {getSaved(course.saveState, courseId)} */}
       <SectionList
         sections={sections}
         mySections={course.sections}
@@ -158,7 +132,6 @@ const Course = (props) => {
         onDismiss={() => {
           setIsolateConfirmModal(false);
         }}
-        // onSubmit={() => console.log("isolate button pressed!!")}
         size="auto"
         label="Confirm Isolate Section"
         shouldCloseOnDocumentClick
@@ -192,7 +165,6 @@ const Course = (props) => {
             Close
           </button>
           <button
-            // type="submit"
             className="isolateConfirmButton"
             onClick={() => isolateSection(termCode, crn, action)}
           >

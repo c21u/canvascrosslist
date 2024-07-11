@@ -3,21 +3,12 @@ import React, { useEffect, useState } from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
 import { Spinner } from "@instructure/ui-spinner";
-// import { Link } from "@instructure/ui-link";
 import { Link } from "react-router-dom";
 import "./styles.css";
 import agent from "../agent.js";
 import Course from "./Course.js";
 
 const Crosslist = () => {
-  const [coursesLoading, setCoursesLoading] = useState(true);
-  const [courses, setCourses] = useState({});
-  const [terms, setTerms] = useState({});
-  const [sections, setSections] = useState({});
-  const [target, setTarget] = useState(null); // target will equal a courseId
-  const [available, setAvailable] = useState([]);
-  const [pending, setPending] = useState([]);
-  const [refreshCourses, setRefreshCourses] = useState(true);
   const [state, setState] = useState({
     coursesLoading: true,
     courses: {},
@@ -77,65 +68,61 @@ const Crosslist = () => {
             courses,
             terms,
             sections,
-            setCoursesLoading: false,
+            coursesLoading: false,
           };
         });
-        setCourses(courses);
-        setTerms(terms);
-        setSections(sections);
-        setCoursesLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
-    // setRefreshCourses(false);
   }, []);
 
   const setCrossListTarget = (termId, courseId) => {
-    console.log("running set cross list target");
-    console.log(termId, courseId);
-    setTarget(courseId);
-    const available = terms.byId[termId].courses
-      .map((course) =>
-        course === courseId ? [] : courses.byId[course].sections
-      )
-      .reduce((acc, cur) => acc.concat(cur));
-    console.log("available:", available);
-    setAvailable(available);
+    setState((state) => {
+      return {
+        ...state,
+        target: courseId,
+        available: state.terms.byId[termId].courses
+          .map((course) =>
+            course === courseId ? [] : state.courses.byId[course].sections
+          )
+          .reduce((acc, cur) => acc.concat(cur)),
+      };
+    });
   };
 
   const crossListSection = (sectionId) => {
-    console.log("running crosslist section");
-    // const sectionFilter = (sectionId) => sectionId !== sectionId;
     const sectionFilter = (id) => sectionId !== id;
-    setAvailable(available.filter(sectionFilter));
-    setPending((pending) => {
-      return [...pending, sectionId];
-    });
-    setCourses((courses) => {
+    setState((state) => {
       return {
-        ...courses,
-        byId: Object.entries(courses.byId)
-          .map(([key, value]) => [
-            key,
-            {
-              ...value,
-              ...(key === target ? { saveState: "saving" } : null),
-              sections:
-                key === target
-                  ? [...courses.byId[target].sections, sectionId]
-                  : value.sections.filter(sectionFilter),
-            },
-          ])
-          .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+        ...state,
+        available: state.available.filter(sectionFilter),
+        pending: [...state.pending, sectionId],
+        newProperty: "Hello!!",
+        courses: {
+          ...state.courses,
+          byId: Object.entries(state.courses.byId)
+            .map(([key, value]) => [
+              key,
+              {
+                ...value,
+                ...(key == state.target ? { saveState: "saving" } : null),
+                sections:
+                  key == state.target
+                    ? [...state.courses.byId[state.target].sections, sectionId]
+                    : value.sections.filter(sectionFilter),
+              },
+            ])
+            .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+        },
       };
     });
+    const courseId = state.target;
+    crossListSectionDone(sectionId, courseId);
     agent.courses
-      .crosslist({ sectionId, target }) // TODO - need to verify what args go here
+      .crosslist({ courseId, sectionId })
       .then((res) => {
-        console.log("CROSSLIST success");
-        console.log(res);
-        crossListSectionDone(sectionId);
+        crossListSectionDone(sectionId, courseId);
       })
       .catch((err) => {
         console.log(err);
@@ -143,38 +130,34 @@ const Crosslist = () => {
   };
 
   const crossListSectionDone = (sectionId) => {
-    console.log("running crosslistsectiondone");
-    setPending(pending.filter((id) => sectionId !== id));
-    setAvailable((available) => {
-      return [...available, sectionId];
-    });
-    setCourses((courses) => {
-      Object.entries(courses.byId).map(([key, value]) => {
-        console.log("key and value!");
-        console.log(key, value);
-      });
+    setState((state) => {
       return {
-        ...courses,
-        byId: Object.entries(courses.byId)
-          // key - courseId ..... value - course object
-          .map(([key, value]) => [
-            key,
-            {
-              ...value,
-              ...(value.sections.includes(sectionId)
-                ? { saveState: "saved" }
-                : null),
-            },
-          ])
-          .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+        ...state,
+        pending: state.pending.filter((id) => sectionId !== id),
+        courses: {
+          ...state.courses,
+          byId: Object.entries(state.courses.byId)
+            .map(([key, value]) => [
+              key,
+              {
+                ...value,
+                ...(value.sections.includes(sectionId)
+                  ? { saveState: "saved" }
+                  : null),
+              },
+            ])
+            .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+        },
       };
     });
   };
 
   const unCrossListSection = (sectionId) => {
-    console.log("running uncrosslist section");
-    setPending((pending) => {
-      return [...pending, sectionId];
+    setState((state) => {
+      return {
+        ...state,
+        pending: [...state.pending, sectionId],
+      };
     });
     agent.courses
       .uncrosslist({ sectionId })
@@ -191,40 +174,41 @@ const Crosslist = () => {
 
   const uncrosslistSectionDone = (sectionId, courseId) => {
     const sectionFilter = (id) => sectionId !== id;
-    setPending(pending.filter((id) => sectionId !== id));
-    setAvailable((available) => {
-      return [...available, sectionId];
-    });
-    setCourses((courses) => {
+    setState((state) => {
       return {
-        ...courses,
-        byId: {
-          ...Object.entries(courses.byId)
-            .map(([key, value]) => {
-              if (key === courseId) {
+        ...state,
+        pending: state.pending.filter((id) => sectionId !== id),
+        available: [...state.available, sectionId],
+        courses: {
+          ...state.courses,
+          byId: {
+            ...Object.entries(state.courses.byId)
+              .map(([key, value]) => {
+                if (key == courseId) {
+                  return [
+                    key,
+                    {
+                      ...value,
+                      saveState: "saved",
+                      sections: value.sections.includes(sectionId)
+                        ? value.sections
+                        : [...value.sections, sectionId],
+                    },
+                  ];
+                }
                 return [
                   key,
                   {
                     ...value,
-                    saveState: "saved",
-                    sections: value.sections.includes(sectionId)
-                      ? value.sections
-                      : [...value.sections, sectionId],
+                    ...(value.sections.includes(sectionId)
+                      ? { saveState: "saved" }
+                      : null),
+                    sections: value.sections.filter(sectionFilter),
                   },
                 ];
-              }
-              return [
-                key,
-                {
-                  ...value,
-                  ...(value.sections.includes(sectionId)
-                    ? { saveState: "saved" }
-                    : null),
-                  sections: value.sections.filter(sectionFilter),
-                },
-              ];
-            })
-            .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+              })
+              .reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+          },
         },
       };
     });
@@ -276,7 +260,7 @@ const Crosslist = () => {
           .
         </Text>
       </View>
-      {coursesLoading ? (
+      {state.coursesLoading ? (
         <View as="div" margin="none none medium none" textAlign="center">
           <Text>
             <Spinner size="small" renderTitle="Loading" margin="0 0 0 medium" />
@@ -284,42 +268,51 @@ const Crosslist = () => {
         </View>
       ) : (
         <View as="div" margin="none none medium none">
-          {terms.allIds
-            .sort((a, b) => terms.byId[a].end_at - terms.byId[b].end_at)
+          {state.terms.allIds
+            .sort(
+              (a, b) => state.terms.byId[a].end_at - state.terms.byId[b].end_at
+            )
             .map((termId) => (
               <View as="div" key={termId}>
                 <View as="div" className="termsTitle">
-                  <h1>{terms.byId[termId].name}</h1>
+                  <h1>{state.terms.byId[termId].name}</h1>
                 </View>
-                {terms.byId[termId].courses
+                {state.terms.byId[termId].courses
                   .filter(
-                    (courseId) => courses.byId[courseId].sections.length > 0
+                    (courseId) =>
+                      state.courses.byId[courseId].sections.length > 0
                   )
                   .sort((a, b) =>
-                    courses.byId[a].name.localeCompare(courses.byId[b].name)
+                    state.courses.byId[a].name.localeCompare(
+                      state.courses.byId[b].name
+                    )
                   )
                   .map((courseId) => (
                     <Course
                       key={courseId}
                       courseId={courseId}
-                      course={courses.byId[courseId]}
-                      termCode={courses.byId[courseId].sis_course_id.substring(
+                      course={state.courses.byId[courseId]}
+                      termCode={state.courses.byId[
+                        courseId
+                      ].sis_course_id.substring(
                         0,
-                        courses.byId[courseId].sis_course_id.indexOf("/")
+                        state.courses.byId[courseId].sis_course_id.indexOf("/")
                       )}
-                      crn={courses.byId[courseId].sis_course_id.substring(
-                        courses.byId[courseId].sis_course_id.indexOf("/") + 1
+                      crn={state.courses.byId[courseId].sis_course_id.substring(
+                        state.courses.byId[courseId].sis_course_id.indexOf(
+                          "/"
+                        ) + 1
                       )}
                       crossListSection={crossListSection}
                       unCrossListSection={unCrossListSection}
                       setCrossListTarget={() =>
                         setCrossListTarget(termId, courseId)
                       }
-                      isTarget={target === courseId}
-                      targetExists={!!target}
-                      pending={pending}
-                      available={available}
-                      sections={sections}
+                      isTarget={state.target === courseId}
+                      targetExists={!!state.target}
+                      pending={state.pending}
+                      available={state.available}
+                      sections={state.sections}
                     />
                   ))}
               </View>

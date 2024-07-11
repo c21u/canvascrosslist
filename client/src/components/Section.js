@@ -3,7 +3,6 @@ import React from "react";
 import { View } from "@instructure/ui-view";
 import { Spinner } from "@instructure/ui-spinner";
 import "./styles.css";
-// import { useSearchParams } from "react-router-dom";
 
 const Section = (props) => {
   const {

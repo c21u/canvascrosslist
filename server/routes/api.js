@@ -35,7 +35,7 @@ router.post("/get-courses", async (req, res, next) => {
 router.post("/crosslist-section", (req, res, next) => {
   handler
     .crossListSection(
-      req.body.target,
+      req.body.courseId,
       req.body.sectionId,
       req.user.custom_canvas_user_id,
       req.user.custom_lis_user_username
