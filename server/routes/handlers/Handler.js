@@ -8,11 +8,6 @@ import BuzzAPI from "buzzapi";
 import { buzzAPI as cfg } from "../../config.js";
 
 const buzzApi = new BuzzAPI(cfg);
-const testBuzzApi = new BuzzAPI({
-  apiUser: "eduapps1",
-  apiPassword: "Z4Z4KxsFh^Yi2RPABN&SQmob2",
-  server: "https://test.api.gatech.edu",
-});
 
 const handleErrors = (err) => {
   return err;
