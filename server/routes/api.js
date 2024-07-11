@@ -13,9 +13,9 @@ router.post("/test", async (req, res, next) => {
 });
 
 router.post("/get-courses", async (req, res, next) => {
-  // const userId = req.user.custom_canvas_user_id;
+  const userId = req.user.custom_canvas_user_id;
   // *** since I don't have many courses, using the id below for testing purposes
-  const userId = "16696";
+  // const userId = "16696";
   console.log("RUNNING GET COURSES");
   handler
     .getCourses("16696")
