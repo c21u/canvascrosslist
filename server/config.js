@@ -32,26 +32,8 @@ const getEnvVarOrThrow = (envVar) => {
 
 export const environment = getEnvVarOrDefault("ENVIRONMENT", "test");
 export const sentryDSN = getEnvVarOrNull("SENTRY_DSN");
-export const googleAnalyticsID = getEnvVarOrNull("GOOGLE_ANALYTICS_ID");
 export const jwtSecret = getEnvVarOrDefault("JWT_SECRET");
 export const trustProxy = getEnvVarOrDefault("TRUST_PROXY", "loopback");
-export const AWS = {
-  region: getEnvVarOrDefault("AWS_REGION", "us-east-1"),
-  credentials: {
-    accessKeyId: getEnvVarOrNull("AWS_ACCESS_KEY_ID_DEFAULT"),
-    secretAccessKey: getEnvVarOrNull("AWS_SECRET_ACCESS_KEY_DEFAULT"),
-  },
-};
-export const AWS_SQS = {
-  region: getEnvVarOrDefault("AWS_REGION", "us-east-1"),
-  credentials: {
-    accessKeyId: getEnvVarOrNull("AWS_ACCESS_KEY_ID_SQS"),
-    secretAccessKey: getEnvVarOrNull("AWS_SECRET_ACCESS_KEY_SQS"),
-  },
-};
-export const SQS_QUEUE_URLS = {
-  webwork: getEnvVarOrNull("SQS_QUEUE_URL_WEBWORK"),
-};
 export const httpLogsFormat =
   process.env.NODE_ENV === "development" ? "dev" : "combined";
 
@@ -93,16 +75,12 @@ const config = {
   passportStrategy,
   fakeStrategyCredentials,
   httpLogsFormat,
-  googleAnalyticsID,
   jwtSecret,
   trustProxy,
-  AWS,
   buzzAPI,
   canvas,
   lti,
   lambdas,
-  AWS_SQS,
-  SQS_QUEUE_URLS,
 };
 
 export default config;

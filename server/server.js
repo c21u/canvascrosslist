@@ -19,10 +19,6 @@ app.set("trust proxy", trustProxy);
 
 app.use(Sentry.Handlers.requestHandler());
 
-// view engine setup
-// app.set("views", join(__dirname, "views"));
-// app.set("view engine", "ejs");
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(join(__dirname, "..", "dist")));

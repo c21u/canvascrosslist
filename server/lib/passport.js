@@ -22,14 +22,7 @@ const ltiStrategy = new PassportLTIStrategy(
     },
   },
   (ltiContext, done) => {
-    // Make sure the incoming lti request has a role with sufficient privileges
-    // NB: custom_canvas_membership_roles is a comma separated string
-    const allowedRole = "Account Admin";
-    const userRoles = ltiContext.custom_canvas_membership_roles || "";
-    if (userRoles.split(",").includes(allowedRole)) {
-      return done(null, ltiContext);
-    }
-    return done(null, false, { message: "User doesn't have appropriate role" });
+    return done(null, ltiContext);
   }
 );
 
