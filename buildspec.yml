@@ -37,6 +37,7 @@ phases:
       - docker pull $REPO_URL:$TAG || true
   build:
     commands:
+      - echo Cache from $REPO_URL:$TAG
       - docker build --cache-from $REPO_URL:$TAG -t $IMAGE_NAME:$GIT_COMMIT_HASH -t $IMAGE_NAME:$TAG .
       - docker tag $IMAGE_NAME:$TAG $REPO_URL:$TAG
       - docker tag $IMAGE_NAME:$TAG $REPO_URL:$GIT_COMMIT_HASH
