@@ -218,7 +218,6 @@ const Crosslist = () => {
     <View as="div">
       <View as="div" margin="none none medium none">
         <h1 className="crosslistTitle">Combine Courses</h1>
-        <button onClick={() => console.log(state)}>Click me!</button>
       </View>
       <View as="div">
         <Text size="large" color="danger" weight="bold">
