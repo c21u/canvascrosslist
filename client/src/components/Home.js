@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
 // import { Link } from "@instructure/ui-link";
@@ -9,9 +9,6 @@ import { IconPrinterSolid } from "@instructure/ui-icons";
 import "./styles.css";
 
 const Home = () => {
-  useEffect(() => {
-    console.log("Home has mounted!");
-  });
   return (
     <View as="div" margin="none none medium none">
       <View>
@@ -81,15 +78,11 @@ const Home = () => {
               <li>
                 Section visibility is an important option to help protect you
                 from violating the Family Education Rights Privacy Act (FERPA).
-                If course sections meet together and you would like students to
-                communicate with each other, do not isolate your sections. If
-                course sections do not meet together, we recommend isolating the
-                sections to comply with FERPA. This setting affects all combined
-                sections. To isolate your combined sections, send a request to{" "}
-                <Link className="linkStyle" to="mailto:canvas@gatech.edu">
-                  canvas@gatech.edu
-                </Link>
-                .
+                When course sections meet together and you would like students
+                to communicate with each other, do not isolate your sections. If
+                course sections do not meet, we recommend isolating the sections
+                to comply with FERPA. This setting affects all combined
+                sections.
               </li>
             </ul>
           </li>

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
 import { Spinner } from "@instructure/ui-spinner";
-import { Link } from "react-router-dom";
 import "./styles.css";
 import agent from "../agent.js";
 import Course from "./Course.js";
@@ -20,7 +19,6 @@ const Crosslist = () => {
   });
 
   useEffect(() => {
-    console.log("Running api call!");
     agent.courses
       .get()
       .then((data) => {
@@ -162,8 +160,6 @@ const Crosslist = () => {
     agent.courses
       .uncrosslist({ sectionId })
       .then((res) => {
-        console.log("uncrosslist response!");
-        console.log(res);
         const courseId = res.course_id;
         uncrosslistSectionDone(sectionId, courseId);
       })
@@ -250,15 +246,6 @@ const Crosslist = () => {
           then making sure the "Course Details" tab is selected at the top.
         </li>
       </ul>
-      <View as="div" margin="none none medium none">
-        <Text>
-          If you would like to isolate your sections, send your request to{" "}
-          <Link to="mailto:canvas@gatech.edu" className="linkStyle">
-            canvas@gatech.edu
-          </Link>
-          .
-        </Text>
-      </View>
       {state.coursesLoading ? (
         <View as="div" margin="none none medium none" textAlign="center">
           <Text>

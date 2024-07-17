@@ -32,7 +32,6 @@ const Course = (props) => {
       agent.courses
         .checkSectionIsolation({ termCode, crn })
         .then((res) => {
-          console.log(`${termCode}-${crn}`, res);
           if (res.course_attributes.length > 0) {
             res.course_attributes.map((attr) => {
               if (attr.attr_code == "ISOL") {
@@ -41,11 +40,9 @@ const Course = (props) => {
                 return;
               } else {
                 setIsolateButtonReady(true);
-                console.log("did not find ISOL");
               }
             });
           } else {
-            console.log("setting isolate button to true");
             setIsolateButtonReady(true);
           }
         })
@@ -53,13 +50,10 @@ const Course = (props) => {
           setIsolateButtonReady(true);
           console.log(err);
         });
-    } else {
-      console.log("no sis course id found for this course");
     }
   }, []);
 
   const isolateSection = (termCode, crn, action) => {
-    console.log("Running isolate section!", termCode, crn, action);
     agent.courses
       .isolateSection({ termCode, crn, action })
       .then((res) => {
@@ -147,15 +141,11 @@ const Course = (props) => {
         <Modal.Body>
           <View as="div" className="isolateModalBody">
             <p>
-              This section is currently{" "}
+              This sections in this course are currently{" "}
               <span>{action == "create" ? "NOT" : ""} Isolated. </span>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum
+              The sections in this course are currently NOT Isolated. Isolating
+              combined sections will limit users only to see and interact with
+              users enrolled in the same section.
             </p>
           </View>
         </Modal.Body>

@@ -51,7 +51,6 @@ const Handler = {};
 const queue = new PQueue({ concurrency: 50 });
 
 Handler.getCourses = async (userId) => {
-  console.log(userId);
   return CanvasApi.get(`users/${userId}/courses`, {
     include: ["term", "sections"],
     enrollment_role: "TeacherEnrollment",
@@ -59,7 +58,6 @@ Handler.getCourses = async (userId) => {
     exclude_blueprint_courses: true,
   })
     .then((coursesData) => {
-      // console.log(courses);
       return Array.isArray(coursesData) ? coursesData : [coursesData];
     })
     .then((theCourses) => {
@@ -121,13 +119,10 @@ Handler.getCourses = async (userId) => {
 };
 
 Handler.crossListSection = async (targetId, sectionId, userId, gtAccount) => {
-  console.log("running cross list section");
-  console.log(targetId, sectionId, userId, gtAccount);
   return CanvasApi.post(`sections/${sectionId}/crosslist/${targetId}`, {
     as_user_id: userId,
   })
     .then((res) => {
-      console.log(res);
       return {
         action: "crosslist",
         user: userId,
@@ -204,7 +199,6 @@ const listSisUserIds = async (termCode, crn) => {
 
 Handler.isolateSection = async (termCode, crn, action) => {
   // action can either be "create or "delete"
-  console.log("Running Handler.isolateSection", termCode, crn, action);
   listSisUserIds(termCode, crn).then(async (sisUserIds) => {
     return buzzApi
       .post("central.academics.sis.section_attributes", action, {
@@ -244,7 +238,6 @@ Handler.isolateSection = async (termCode, crn, action) => {
 };
 
 Handler.checkSectionIsolation = async (termCode, crn) => {
-  console.log("PARAMS*****", termCode, crn);
   return buzzApi
     .post("central.academics.sis.section_attributes", "read", {
       term_code: termCode,
@@ -252,7 +245,6 @@ Handler.checkSectionIsolation = async (termCode, crn) => {
       attr_code: "ISOL",
     })
     .then((res) => {
-      console.log(res);
       return res;
     })
     .catch((err) => {
