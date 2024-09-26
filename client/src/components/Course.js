@@ -143,9 +143,8 @@ const Course = (props) => {
             <p>
               This sections in this course are currently{" "}
               <span>{action == "create" ? "NOT" : ""} Isolated. </span>
-              The sections in this course are currently NOT Isolated. Isolating
-              combined sections will limit users only to see and interact with
-              users enrolled in the same section.
+              Isolating combined sections will limit users only to see and
+              interact with users enrolled in the same section.
             </p>
           </View>
         </Modal.Body>
