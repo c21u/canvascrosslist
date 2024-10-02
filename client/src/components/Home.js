@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
-// import { Link } from "@instructure/ui-link";
 import { Link } from "react-router-dom";
 import { Button } from "@instructure/ui-buttons";
 import { IconPrinterSolid } from "@instructure/ui-icons";
@@ -29,12 +28,6 @@ const Home = () => {
         </Text>
       </View>
       <View as="div" margin="none none medium none">
-        {/* <Text size="medium">
-          Canvas allows instructors to move section enrollments from individual
-          courses and combine them into one course. This feature is helpful for
-          instructors who teach several sections of the same course and only
-          want to manage course data in one location.
-        </Text> */}
         <ol>
           <li>
             <Text>
@@ -169,17 +162,7 @@ const Home = () => {
         </Button>
       </View>
       <View as="div" margin="large none none none" className="excludePrint">
-        <Link
-          className="continueButton"
-          to="/crosslist"
-          // style={{
-          //   color: "black",
-          //   padding: "10px",
-          //   borderRadius: "5px",
-          //   backgroundColor: "#EAAA00",
-          //   textDecoration: "none",
-          // }}
-        >
+        <Link className="continueButton" to="/crosslist">
           I understand these guidelines, Continue
         </Link>
       </View>
