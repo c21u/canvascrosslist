@@ -43,15 +43,6 @@ const Home = () => {
             </Text>
           </li>
           <li>
-            {/* <Text>
-              Isolated Sections: Students can only communicate with and view
-              student in their own section. To isolate your combined sections,
-              send a request to{" "}
-              <Link className="linkStyle" to="mailto:canvas@gatech.edu">
-                canvas@gatech.edu
-              </Link>
-              .
-            </Text> */}
             <Text>
               Isolated Sections: Students can only communicate with and view
               students in their own section. To isolate your combined sections,
