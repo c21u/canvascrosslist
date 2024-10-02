@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
-// import { Link } from "@instructure/ui-link";
 import { Link } from "react-router-dom";
 import { Button } from "@instructure/ui-buttons";
 import { IconPrinterSolid } from "@instructure/ui-icons";
@@ -29,12 +28,6 @@ const Home = () => {
         </Text>
       </View>
       <View as="div" margin="none none medium none">
-        <Text size="medium">
-          Canvas allows instructors to move section enrollments from individual
-          courses and combine them into one course. This feature is helpful for
-          instructors who teach several sections of the same course and only
-          want to manage course data in one location.
-        </Text>
         <ol>
           <li>
             <Text>
@@ -45,8 +38,16 @@ const Home = () => {
           <li>
             <Text>
               Isolated Sections: Students can only communicate with and view
-              student in their own section. To isolate your combined sections,
-              send a request to{" "}
+              students in their own section. To isolate your combined sections,
+              follow the prompts provided in the tool or review the steps{" "}
+              <Link
+                className="linkStyle"
+                to="https://gatech.service-now.com/home?id=kb_article_view&sysparm_article=KB0025816"
+                target="_blank"
+              >
+                &lt;here&gt;
+              </Link>
+              . If you have any questions, send a request to{" "}
               <Link className="linkStyle" to="mailto:canvas@gatech.edu">
                 canvas@gatech.edu
               </Link>
@@ -83,6 +84,11 @@ const Home = () => {
                 course sections do not meet, we recommend isolating the sections
                 to comply with FERPA. This setting affects all combined
                 sections.
+              </li>
+              <li>
+                When adding TAs to a course with combined sections, and the TAs
+                only need access to one of the sections, we recommend isolating
+                the sections to comply with FERPA.
               </li>
             </ul>
           </li>
@@ -156,17 +162,7 @@ const Home = () => {
         </Button>
       </View>
       <View as="div" margin="large none none none" className="excludePrint">
-        <Link
-          className="continueButton"
-          to="/crosslist"
-          // style={{
-          //   color: "black",
-          //   padding: "10px",
-          //   borderRadius: "5px",
-          //   backgroundColor: "#EAAA00",
-          //   textDecoration: "none",
-          // }}
-        >
+        <Link className="continueButton" to="/crosslist">
           I understand these guidelines, Continue
         </Link>
       </View>
