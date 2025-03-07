@@ -4,6 +4,8 @@ import { View } from "@instructure/ui-view";
 import { Modal } from "@instructure/ui-modal";
 import SectionList from "./SectionList";
 import { Spinner } from "@instructure/ui-spinner";
+import { IconArrowOpenDownSolid } from "@instructure/ui-icons";
+import { IconArrowOpenUpSolid } from "@instructure/ui-icons";
 import "./styles.css";
 import agent from "../agent.js";
 
@@ -26,6 +28,7 @@ const Course = (props) => {
   const [isolateButtonReady, setIsolateButtonReady] = useState(false);
   const [action, setAction] = useState("create");
   const [isolateConfirmModal, setIsolateConfirmModal] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     if (termCode && crn) {
@@ -98,7 +101,10 @@ const Course = (props) => {
           <h3 className="targetedText">TARGETED</h3>
         )}
       </View>
-      <View as="div" className="courseSubHeader">
+      <View
+        as="div"
+        className={collapsed ? "courseSubHeaderCollapsed" : "courseSubHeader"}
+      >
         <View as="div" className="primarySection">
           <h3>
             {course.course_code} - {course.sis_course_id}
@@ -111,12 +117,36 @@ const Course = (props) => {
             logged in to this course.
           </p>
         </View>
+        <div
+          // className="collapseButtonContainer"
+          style={{
+            display: isTarget ? "block" : "none",
+            textAlign: "right",
+            marginTop: "-30px",
+            color: "#54585A",
+            fontSize: "0.8em",
+          }}
+        >
+          <button onClick={() => setCollapsed((prev) => !prev)}>
+            <span style={{ display: "inlineBlock" }}>
+              {collapsed ? (
+                <IconArrowOpenDownSolid />
+              ) : (
+                <IconArrowOpenUpSolid />
+              )}
+            </span>{" "}
+            <span style={{ display: "inlineBlock" }}>
+              {collapsed ? "Expand" : "Collapse"}
+            </span>
+          </button>
+        </div>
       </View>
       <SectionList
         sections={sections}
         mySections={course.sections}
         courseId={courseId}
         isTarget={isTarget}
+        collapsed={collapsed}
         pending={pending}
         available={available}
         published={course.workflow_state !== "unpublished"}

@@ -88,6 +88,17 @@ button {
     padding: 20px;
 }
 
+.courseSubHeaderCollapsed {
+    background-color: #F9F6E5;
+    padding: 20px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.collapsedButtonContainer {
+    text-align: right;
+}
+
 .manageButton {
     background-color: #D6DBD4;
     color: #54585A;

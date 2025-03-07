@@ -10,14 +10,20 @@ const SectionList = (props) => {
     mySections,
     courseId,
     isTarget,
+    collapsed,
     pending,
     available,
     published,
     crossListSection,
     unCrossListSection,
   } = props;
+
   return (
-    <View as="div" className="sectionList">
+    <View
+      as="div"
+      className="sectionList"
+      style={{ display: collapsed && isTarget ? "none" : "" }}
+    >
       {mySections
         .sort((a, b) => {
           const sectionA = sections.byId[a];
