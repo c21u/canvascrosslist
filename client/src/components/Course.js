@@ -118,17 +118,25 @@ const Course = (props) => {
           </p>
         </View>
         <div
-          // className="collapseButtonContainer"
           style={{
             display: isTarget ? "block" : "none",
             textAlign: "right",
             marginTop: "-30px",
-            color: "#54585A",
             fontSize: "0.8em",
           }}
         >
-          <button onClick={() => setCollapsed((prev) => !prev)}>
-            <span style={{ display: "inlineBlock" }}>
+          <button
+            onClick={() => {
+              setCollapsed((prev) => !prev);
+            }}
+          >
+            <span
+              style={{
+                display: "inlineBlock",
+                color: "#54585A",
+                fontSize: "0.8em",
+              }}
+            >
               {collapsed ? (
                 <IconArrowOpenDownSolid />
               ) : (

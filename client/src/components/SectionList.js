@@ -21,8 +21,8 @@ const SectionList = (props) => {
   return (
     <View
       as="div"
-      className="sectionList"
-      style={{ display: collapsed && isTarget ? "none" : "" }}
+      className={isTarget ? "sectionListTargeted" : "sectionList"}
+      id={collapsed && isTarget ? "sectionListCollapsed" : ""}
     >
       {mySections
         .sort((a, b) => {

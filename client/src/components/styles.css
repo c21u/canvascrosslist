@@ -62,14 +62,32 @@ button {
     color: #F9F6E5;
 }
 
+@keyframes flash {
+    0% {
+      color: yellow;
+    }
+    50% {
+      color: red;
+    }
+    100% {
+      color: green;
+    }
+  }
+
 #targeted {
-    position: sticky;
-    top: 0px;
-    bottom: 0px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* height: 25em;
+    overflow: scroll; */
+    /* bottom: 0px; */
     border-style: solid;
     border-width: 3px;
     border-color: #00EC9C;
     border-radius: 13px;
+    animation-name: flash;
+    animation-duration: 4s;
 }
 
 #targeted h2 {
@@ -86,6 +104,8 @@ button {
 .courseSubHeader {
     background-color: #F9F6E5;
     padding: 20px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 
 .courseSubHeaderCollapsed {
@@ -155,7 +175,23 @@ button {
     background-color: #D6DBD4;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    height: auto;
+    display: block;
 }
+
+.sectionListTargeted {
+    background-color: #D6DBD4;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    max-height: 25em;
+    overflow: scroll;
+    display: block;
+}
+
+#sectionListCollapsed {
+    display: none;
+}
+
 
 .section {
     display: flex;
