@@ -73,8 +73,15 @@ const Course = (props) => {
   return (
     <View
       as="div"
-      className="course"
-      id={targetExists && isTarget ? "targeted" : ""}
+      // className="course"
+      className={`course ${targetExists && isTarget ? "targeted" : ""}`}
+      id={
+        targetExists && isTarget && collapsed
+          ? "targetedCollapsed"
+          : targetExists && isTarget && !collapsed
+          ? "targetedExpanded"
+          : ""
+      }
     >
       <View as="div" className="courseHeader">
         <h2>{course.name}</h2>

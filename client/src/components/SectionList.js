@@ -21,8 +21,8 @@ const SectionList = (props) => {
   return (
     <View
       as="div"
-      className={isTarget ? "sectionListTargeted" : "sectionList"}
-      id={collapsed && isTarget ? "sectionListCollapsed" : ""}
+      className="sectionList"
+      id={collapsed ? "sectionListCollapsed" : ""}
     >
       {mySections
         .sort((a, b) => {

@@ -74,7 +74,7 @@ button {
     }
   }
 
-#targeted {
+.targeted {
     position: fixed;
     top: 0;
     left: 0;
@@ -90,7 +90,8 @@ button {
     animation-duration: 4s;
 }
 
-#targeted h2 {
+
+.targeted h2 {
     color:#00EC9C;
     font-weight: bold;
 }
@@ -99,6 +100,16 @@ button {
     color:#00EC9C;
     font-weight: bold;
     padding-top: 5px;
+}
+
+#targetedExpanded {
+    height: 25em;
+    overflow: scroll;
+}
+
+#targetedCollapsed {
+    height: auto;
+    overflow: hidden;
 }
 
 .courseSubHeader {
@@ -172,21 +183,24 @@ button {
 }
 
 .sectionList {
-    background-color: #D6DBD4;
+    /* background-color: #D6DBD4; */
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     height: auto;
     display: block;
 }
 
-.sectionListTargeted {
-    background-color: #D6DBD4;
+#sectionListCollapased {
+    display: none;
+}
+
+/* .sectionListTargeted {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     max-height: 25em;
     overflow: scroll;
     display: block;
-}
+} */
 
 #sectionListCollapsed {
     display: none;
@@ -197,6 +211,7 @@ button {
     display: flex;
     flex-direction: row;
     padding: 0px 20px;
+    background-color: #D6DBD4;
 }
 
 .section h3 {
