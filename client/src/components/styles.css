@@ -103,7 +103,8 @@ button {
 }
 
 #targetedExpanded {
-    height: 25em;
+    height: auto;
+    max-height: 25em;
     overflow: scroll;
 }
 
