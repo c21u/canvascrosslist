@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
 import { Spinner } from "@instructure/ui-spinner";
@@ -17,6 +17,8 @@ const Crosslist = () => {
     available: [],
     pending: [],
   });
+
+  const containerRef = useRef(null);
 
   useEffect(() => {
     agent.courses
@@ -73,6 +75,23 @@ const Crosslist = () => {
       .catch((err) => {
         console.log(err);
       });
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setState((prevState) => ({ ...prevState, target: null }));
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, []);
 
   const setCrossListTarget = (termId, courseId) => {
@@ -211,7 +230,7 @@ const Crosslist = () => {
   };
 
   return (
-    <View as="div">
+    <div ref={containerRef}>
       <View as="div" margin="none none medium none">
         <h1 className="crosslistTitle">Combine Courses</h1>
       </View>
@@ -305,7 +324,7 @@ const Crosslist = () => {
             ))}
         </View>
       )}
-    </View>
+    </div>
   );
 };
 

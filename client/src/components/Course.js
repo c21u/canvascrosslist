@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { View } from "@instructure/ui-view";
@@ -29,6 +30,7 @@ const Course = (props) => {
   const [action, setAction] = useState("create");
   const [isolateConfirmModal, setIsolateConfirmModal] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [collapsedInstructions, setCollapsedInstructions] = useState(true);
 
   useEffect(() => {
     if (termCode && crn) {
@@ -73,7 +75,6 @@ const Course = (props) => {
   return (
     <View
       as="div"
-      // className="course"
       className={`course ${targetExists && isTarget ? "targeted" : ""}`}
       id={
         targetExists && isTarget && collapsed
@@ -134,16 +135,30 @@ const Course = (props) => {
         >
           <button
             onClick={() => {
+              setCollapsedInstructions((prev) => !prev);
+            }}
+            className="collapseButtons"
+          >
+            <span>
+              {collapsedInstructions ? (
+                <IconArrowOpenDownSolid />
+              ) : (
+                <IconArrowOpenUpSolid />
+              )}
+            </span>{" "}
+            <span style={{ display: "inlineBlock" }}>
+              {collapsedInstructions
+                ? "Show Instructions"
+                : "Hide Instructions"}
+            </span>
+          </button>
+          <button
+            onClick={() => {
               setCollapsed((prev) => !prev);
             }}
+            className="collapseButtons"
           >
-            <span
-              style={{
-                display: "inlineBlock",
-                color: "#54585A",
-                fontSize: "0.8em",
-              }}
-            >
+            <span>
               {collapsed ? (
                 <IconArrowOpenDownSolid />
               ) : (
@@ -151,10 +166,45 @@ const Course = (props) => {
               )}
             </span>{" "}
             <span style={{ display: "inlineBlock" }}>
-              {collapsed ? "Expand" : "Collapse"}
+              {collapsed ? "Expand List" : "Collapse List"}
             </span>
           </button>
         </div>
+      </View>
+      <View
+        as="div"
+        className={
+          collapsedInstructions
+            ? "collapsedInstructions"
+            : "expandedInstructions"
+        }
+      >
+        <ul>
+          <li>
+            If you choose to combine courses, please start with your largest
+            projected section as the primary course section, i.e. the one you
+            "manage". Course materials and grades technically reside within this
+            section and it is important to structure your combined courses in
+            this way.
+          </li>
+          <li>
+            Do not combine sections if students have already submitted work in
+            one of your sections. Coursework is retained with the course, not
+            with the section enrollments. So if a section is combined with a
+            section in another course, all enrollments will lose any associated
+            assignment submissions and grades.
+          </li>
+          <li>Sections can only be in one course at a time.</li>
+          <li>
+            Once a section is combined with another section, you can separate
+            the section back out. This will return it to its original course.
+          </li>
+          <li>
+            You can rename your combined course by navigating to your course in
+            Canvas, clicking "Settings" in the course navigation along the left,
+            then making sure the "Course Details" tab is selected at the top.
+          </li>
+        </ul>
       </View>
       <SectionList
         sections={sections}

@@ -191,22 +191,40 @@ button {
     display: block;
 }
 
+.collapseButtons {
+    width: 150px;
+    margin: 0px 5px;
+}
+
+.collapseButtons span {
+    display: inline-block;
+    color: #54585A;
+    font-size: 0.9em;
+}
+
 #sectionListCollapased {
     display: none;
 }
-
-/* .sectionListTargeted {
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    max-height: 25em;
-    overflow: scroll;
-    display: block;
-} */
 
 #sectionListCollapsed {
     display: none;
 }
 
+.collapsedInstructions {
+    display: none;
+}
+
+.expandedInstructions {
+    display: block;
+    background-color: white;
+    color: #54585A;
+    padding: 1em;
+}
+
+.expandedInstructions ul {
+    margin: 0px;
+    font-size: 0.9em;
+}
 
 .section {
     display: flex;
