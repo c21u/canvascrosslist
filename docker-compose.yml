@@ -5,9 +5,8 @@ services:
     environment:
       NODE_ENV: production
       VIRTUAL_HOST: canvas-crosslist.127.0.0.1.nip.io
-      BUZZAPI_URL:
+      BUZZAPI_URL: $BUZZAPI_URL
       CANVAS_LMS_API_URL: $CANVAS_LMS_API_URL
-      CANVAS_URL: $CANVAS_URL
       LTI_KEY: gatech
       LTI_SECRET: doesitmatter
       BUZZAPI_APP_ID: $BUZZAPI_APP_ID

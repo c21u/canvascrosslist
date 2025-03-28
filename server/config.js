@@ -44,12 +44,10 @@ export const buzzAPI = {
 };
 export const canvas = {
   token: getEnvVarOrDefault("CANVAS_TOKEN"),
-  host: getEnvVarOrDefault("CANVAS_URL", "gatech.test.instructure.com"),
   lmsApiUrl: getEnvVarOrDefault(
     "CANVAS_LMS_API_URL",
     "https://gatech.test.instructure.com"
   ),
-  sandboxAccount: getEnvVarOrDefault("CANVAS_SANDBOX_ACCOUNT", 40),
 };
 export const lti = {
   key: getEnvVarOrThrow("LTI_KEY"),
