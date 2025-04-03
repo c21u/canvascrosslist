@@ -5,8 +5,10 @@ import { View } from "@instructure/ui-view";
 import { Modal } from "@instructure/ui-modal";
 import SectionList from "./SectionList";
 import { Spinner } from "@instructure/ui-spinner";
-import { IconArrowOpenDownSolid } from "@instructure/ui-icons";
-import { IconArrowOpenUpSolid } from "@instructure/ui-icons";
+import {
+  IconArrowOpenDownSolid,
+  IconArrowOpenUpSolid,
+} from "@instructure/ui-icons";
 import "./styles.css";
 import agent from "../agent.js";
 
