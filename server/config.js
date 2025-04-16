@@ -49,9 +49,22 @@ export const canvas = {
     "https://gatech.test.instructure.com"
   ),
 };
+export const database = {
+  name: getEnvVarOrDefault("DB_NAME", "ltijs_db"),
+  user: getEnvVarOrDefault("DB_USER", "postgres"),
+  pass: getEnvVarOrDefault("DB_PASS", "postgres"),
+  host: getEnvVarOrDefault("DB_HOST", "db"),
+};
 export const lti = {
   key: getEnvVarOrThrow("LTI_KEY"),
   secret: getEnvVarOrThrow("LTI_SECRET"),
+  clientIdGatech: getEnvVarOrDefault("CLIENT_ID_GATECH", ""),
+  ltiKey: getEnvVarOrDefault("LTI_KEY", ""),
+  ssoHost: getEnvVarOrDefault("LTI_SSO_HOST"),
+  canvasRegUrl: getEnvVarOrDefault(
+    "CANVAS_REG_URL",
+    "https://canvas.instructure.com"
+  ),
 };
 
 export const fakeStrategyCredentials = {};
@@ -78,6 +91,7 @@ const config = {
   buzzAPI,
   canvas,
   lti,
+  database,
   lambdas,
 };
 

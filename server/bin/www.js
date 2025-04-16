@@ -3,7 +3,6 @@
 /**
  * Module dependencies.
  */
-
 import app from "../server.js";
 import http from "http";
 import logger from "../lib/logger.js";
@@ -25,7 +24,9 @@ const server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, () => {
+  logger.info(`Server running on port ${port}`);
+});
 server.on("error", onError);
 server.on("listening", onListening);
 
@@ -82,5 +83,5 @@ function onError(error) {
 function onListening() {
   const addr = server.address();
   const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  logger.info(`Listening on ${bind}`);
+  logger.info("Listening on " + bind);
 }

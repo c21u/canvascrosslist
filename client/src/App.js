@@ -11,7 +11,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {
   return (
-    <Router>
+    <Router basename="/lti">
       <View as="div" margin="large">
         <Routes>
           <Route path="/" element={<Home />} />

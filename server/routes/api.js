@@ -1,10 +1,7 @@
 import express from "express";
 // eslint-disable-next-line new-cap
 const router = express.Router();
-import jwtMiddleware from "../lib/jwt.js";
 import handler from "./handlers/Handler.js";
-
-router.use(jwtMiddleware);
 
 router.post("/test", async (req, res, next) => {
   res.send({
@@ -13,11 +10,10 @@ router.post("/test", async (req, res, next) => {
 });
 
 router.post("/get-courses", async (req, res, next) => {
-  const userId = req.user.custom_canvas_user_id;
+  const userId = req.res.locals.context.custom.canvas_user_id;
   handler
     .getCourses(userId)
     .then((courses) => {
-      console.log("GOT COURSES");
       res.send({
         userId,
         courses,
@@ -34,8 +30,8 @@ router.post("/crosslist-section", (req, res, next) => {
     .crossListSection(
       req.body.courseId,
       req.body.sectionId,
-      req.user.custom_canvas_user_id,
-      req.user.custom_lis_user_username
+      req.res.locals.context.custom.canvas_user_id,
+      req.res.locals.context.custom.lis_user_username
     )
     .then((response) => {
       res.status(200).send(response);
@@ -49,8 +45,8 @@ router.post("/uncrosslist-section", (req, res, next) => {
   handler
     .unCrossListSection(
       req.body.sectionId,
-      req.user.custom_canvas_user_id,
-      req.user.custom_lis_user_username
+      req.res.locals.context.custom.canvas_user_id,
+      req.res.locals.context.custom.lis_user_username
     )
     .then((response) => {
       res.status(200).send(response);
@@ -64,7 +60,6 @@ router.post("/isolate-section", (req, res, next) => {
   handler
     .isolateSection(req.body.termCode, req.body.crn, req.body.action)
     .then((response) => {
-      console.log("router response***", response);
       res.status(200).send(response);
     })
     .catch((err) => {

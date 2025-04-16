@@ -21,7 +21,7 @@ WORKDIR /app
 COPY package.json .
 COPY yarn.lock .
 
-RUN yarn install --production --no-progress --non-interactive
+RUN yarn install --production --no-progress --non-interactive && yarn cache clean
 
 COPY --from=builder /app/dist dist
 COPY server server
@@ -33,5 +33,6 @@ EXPOSE 3000
 
 USER node
 
-ENTRYPOINT [ "yarn", "run" ]
-CMD ["start" ]
+# ENTRYPOINT [ "yarn", "run" ]
+# CMD ["start" ]
+CMD [ "yarn", "run", "start" ]

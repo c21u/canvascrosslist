@@ -15,19 +15,47 @@ services:
       TRUST_PROXY: uniquelocal
       JWT_SECRET: $JWT_SECRET
       LOG_LEVEL: $LOG_LEVEL
+      DB_HOST: $DB_HOST
+      DB_NAME: $DB_NAME
+      DB_USER: $DB_USER
+      DB_PASS: $DB_PASS
+      CANVAS_REG_URL: $CANVAS_REG_URL
+      CLIENT_ID_GATECH: $CLIENT_ID_GATECH
       SENTRY_DSN:
     labels:
       - "traefik.http.routers.whoami.rule=Host(`canvas-crosslist.127.0.0.1.nip.io`)"
       - "traefik.http.routers.whoami.tls=true"
-    expose:
-      - "3000"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: crosslist
+      POSTGRES_USER: postgres
+      POSTGRES_DB: ltijs_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    labels:
+      - "traefik.tcp.services.postgres.loadbalancer.server.port=5432"
+      - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgres.entrypoints=postgres"
+      - "traefik.tcp.routers.postgres.service=postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgresql://postgres:crosslist@localhost/ltijs_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   reverse-proxy:
     image: traefik:v2.0
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
+      - "5432:5432"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - $HOME/certs:/data/traefik
-      - ./traefik:/etc/traefik
+      - $HOME/certs:/data/traefik:ro
+      - ./traefik:/etc/traefik:ro
+volumes:
+  postgres_data:

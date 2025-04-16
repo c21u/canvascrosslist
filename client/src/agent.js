@@ -1,21 +1,6 @@
 import superagent from "superagent";
-import jwtDecode from "jwt-decode";
-import qs from "qs";
 
-const queryParameters = window.location.search;
-
-const parseQueryParams = (item) => {
-  if (!item) {
-    return false;
-  }
-  try {
-    return qs.parse(queryParameters, { ignoreQueryPrefix: true })[item];
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const API_ROOT = "/api";
+const API_ROOT = "/lti/api";
 
 const handleErrors = (err) => {
   return err;
@@ -23,15 +8,17 @@ const handleErrors = (err) => {
 
 const responseBody = (res) => res.body;
 
+const getLtik = () => {
+  const ltik = localStorage.getItem("ltik");
+  if (!ltik) throw new Error("Missing LTI key in localStorage.");
+  return ltik;
+};
+
 const tokenPlugin = (req) => {
-  let jwt;
-  const token = parseQueryParams("token");
   try {
-    jwtDecode(token);
-    jwt = token;
-    req.set("Authorization", `Bearer ${jwt}`);
-  } catch (err) {
-    console.log(err);
+    req.set("Authorization", `Bearer ${getLtik()}`);
+  } catch (reason) {
+    console.error(reason);
   }
 };
 
@@ -45,8 +32,7 @@ const requests = {
   },
   post: (url, body) => {
     return superagent
-      .post(`${API_ROOT}${url}`)
-      .send(body)
+      .post(`${API_ROOT}${url}`, body)
       .use(tokenPlugin)
       .then(handleErrors)
       .then(responseBody);
