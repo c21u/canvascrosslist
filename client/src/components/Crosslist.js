@@ -21,7 +21,6 @@ const Crosslist = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    console.log("running agent.courses.get()");
     agent.courses
       .get()
       .then((data) => {
