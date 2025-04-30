@@ -2,7 +2,6 @@ import createError from "http-errors";
 import express from "express";
 import path from "path";
 import { dirname } from "path";
-// import Sentry from "@sentry/node";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import { Provider as lti } from "ltijs";
@@ -31,11 +30,11 @@ lti.setup(
   {
     staticPath: "dist",
     cookies: {
-      secure: false,
+      secure: true,
       sameSite: "None",
     },
     tokenMaxAge: false,
-    devMode: true,
+    devMode: false,
   }
 );
 
@@ -55,7 +54,6 @@ lti.app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 lti.app.set("trust proxy", trustProxy);
 
 lti.onConnect(async (token, req, res) => {
-  console.log("lti.onConnect!!!");
   return res.sendFile("index.html", { root: "dist" });
 });
 
@@ -63,25 +61,19 @@ lti.onDeepLinking(async (token, req, res) => {
   return lti.redirect(res, "/deeplink", { newResource: true });
 });
 
-const getEnvPrefix = (prefix) =>
-  Object.keys(process.env).filter((key) => key.startsWith(prefix));
-
 const setup = async () => {
-  const prefixes = getEnvPrefix("CLIENT_ID");
   await lti.deploy({ port: process.env.PORT || "3000", debug: true });
-  for (const prefix of prefixes) {
-    await lti.registerPlatform({
-      url: config.lti.canvasRegUrl,
-      name: "GATECH",
-      clientId: process.env[prefix],
-      authenticationEndpoint: `${config.lti.canvasRegUrl}/api/lti/authorize_redirect`,
-      accesstokenEndpoint: `${config.lti.canvasRegUrl}/login/oauth2/token`,
-      authConfig: {
-        method: "JWK_SET",
-        key: `${config.lti.canvasRegUrl}/api/lti/security/jwks`,
-      },
-    });
-  }
+  await lti.registerPlatform({
+    url: config.lti.canvasRegUrl,
+    name: "GATECH",
+    clientId: config.clientIdGatech,
+    authenticationEndpoint: `${config.lti.canvasRegUrl}/api/lti/authorize_redirect`,
+    accesstokenEndpoint: `${config.lti.canvasRegUrl}/login/oauth2/token`,
+    authConfig: {
+      method: "JWK_SET",
+      key: `${config.lti.canvasRegUrl}/api/lti/security/jwks`,
+    },
+  });
 };
 setup();
 

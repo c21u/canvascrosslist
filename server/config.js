@@ -56,8 +56,6 @@ export const database = {
   host: getEnvVarOrDefault("DB_HOST", "db"),
 };
 export const lti = {
-  key: getEnvVarOrThrow("LTI_KEY"),
-  secret: getEnvVarOrThrow("LTI_SECRET"),
   clientIdGatech: getEnvVarOrDefault("CLIENT_ID_GATECH", ""),
   ltiKey: getEnvVarOrDefault("LTI_KEY", ""),
   ssoHost: getEnvVarOrDefault("LTI_SSO_HOST"),
