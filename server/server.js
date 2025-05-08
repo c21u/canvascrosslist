@@ -66,7 +66,7 @@ const setup = async () => {
   await lti.registerPlatform({
     url: config.lti.canvasRegUrl,
     name: "GATECH",
-    clientId: config.clientIdGatech,
+    clientId: config.lti.clientIdGatech,
     authenticationEndpoint: `${config.lti.canvasRegUrl}/api/lti/authorize_redirect`,
     accesstokenEndpoint: `${config.lti.canvasRegUrl}/login/oauth2/token`,
     authConfig: {
