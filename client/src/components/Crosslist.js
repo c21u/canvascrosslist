@@ -1,13 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
 import { Spinner } from "@instructure/ui-spinner";
+import { Button } from "@instructure/ui-buttons";
 import "./styles.css";
 import agent from "../agent.js";
 import Course from "./Course.js";
 
-const Crosslist = () => {
+const Crosslist = (props) => {
+  const { setCurrentView } = props;
   const [state, setState] = useState({
     coursesLoading: true,
     courses: {},
@@ -324,6 +327,7 @@ const Crosslist = () => {
             ))}
         </View>
       )}
+      <Button onClick={() => setCurrentView("Home")}>Go Back</Button>
     </div>
   );
 };

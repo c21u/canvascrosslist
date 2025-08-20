@@ -12,6 +12,9 @@ import indexRouter from "./routes/index.js";
 import apiRouter from "./routes/api.js";
 import { trustProxy } from "./config.js";
 
+const app = express();
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 const db = new Database(
   config.database.name,
   config.database.user,
@@ -38,13 +41,11 @@ lti.setup(
   }
 );
 
-lti.app.use((req, res, next) => {
-  console.log("Incoming request type:", req.method);
-  console.log("Incoming request url:", req.originalUrl);
-  next();
-});
-
-lti.app.use(cookieParser());
+// lti.app.use((req, res, next) => {
+//   console.log("Incoming request type:", req.method);
+//   console.log("Incoming request url:", req.originalUrl);
+//   next();
+// });
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -52,13 +53,14 @@ const router = express.Router();
 lti.app.use(express.json({ limit: "10mb" }));
 lti.app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 lti.app.set("trust proxy", trustProxy);
+lti.app.use(cookieParser());
+
+// lti.onDeepLinking(async (token, req, res) => {
+//   return lti.redirect(res, "/deeplink", { newResource: true });
+// });
 
 lti.onConnect(async (token, req, res) => {
   return res.sendFile("index.html", { root: "dist" });
-});
-
-lti.onDeepLinking(async (token, req, res) => {
-  return lti.redirect(res, "/deeplink", { newResource: true });
 });
 
 const setup = async () => {
@@ -67,43 +69,50 @@ const setup = async () => {
     url: config.lti.canvasRegUrl,
     name: "GATECH",
     clientId: config.lti.clientIdGatech,
-    authenticationEndpoint: `${config.lti.canvasRegUrl}/api/lti/authorize_redirect`,
-    accesstokenEndpoint: `${config.lti.canvasRegUrl}/login/oauth2/token`,
+    authenticationEndpoint: `https://${config.lti.ssoHost}/api/lti/authorize_redirect`,
+    accesstokenEndpoint: `https://${config.lti.ssoHost}/login/oauth2/token`,
     authConfig: {
       method: "JWK_SET",
-      key: `${config.lti.canvasRegUrl}/api/lti/security/jwks`,
+      key: `https://${config.lti.ssoHost}/api/lti/security/jwks`,
     },
   });
 };
 setup();
-
 router.get("/lti", (req, res) => {
-  const token = req.token || "";
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="utf-8">
-    <title>Your LTI Application</title>
-      <script>
-        localStorage.setItem('ltik', '${token}');
-      </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
-  </head>
-    <body>
-      <div id="lti_root"></div>
-      <script src="/app.bundle.js"></script>
-    </body>
-    </html>
-  `);
-});
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-router.post("/lti", (req, res) => {
+  const user =
+    req?.res?.locals?.context?.custom?.lis_user_username || "unknown_user";
+  const course =
+    req?.res?.locals?.context?.custom?.canvas_course_name || "unknown_course";
+  const token = res.locals.token;
+  const info = { user, course, token };
+  console.log(info, "Crosslist LTI launched!");
   return res.sendFile("index.html", { root: "dist" });
 });
+// router.get("/lti", (req, res) => {
+//   const token = req.token || "";
+//   res.send(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//     <meta charset="utf-8">
+//     <title>Your LTI Application</title>
+//       <script>
+//         localStorage.setItem('ltik', '${token}');
+//       </script>
+//     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+//     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+//   </head>
+//     <body>
+//       <div id="lti_root"></div>
+//       <script src="/app.bundle.js"></script>
+//     </body>
+//     </html>
+//   `);
+// });
+
+// router.post("/lti", (req, res) => {
+//   return res.sendFile("index.html", { root: "dist" });
+// });
 
 lti.app.use(router);
 
@@ -118,9 +127,8 @@ lti.app.use((req, res, next) => {
   next();
 });
 
-lti.app.use("/lti/api/", apiRouter);
-
 lti.app.use("/", indexRouter);
+lti.app.use("/api/", apiRouter);
 
 // catch 404 and forward to error handler
 lti.app.use(function (req, res, next) {
@@ -134,4 +142,4 @@ lti.app.use(function (err, req, res, next) {
   res.status(err.status || 500);
 });
 
-export default lti.app;
+export default app;

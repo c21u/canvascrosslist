@@ -1,13 +1,19 @@
-import React from "react";
+/* eslint-disable react/prop-types */
+import React, { useEffect } from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import { Link } from "@instructure/ui-link";
 import { Button } from "@instructure/ui-buttons";
 import { IconPrinterSolid } from "@instructure/ui-icons";
 
 import "./styles.css";
 
-const Home = () => {
+const Home = (props) => {
+  const { setCurrentView } = props;
+  useEffect(() => {
+    console.log(props);
+  });
   return (
     <View as="div" margin="none none medium none">
       <View>
@@ -162,9 +168,16 @@ const Home = () => {
         </Button>
       </View>
       <View as="div" margin="large none none none" className="excludePrint">
-        <Link className="continueButton" to="/crosslist">
+        {/* <Link className="continueButton" to="/crosslist">
           I understand these guidelines, Continue
-        </Link>
+        </Link> */}
+        <Button
+          onClick={() => setCurrentView("Crosslist")}
+          // className="continueButton"
+          color="primary"
+        >
+          I understand these guidelines, Continue
+        </Button>
       </View>
     </View>
   );

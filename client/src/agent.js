@@ -1,6 +1,6 @@
 import superagent from "superagent";
 
-const API_ROOT = "/lti/api";
+const API_ROOT = "/api";
 
 const handleErrors = (err) => {
   return err;
@@ -8,9 +8,16 @@ const handleErrors = (err) => {
 
 const responseBody = (res) => res.body;
 
+// const getLtik = () => {
+//   const ltik = localStorage.getItem("ltik");
+//   if (!ltik) throw new Error("Missing LTI key in localStorage.");
+//   return ltik;
+// };
+
 const getLtik = () => {
-  const ltik = localStorage.getItem("ltik");
-  if (!ltik) throw new Error("Missing LTI key in localStorage.");
+  const searchParams = new URLSearchParams(window.location.search);
+  const ltik = searchParams.get("ltik");
+  if (!ltik) throw new Error("Missing lti key.");
   return ltik;
 };
 
@@ -31,6 +38,7 @@ const requests = {
       .then(responseBody);
   },
   post: (url, body) => {
+    // console.log(`running post route with ${url}, ${body}`);
     return superagent
       .post(`${API_ROOT}${url}`, body)
       .use(tokenPlugin)
