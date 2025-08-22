@@ -182,21 +182,6 @@ Handler.unCrossListSection = async (sectionId, userId, gtAccount) => {
     });
 };
 
-// const listSisUserIds = async (termCode, crn) => {
-//   console.log("termCode*****", termCode);
-//   const query =
-//     "query ($courseId: String) { course(sisId: $courseId) { usersConnection { nodes { sisId } } } }";
-//   const variables = { courseId: `${termCode}/${crn}` };
-//   try {
-//     const result = await rawReq.post("/api/graphql", { query, variables });
-//     return result.body.data.course.usersConnection.nodes.map(
-//       (user) => user.sisId
-//     );
-//   } catch (err) {
-//     console.log(err);
-//     return;
-//   }
-// };
 const listSisUserIds = async (termCode, crn, cursor) => {
   const query =
     "query ($courseId: String, $cursor: String) { course(sisId: $courseId) { usersConnection(after: $cursor) { nodes { sisId } pageInfo { endCursor hasNextPage } } } }";
@@ -224,10 +209,8 @@ const listSisUserIds = async (termCode, crn, cursor) => {
 };
 
 Handler.isolateSection = async (termCode, crn, action) => {
-  console.log("running Handler.isolateSection", termCode, crn, action);
   // action can either be "create or "delete"
   listSisUserIds(termCode, crn).then(async (sisUserIds) => {
-    console.log("running listSisUserIds", termCode, crn, action);
     return buzzApi
       .post("central.academics.sis.section_attributes", action, {
         term_code: termCode,
@@ -266,6 +249,8 @@ Handler.isolateSection = async (termCode, crn, action) => {
 };
 
 Handler.checkSectionIsolation = async (termCode, crn) => {
+  //* * Below buzzapi call will error with 400 if termCode or crn
+  // are not in proper format  */
   return buzzApi
     .post("central.academics.sis.section_attributes", "read", {
       term_code: termCode,

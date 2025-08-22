@@ -35,7 +35,6 @@ const Course = (props) => {
   const [collapsedInstructions, setCollapsedInstructions] = useState(true);
 
   useEffect(() => {
-    console.log("props! for Course.js", props);
     if (termCode && crn) {
       agent.courses
         .checkSectionIsolation({ termCode, crn })
@@ -56,21 +55,16 @@ const Course = (props) => {
         })
         .catch((err) => {
           setIsolateButtonReady(true);
-          console.log(
-            `error when running checkSectionIsolation for ${termCode}, ${crn}`,
-            err
-          );
+          console.log(err);
         });
     }
   }, []);
 
   const isolateSection = (termCode, crn, action) => {
-    console.log("running isolateSection()");
     setIsolateConfirmModal(false);
     agent.courses
       .isolateSection({ termCode, crn, action })
       .then((res) => {
-        console.log("res from isolateSection()", res);
         setAction((action) => {
           return action == "create" ? "delete" : "create";
         });
