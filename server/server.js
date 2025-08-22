@@ -41,12 +41,6 @@ lti.setup(
   }
 );
 
-// lti.app.use((req, res, next) => {
-//   console.log("Incoming request type:", req.method);
-//   console.log("Incoming request url:", req.originalUrl);
-//   next();
-// });
-
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
@@ -54,10 +48,6 @@ lti.app.use(express.json({ limit: "10mb" }));
 lti.app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 lti.app.set("trust proxy", trustProxy);
 lti.app.use(cookieParser());
-
-// lti.onDeepLinking(async (token, req, res) => {
-//   return lti.redirect(res, "/deeplink", { newResource: true });
-// });
 
 lti.onConnect(async (token, req, res) => {
   return res.sendFile("index.html", { root: "dist" });
@@ -88,31 +78,6 @@ router.get("/lti", (req, res) => {
   console.log(info, "Crosslist LTI launched!");
   return res.sendFile("index.html", { root: "dist" });
 });
-// router.get("/lti", (req, res) => {
-//   const token = req.token || "";
-//   res.send(`
-//     <!DOCTYPE html>
-//     <html>
-//     <head>
-//     <meta charset="utf-8">
-//     <title>Your LTI Application</title>
-//       <script>
-//         localStorage.setItem('ltik', '${token}');
-//       </script>
-//     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-//     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
-//   </head>
-//     <body>
-//       <div id="lti_root"></div>
-//       <script src="/app.bundle.js"></script>
-//     </body>
-//     </html>
-//   `);
-// });
-
-// router.post("/lti", (req, res) => {
-//   return res.sendFile("index.html", { root: "dist" });
-// });
 
 lti.app.use(router);
 

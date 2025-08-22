@@ -3,6 +3,7 @@ import { canvas as config } from "../../config.js";
 import PQueue from "p-queue";
 import superagent from "superagent";
 import parseLinkHeader from "parse-link-header";
+import logger from "../../lib/logger.js";
 
 import BuzzAPI from "buzzapi";
 import { buzzAPI as cfg } from "../../config.js";
@@ -114,7 +115,7 @@ Handler.getCourses = async (userId) => {
         : [data]
     )
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 };
 
@@ -132,7 +133,7 @@ Handler.crossListSection = async (targetId, sectionId, userId, gtAccount) => {
       };
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 };
 
@@ -178,7 +179,7 @@ Handler.unCrossListSection = async (sectionId, userId, gtAccount) => {
       );
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 };
 
@@ -203,7 +204,7 @@ const listSisUserIds = async (termCode, crn, cursor) => {
       result.body.data.course.usersConnection.pageInfo.endCursor
     ).concat(userIds);
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     return;
   }
 };
@@ -243,7 +244,7 @@ Handler.isolateSection = async (termCode, crn, action) => {
         };
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
       });
   });
 };
@@ -261,7 +262,7 @@ Handler.checkSectionIsolation = async (termCode, crn) => {
       return res;
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 };
 

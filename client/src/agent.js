@@ -8,12 +8,6 @@ const handleErrors = (err) => {
 
 const responseBody = (res) => res.body;
 
-// const getLtik = () => {
-//   const ltik = localStorage.getItem("ltik");
-//   if (!ltik) throw new Error("Missing LTI key in localStorage.");
-//   return ltik;
-// };
-
 const getLtik = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const ltik = searchParams.get("ltik");
@@ -38,7 +32,6 @@ const requests = {
       .then(responseBody);
   },
   post: (url, body) => {
-    // console.log(`running post route with ${url}, ${body}`);
     return superagent
       .post(`${API_ROOT}${url}`, body)
       .use(tokenPlugin)
