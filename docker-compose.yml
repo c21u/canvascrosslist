@@ -20,6 +20,7 @@ services:
       DB_USER: $DB_USER
       DB_PASS: $DB_PASS
       CANVAS_REG_URL: $CANVAS_REG_URL
+      LTI_SSO_HOST: $LTI_SSO_HOST
       CLIENT_ID_GATECH: $CLIENT_ID_GATECH
       SENTRY_DSN:
     labels:

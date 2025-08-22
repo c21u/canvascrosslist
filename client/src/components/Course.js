@@ -61,6 +61,7 @@ const Course = (props) => {
   }, []);
 
   const isolateSection = (termCode, crn, action) => {
+    setIsolateConfirmModal(false);
     agent.courses
       .isolateSection({ termCode, crn, action })
       .then((res) => {

@@ -3,6 +3,7 @@ import { canvas as config } from "../../config.js";
 import PQueue from "p-queue";
 import superagent from "superagent";
 import parseLinkHeader from "parse-link-header";
+import logger from "../../lib/logger.js";
 
 import BuzzAPI from "buzzapi";
 import { buzzAPI as cfg } from "../../config.js";
@@ -114,7 +115,7 @@ Handler.getCourses = async (userId) => {
         : [data]
     )
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 };
 
@@ -132,7 +133,7 @@ Handler.crossListSection = async (targetId, sectionId, userId, gtAccount) => {
       };
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 };
 
@@ -178,21 +179,32 @@ Handler.unCrossListSection = async (sectionId, userId, gtAccount) => {
       );
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 };
 
-const listSisUserIds = async (termCode, crn) => {
+const listSisUserIds = async (termCode, crn, cursor) => {
   const query =
-    "query ($courseId: String) { course(sisId: $courseId) { usersConnection { nodes { sisId } } } }";
-  const variables = { courseId: `${termCode}/${crn}` };
+    "query ($courseId: String, $cursor: String) { course(sisId: $courseId) { usersConnection(after: $cursor) { nodes { sisId } pageInfo { endCursor hasNextPage } } } }";
+  const variables = { courseId: `${termCode}/${crn}`, cursor };
   try {
-    const result = await rawReq.post("/api/graphql", { query, variables });
-    return result.body.data.course.usersConnection.nodes.map(
+    const result = await rawReq.post("/api/graphql", {
+      query,
+      variables,
+    });
+    const userIds = result.body.data.course.usersConnection.nodes.map(
       (user) => user.sisId
     );
+    if (!result.body.data.course.usersConnection.pageInfo.hasNextPage) {
+      return userIds;
+    }
+    return await listSisUserIds(
+      termCode,
+      crn,
+      result.body.data.course.usersConnection.pageInfo.endCursor
+    ).concat(userIds);
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return;
   }
 };
@@ -232,12 +244,14 @@ Handler.isolateSection = async (termCode, crn, action) => {
         };
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(err);
       });
   });
 };
 
 Handler.checkSectionIsolation = async (termCode, crn) => {
+  //* * Below buzzapi call will error with 400 if termCode or crn
+  // are not in proper format  */
   return buzzApi
     .post("central.academics.sis.section_attributes", "read", {
       term_code: termCode,
@@ -248,7 +262,7 @@ Handler.checkSectionIsolation = async (termCode, crn) => {
       return res;
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 };
 

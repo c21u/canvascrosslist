@@ -1,13 +1,15 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { View } from "@instructure/ui-view";
 import { Text } from "@instructure/ui-text";
-import { Link } from "react-router-dom";
+import { Link } from "@instructure/ui-link";
 import { Button } from "@instructure/ui-buttons";
 import { IconPrinterSolid } from "@instructure/ui-icons";
 
 import "./styles.css";
 
-const Home = () => {
+const Home = (props) => {
+  const { setCurrentView } = props;
   return (
     <View as="div" margin="none none medium none">
       <View>
@@ -162,9 +164,9 @@ const Home = () => {
         </Button>
       </View>
       <View as="div" margin="large none none none" className="excludePrint">
-        <Link className="continueButton" to="/crosslist">
+        <Button onClick={() => setCurrentView("Crosslist")} color="primary">
           I understand these guidelines, Continue
-        </Link>
+        </Button>
       </View>
     </View>
   );
