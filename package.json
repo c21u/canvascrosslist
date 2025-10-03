@@ -12,7 +12,8 @@
     "start": "node server/server.js",
     "start:dev": "node ./server/bin/www | bunyan -L -o short",
     "test": "NODE_ENV=test jest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "patch-package"
   },
   "lint-staged": {
     "*.{html,json,yaml,yml}": [
@@ -54,7 +55,6 @@
     "@instructure/ui-toggle-details": "^8.23.0",
     "@instructure/ui-view": "^8.23.0",
     "@instructure/ui-webpack-config": "^8.23.0",
-    "@sentry/node": "^6.19.6",
     "add": "^2.0.6",
     "bunyan": "^1.8.15",
     "buzzapi": "^2.0.1",
@@ -64,12 +64,10 @@
     "dotenv": "^16.0.0",
     "ejs": "~3.1.6",
     "express": "~4.17.3",
-    "express-jwt": "^6.1.1",
     "file-loader": "^6.2.0",
     "http-browserify": "^1.7.0",
     "http-errors": "~2.0.0",
     "https-browserify": "^1.0.0",
-    "ims-lti": "^3.0.2",
     "ltijs": "^5.9.6",
     "ltijs-sequelize": "^2.4.4",
     "mobx": "^6.5.0",
@@ -78,9 +76,7 @@
     "p-limit": "^4.0.0",
     "p-queue": "^8.0.1",
     "parse-link-header": "^2.0.0",
-    "passport": "^0.5.2",
-    "passport-local": "^1.0.0",
-    "passport-lti": "^0.0.7",
+    "patch-package": "^8.0.1",
     "process": "^0.11.10",
     "prop-types": "^15.8.1",
     "react": "^16.8.0",
