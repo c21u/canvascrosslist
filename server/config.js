@@ -31,8 +31,6 @@ const getEnvVarOrThrow = (envVar) => {
 };
 
 export const environment = getEnvVarOrDefault("ENVIRONMENT", "test");
-export const sentryDSN = getEnvVarOrNull("SENTRY_DSN");
-export const jwtSecret = getEnvVarOrDefault("JWT_SECRET");
 export const trustProxy = getEnvVarOrDefault("TRUST_PROXY", "loopback");
 export const httpLogsFormat =
   process.env.NODE_ENV === "development" ? "dev" : "combined";
@@ -65,32 +63,13 @@ export const lti = {
   ),
 };
 
-export const fakeStrategyCredentials = {};
-if (process.env.NODE_ENV === "test") {
-  logger.warn(`Fake auth strategy enabled!`);
-  fakeStrategyCredentials.username = getEnvVarOrDefault("FAKE_USERNAME");
-  fakeStrategyCredentials.password = getEnvVarOrDefault("FAKE_PASSWORD");
-  config["passportStrategy"] = "fake";
-}
-export const passportStrategy =
-  process.env.NODE_ENV === "test" ? "fake" : "lti";
-
-export const lambdas = {
-  runEnroller: "RunCanvasEnrollerFull",
-};
-
 const config = {
-  sentryDSN,
-  passportStrategy,
-  fakeStrategyCredentials,
   httpLogsFormat,
-  jwtSecret,
   trustProxy,
   buzzAPI,
   canvas,
   lti,
   database,
-  lambdas,
 };
 
 export default config;

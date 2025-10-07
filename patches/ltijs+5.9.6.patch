@@ -1,0 +1,14 @@
+diff --git a/node_modules/ltijs/dist/Provider/Provider.js b/node_modules/ltijs/dist/Provider/Provider.js
+index d9158e4..1e7bc96 100644
+--- a/node_modules/ltijs/dist/Provider/Provider.js
++++ b/node_modules/ltijs/dist/Provider/Provider.js
+@@ -65,7 +65,8 @@ class Provider {
+     _classPrivateFieldInitSpec(this, _cookieOptions, {
+       secure: false,
+       httpOnly: true,
+-      signed: true
++      signed: true,
++      partitioned: true
+     });
+     // Setup flag
+     _classPrivateFieldInitSpec(this, _setup, false);
