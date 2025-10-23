@@ -68,7 +68,7 @@
     "http-browserify": "^1.7.0",
     "http-errors": "~2.0.0",
     "https-browserify": "^1.0.0",
-    "ltijs": "^5.9.6",
+    "ltijs": "^5.9.7",
     "ltijs-sequelize": "^2.4.4",
     "mobx": "^6.5.0",
     "mobx-react-lite": "^3.3.0",

@@ -9100,7 +9100,7 @@ ltijs-sequelize@^2.4.4:
     tedious "^11.0.9"
     umzug "^3.0.0-beta.15"
 
-ltijs@^5.9.6:
+ltijs@^5.9.7:
   version "5.9.7"
   resolved "https://registry.yarnpkg.com/ltijs/-/ltijs-5.9.7.tgz#535fdac634f274caa17fbf9396258bf385aa49e8"
   integrity sha512-0Hc9e5xBMSJWDidJGYVOelbe+PGKYn+xwcRKbpC2sixzL47ckOElTlBuVHm6J4DmiaPJcc42EZzE29YNrJWzaA==
