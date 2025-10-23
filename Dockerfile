@@ -19,6 +19,7 @@ FROM node:lts
 WORKDIR /app
 
 COPY package.json .
+COPY patches patches
 COPY yarn.lock .
 
 RUN yarn install --production --no-progress --non-interactive && yarn cache clean
