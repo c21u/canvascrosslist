@@ -30,6 +30,7 @@ router.post("/crosslist-section", (req, res, next) => {
     .crossListSection(
       req.body.courseId,
       req.body.sectionId,
+      req.body.crn,
       req.res.locals.context.custom.canvas_user_id,
       req.res.locals.context.custom.lis_user_username
     )
@@ -45,6 +46,7 @@ router.post("/uncrosslist-section", (req, res, next) => {
   handler
     .unCrossListSection(
       req.body.sectionId,
+      req.body.crn,
       req.res.locals.context.custom.canvas_user_id,
       req.res.locals.context.custom.lis_user_username
     )

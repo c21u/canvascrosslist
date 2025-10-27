@@ -16,6 +16,7 @@ const SectionList = (props) => {
     published,
     crossListSection,
     unCrossListSection,
+    crn,
   } = props;
 
   return (
@@ -44,8 +45,8 @@ const SectionList = (props) => {
             key={sectionId}
             section={sections.byId[sectionId]}
             courseId={courseId}
-            crossListSection={() => crossListSection(sectionId, published)}
-            unCrossListSection={() => unCrossListSection(sectionId)}
+            crossListSection={() => crossListSection(sectionId, crn, published)}
+            unCrossListSection={() => unCrossListSection(sectionId, crn)}
             isTarget={isTarget}
             isPending={pending.includes(sectionId)}
             isAvailable={available.includes(sectionId)}
