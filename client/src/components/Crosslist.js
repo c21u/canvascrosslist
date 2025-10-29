@@ -111,7 +111,7 @@ const Crosslist = (props) => {
     });
   };
 
-  const crossListSection = (sectionId) => {
+  const crossListSection = (sectionId, crn) => {
     const sectionFilter = (id) => sectionId !== id;
     setState((state) => {
       return {
@@ -140,7 +140,7 @@ const Crosslist = (props) => {
     const courseId = state.target;
     crossListSectionDone(sectionId, courseId);
     agent.courses
-      .crosslist({ courseId, sectionId })
+      .crosslist({ courseId, sectionId, crn })
       .then((res) => {
         crossListSectionDone(sectionId, courseId);
       })
@@ -172,7 +172,7 @@ const Crosslist = (props) => {
     });
   };
 
-  const unCrossListSection = (sectionId) => {
+  const unCrossListSection = (sectionId, crn) => {
     setState((state) => {
       return {
         ...state,
@@ -180,7 +180,7 @@ const Crosslist = (props) => {
       };
     });
     agent.courses
-      .uncrosslist({ sectionId })
+      .uncrosslist({ sectionId, crn })
       .then((res) => {
         const courseId = res.course_id;
         uncrosslistSectionDone(sectionId, courseId);

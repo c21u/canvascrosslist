@@ -119,25 +119,35 @@ Handler.getCourses = async (userId) => {
     });
 };
 
-Handler.crossListSection = async (targetId, sectionId, userId, gtAccount) => {
+Handler.crossListSection = async (
+  targetId,
+  sectionId,
+  crn,
+  userId,
+  gtAccount
+) => {
   return CanvasApi.post(`sections/${sectionId}/crosslist/${targetId}`, {
     as_user_id: userId,
   })
     .then((res) => {
-      return {
+      const result = {
+        name: "crosslist",
         action: "crosslist",
         user: userId,
         gtAccount,
         section: sectionId,
         course: targetId,
+        crn: crn,
       };
+      logger.info(result);
+      return result;
     })
     .catch((err) => {
       logger.error(err);
     });
 };
 
-Handler.unCrossListSection = async (sectionId, userId, gtAccount) => {
+Handler.unCrossListSection = async (sectionId, crn, userId, gtAccount) => {
   return CanvasApi.get(`sections/${sectionId}/enrollments`, {
     as_user_id: userId,
     type: "TeacherEnrollment",
@@ -150,11 +160,13 @@ Handler.unCrossListSection = async (sectionId, userId, gtAccount) => {
       ) {
         return CanvasApi.delete(`sections/${sectionId}/crosslist`).then(
           (section) => {
-            console.log({
+            logger.info({
+              name: "crosslist",
               action: "uncrosslist",
               user: userId,
               gtAccount,
               section: sectionId,
+              crn: crn,
             });
             return section;
           }
@@ -165,7 +177,7 @@ Handler.unCrossListSection = async (sectionId, userId, gtAccount) => {
           if (admins.length > 0) {
             return CanvasApi.delete(`sections/${sectionId}/crosslist`).then(
               (section) => {
-                console.log({
+                logger.info({
                   action: "uncrosslist",
                   user: userId,
                   gtAccount,
@@ -219,7 +231,7 @@ Handler.isolateSection = async (termCode, crn, action) => {
         attr_code: "ISOL",
       })
       .then(() => {
-        console.log(
+        logger.info(
           `${
             action == "delete" ? "Unisolated" : "Isolated"
           } section ${termCode}/${crn}`
@@ -235,7 +247,7 @@ Handler.isolateSection = async (termCode, crn, action) => {
         });
       })
       .then(() => {
-        console.log(
+        logger.info(
           `Created batch update work items for ${sisUserIds.length} user(s).`
         );
         return {

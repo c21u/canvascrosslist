@@ -220,6 +220,7 @@ const Course = (props) => {
         published={course.workflow_state !== "unpublished"}
         crossListSection={crossListSection}
         unCrossListSection={unCrossListSection}
+        crn={crn}
       />
       <Modal
         as="form"
