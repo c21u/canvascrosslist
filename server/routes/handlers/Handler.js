@@ -1,47 +1,12 @@
 import CanvasLmsApi from "canvas-lms-api";
 import { canvas as config } from "../../config.js";
 import PQueue from "p-queue";
-import superagent from "superagent";
-import parseLinkHeader from "parse-link-header";
 import logger from "../../lib/logger.js";
 
 import BuzzAPI from "buzzapi";
 import { buzzAPI as cfg } from "../../config.js";
 
 const buzzApi = new BuzzAPI(cfg);
-
-const handleErrors = (err) => {
-  return err;
-};
-
-const tokenPlugin = (req) => {
-  req.set("Authorization", `Bearer ${config.token}`);
-};
-
-const responseBodyAndLinks = (res) => {
-  const linkHeader = res.header.link;
-  const links = parseLinkHeader(linkHeader);
-  return {
-    body: res.body,
-    links,
-  };
-};
-
-const rawReq = {
-  get: (url) =>
-    superagent
-      .get(`${config.lmsApiUrl}${url}`)
-      .use(tokenPlugin)
-      .then(handleErrors)
-      .then(responseBodyAndLinks),
-  post: (url, data) =>
-    superagent
-      .post(`${config.lmsApiUrl}${url}`)
-      .send(data)
-      .use(tokenPlugin)
-      .then(handleErrors)
-      .then(responseBodyAndLinks),
-};
 
 const CanvasApi = new CanvasLmsApi(config.lmsApiUrl, {
   accessToken: config.token,
@@ -200,10 +165,7 @@ const listSisUserIds = async (termCode, crn, cursor) => {
     "query ($courseId: String, $cursor: String) { course(sisId: $courseId) { usersConnection(after: $cursor) { nodes { sisId } pageInfo { endCursor hasNextPage } } } }";
   const variables = { courseId: `${termCode}/${crn}`, cursor };
   try {
-    const result = await rawReq.post("/api/graphql", {
-      query,
-      variables,
-    });
+    const result = await CanvasApi.graphql(query, variables);
     const userIds = result.body.data.course.usersConnection.nodes.map(
       (user) => user.sisId
     );

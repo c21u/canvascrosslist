@@ -54,7 +54,7 @@ lti.onConnect(async (token, req, res) => {
 });
 
 const setup = async () => {
-  await lti.deploy({ port: process.env.PORT || "3000", debug: true });
+  await lti.deploy({ port: process.env.PORT || "3000" });
   await lti.registerPlatform({
     url: config.lti.canvasRegUrl,
     name: "GATECH",

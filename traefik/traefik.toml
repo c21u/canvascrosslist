@@ -11,6 +11,9 @@ defaultEntryPoints = ["http", "https"]
     [entryPoints.https.forwardedHeaders]
       insecure = true
 
+  [entrypoints.postgres]
+    address = ":5432"
+
 [providers]
   [providers.docker]
 

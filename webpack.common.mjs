@@ -1,5 +1,4 @@
 import { dirname, resolve } from "path";
-import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import { fileURLToPath } from "url";
 import { readFile } from "fs/promises";
@@ -17,7 +16,6 @@ export default {
     path: resolve(__dirname, "dist"),
   },
   module: {
-    noParse: [/xlsx.core.min.js/, /xlsx.full.min.js/],
     rules: [
       {
         test: /\.m?js$/,
@@ -51,7 +49,6 @@ export default {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HTMLWebpackPlugin({
       template: "index.html",
     }),
