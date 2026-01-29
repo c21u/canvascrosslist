@@ -1,6 +1,7 @@
 import express from "express";
 // eslint-disable-next-line new-cap
 const router = express.Router();
+import logger from "../lib/logger.js";
 import handler from "./handlers/Handler.js";
 
 router.post("/test", async (req, res, next) => {
@@ -20,7 +21,7 @@ router.post("/get-courses", async (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
       res.send(`Error fetching courses from canvas`);
     });
 });
@@ -38,7 +39,7 @@ router.post("/crosslist-section", (req, res, next) => {
       res.status(200).send(response);
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 });
 
@@ -54,7 +55,7 @@ router.post("/uncrosslist-section", (req, res, next) => {
       res.status(200).send(response);
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 });
 
@@ -65,7 +66,7 @@ router.post("/isolate-section", (req, res, next) => {
       res.status(200).send(response);
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 });
 
@@ -76,7 +77,7 @@ router.post("/check-section-isolation", (req, res, next) => {
       res.status(200).send(response);
     })
     .catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
 });
 

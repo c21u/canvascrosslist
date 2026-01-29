@@ -55,11 +55,11 @@ export const database = {
 };
 export const lti = {
   clientIdGatech: getEnvVarOrDefault("CLIENT_ID_GATECH", ""),
-  ltiKey: getEnvVarOrDefault("LTI_KEY", ""),
+  ltiKey: getEnvVarOrThrow("LTI_KEY"),
   ssoHost: getEnvVarOrDefault("LTI_SSO_HOST", "sso.test.canvaslms.com"),
   canvasRegUrl: getEnvVarOrDefault(
     "CANVAS_REG_URL",
-    "https://canvas.instructure.com"
+    "https://canvas.test.instructure.com"
   ),
 };
 

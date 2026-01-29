@@ -64,7 +64,7 @@ const setup = async () => {
       loginRoute: lti.loginRoute(),
       keys: lti.keysetRoute(),
     },
-    "LTIjs is up",
+    "LTIjs is up"
   );
   await lti.registerPlatform({
     url: config.lti.canvasRegUrl,
@@ -79,14 +79,12 @@ const setup = async () => {
   });
 };
 setup();
+
 router.get("/lti", (req, res) => {
   const user =
     req?.res?.locals?.context?.custom?.lis_user_username || "unknown_user";
-  const course =
-    req?.res?.locals?.context?.custom?.canvas_course_name || "unknown_course";
   const token = res.locals.token;
-  const info = { user, course, token };
-  console.log(info, "Crosslist LTI launched!");
+  logger.debug({ user, token }, "Crosslist LTI launched!");
   return res.sendFile("index.html", { root: "dist" });
 });
 

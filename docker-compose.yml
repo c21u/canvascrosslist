@@ -21,6 +21,15 @@ services:
     labels:
       - "traefik.http.routers.whoami.rule=Host(`dev.127.0.0.1.nip.io`)"
       - "traefik.http.routers.whoami.tls=true"
+    develop:
+      watch:
+        - action: sync+restart
+          path: server/
+          target: /app/server/
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: ./client
     depends_on:
       db:
         condition: service_healthy
