@@ -6,13 +6,15 @@ COPY yarn.lock .
 
 RUN yarn install --no-progress --non-interactive
 
+ARG BUILD_FOR="prod"
+
 COPY .eslintrc.cjs .
 COPY webpack.common.mjs .
-COPY webpack.prod.mjs .
+COPY webpack.${BUILD_FOR}.mjs .
 COPY .babelrc.json .
 COPY client client
 
-RUN yarn run build
+RUN yarn run build:${BUILD_FOR}
 
 FROM node:lts
 

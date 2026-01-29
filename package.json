@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.prod.mjs",
     "build:dev": "webpack --config webpack.dev.mjs",
+    "build:prod": "yarn run build",
     "develop": "run-p develop:*",
     "develop:client": "webpack --config webpack.dev.mjs --watch",
     "develop:server": "nodemon ./server/bin/www --watch ./server | bunyan -L -o short",

@@ -1,6 +1,9 @@
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        BUILD_FOR: dev
     environment:
       NODE_ENV: production
       BUZZAPI_URL: https://test.api.gatech.edu
