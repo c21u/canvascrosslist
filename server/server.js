@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import { Provider as lti } from "ltijs";
 import Database from "ltijs-sequelize";
+import logger from "./lib/logger.js";
 import config from "./config.js";
 
 import indexRouter from "./routes/index.js";
@@ -54,7 +55,17 @@ lti.onConnect(async (token, req, res) => {
 });
 
 const setup = async () => {
-  await lti.deploy({ port: process.env.PORT || "3000", debug: true });
+  const port = process.env.PORT || "3000";
+  await lti.deploy({ port, silent: true });
+  logger.info(
+    {
+      port,
+      appRoute: lti.appRoute(),
+      loginRoute: lti.loginRoute(),
+      keys: lti.keysetRoute(),
+    },
+    "LTIjs is up"
+  );
   await lti.registerPlatform({
     url: config.lti.canvasRegUrl,
     name: "GATECH",
@@ -68,14 +79,12 @@ const setup = async () => {
   });
 };
 setup();
+
 router.get("/lti", (req, res) => {
   const user =
     req?.res?.locals?.context?.custom?.lis_user_username || "unknown_user";
-  const course =
-    req?.res?.locals?.context?.custom?.canvas_course_name || "unknown_course";
   const token = res.locals.token;
-  const info = { user, course, token };
-  console.log(info, "Crosslist LTI launched!");
+  logger.debug({ user, token }, "Crosslist LTI launched!");
   return res.sendFile("index.html", { root: "dist" });
 });
 

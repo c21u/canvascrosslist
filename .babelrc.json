@@ -1,6 +1,6 @@
 {
   "sourceType": "module",
-  "presets": ["@babel/preset-react", "mobx"],
+  "presets": ["@babel/preset-react"],
   "plugins": [
     [
       "@babel/transform-runtime",

@@ -1,31 +1,35 @@
-# version: "3"
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        BUILD_FOR: dev
     environment:
       NODE_ENV: production
-      VIRTUAL_HOST: canvas-crosslist.127.0.0.1.nip.io
-      BUZZAPI_URL: $BUZZAPI_URL
-      CANVAS_LMS_API_URL: $CANVAS_LMS_API_URL
-      LTI_KEY: gatech
-      LTI_SECRET: doesitmatter
+      BUZZAPI_URL: https://test.api.gatech.edu
+      LTI_KEY: secret
       BUZZAPI_APP_ID: $BUZZAPI_APP_ID
       BUZZAPI_PASSWORD: $BUZZAPI_PASSWORD
       CANVAS_TOKEN: $CANVAS_TOKEN
       TRUST_PROXY: uniquelocal
-      JWT_SECRET: $JWT_SECRET
-      LOG_LEVEL: $LOG_LEVEL
-      DB_HOST: $DB_HOST
-      DB_NAME: $DB_NAME
-      DB_USER: $DB_USER
-      DB_PASS: $DB_PASS
-      CANVAS_REG_URL: $CANVAS_REG_URL
-      LTI_SSO_HOST: $LTI_SSO_HOST
-      CLIENT_ID_GATECH: $CLIENT_ID_GATECH
-      SENTRY_DSN:
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      DB_HOST: db
+      DB_NAME: ltijs_db
+      DB_USER: postgres
+      DB_PASS: crosslist
+      CLIENT_ID_GATECH: 20960000000000445
     labels:
-      - "traefik.http.routers.whoami.rule=Host(`canvas-crosslist.127.0.0.1.nip.io`)"
+      - "traefik.http.routers.whoami.rule=Host(`dev.127.0.0.1.nip.io`)"
       - "traefik.http.routers.whoami.tls=true"
+    develop:
+      watch:
+        - action: sync+restart
+          path: server/
+          target: /app/server/
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: ./client
     depends_on:
       db:
         condition: service_healthy
