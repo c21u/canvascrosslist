@@ -1,0 +1,14 @@
+diff --git a/dist/Provider/Provider.js b/dist/Provider/Provider.js
+index 8b619a932334c65ceba70eca7ae2385ad132cb70..dfe5e4e31c26793ecf77307d424234d698080ff9 100644
+--- a/dist/Provider/Provider.js
++++ b/dist/Provider/Provider.js
+@@ -65,7 +65,8 @@ class Provider {
+     _classPrivateFieldInitSpec(this, _cookieOptions, {
+       secure: false,
+       httpOnly: true,
+-      signed: true
++      signed: true,
++      partitioned: true
+     });
+     // Setup flag
+     _classPrivateFieldInitSpec(this, _setup, false);
