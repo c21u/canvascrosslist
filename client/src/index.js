@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { EmotionThemeProvider } from "@instructure/emotion";
+import { ThemeProvider } from "@instructure/emotion";
 import theme from "@instructure/canvas-theme";
 import Loadable from "./components/Loadable";
 
@@ -12,8 +12,8 @@ const LoadableApp = Loadable({
 });
 
 ReactDOM.render(
-  <EmotionThemeProvider theme={theme}>
+  <ThemeProvider theme={theme}>
     <LoadableApp />
-  </EmotionThemeProvider>,
+  </ThemeProvider>,
   document.getElementById("lti_root")
 );

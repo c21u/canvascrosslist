@@ -17,7 +17,7 @@ services:
       DB_NAME: ltijs_db
       DB_USER: postgres
       DB_PASS: crosslist
-      CLIENT_ID_GATECH: 20960000000000445
+      CLIENT_ID_GATECH: $CLIENT_ID_GATECH
     labels:
       - "traefik.http.routers.whoami.rule=Host(`dev.127.0.0.1.nip.io`)"
       - "traefik.http.routers.whoami.tls=true"
