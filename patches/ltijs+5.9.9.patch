@@ -1,7 +1,7 @@
-diff --git a/dist/Provider/Provider.js b/dist/Provider/Provider.js
-index 8b619a932334c65ceba70eca7ae2385ad132cb70..dfe5e4e31c26793ecf77307d424234d698080ff9 100644
---- a/dist/Provider/Provider.js
-+++ b/dist/Provider/Provider.js
+diff --git a/node_modules/ltijs/dist/Provider/Provider.js b/node_modules/ltijs/dist/Provider/Provider.js
+index 8b619a9..ff4a631 100644
+--- a/node_modules/ltijs/dist/Provider/Provider.js
++++ b/node_modules/ltijs/dist/Provider/Provider.js
 @@ -65,7 +65,8 @@ class Provider {
      _classPrivateFieldInitSpec(this, _cookieOptions, {
        secure: false,
