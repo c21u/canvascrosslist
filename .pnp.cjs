@@ -7368,10 +7368,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@xmldom/xmldom", [\
-      ["npm:0.8.11", {\
-        "packageLocation": "./.yarn/cache/@xmldom-xmldom-npm-0.8.11-5eaa837e9e-e768623de7.zip/node_modules/@xmldom/xmldom/",\
+      ["npm:0.8.15", {\
+        "packageLocation": "./.yarn/cache/@xmldom-xmldom-npm-0.8.15-5037f23256-59d09b8582.zip/node_modules/@xmldom/xmldom/",\
         "packageDependencies": [\
-          ["@xmldom/xmldom", "npm:0.8.11"]\
+          ["@xmldom/xmldom", "npm:0.8.15"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -7547,7 +7547,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/cache/adal-node-npm-0.2.4-e9e6d4971a-b3c9849179.zip/node_modules/adal-node/",\
         "packageDependencies": [\
           ["adal-node", "npm:0.2.4"],\
-          ["@xmldom/xmldom", "npm:0.8.11"],\
+          ["@xmldom/xmldom", "npm:0.8.15"],\
           ["async", "npm:2.6.4"],\
           ["axios", "npm:0.21.4"],\
           ["date-utils", "npm:1.2.21"],\
